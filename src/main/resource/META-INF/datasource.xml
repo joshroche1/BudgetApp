@@ -1,0 +1,10 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<datasources>
+   <local-tx-datasource>
+      <jndi-name>SQLite3</jndi-name>
+      <connection-url>jdbc:postgresql://localhost:5432/postgres</connection-url>
+      <driver-class>org.postgresql.driver</driver-class>
+      <user-name>sa</user-name>
+      <password>sa</password>
+   </local-tx-datasource>
+</datasources>
