@@ -1,4 +1,4 @@
-package net.jar;
+package net.jar.datasource;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
