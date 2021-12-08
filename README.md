@@ -17,6 +17,7 @@
 **src/main/resources/META-INF/**
   - persistence.xml
   - datasource.xml ?where does this go?
+
 **src/main/webapp/**
   - /WEB-INF
     - web.xml
@@ -33,7 +34,7 @@
 ### SQLite3
 ##### budgetapp.db
 ```
-CREATE TABLE **Transaction** (
+CREATE TABLE Transaction (
 source TEXT,
 datetime TEXT,
 value REAL,
@@ -43,7 +44,7 @@ memo TEXT
 );
 ```
 ```
-CREATE TABLE **Budget** (
+CREATE TABLE Budget (
 name TEXT,
 duedate INTEGER,
 value REAL,
@@ -53,7 +54,7 @@ memo TEXT
 );
 ```
 ```
-CREATE TABLE **Users** (
+CREATE TABLE Users (
 email TEXT,
 password TEXT,
 phone TEXT
