@@ -1,7 +1,10 @@
 package net.jar;
 
-// import
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
+@Entity
+@Table(name="User")
 public class User {
   
   private String email;
