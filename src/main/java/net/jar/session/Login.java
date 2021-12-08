@@ -1,4 +1,4 @@
-package net.jar;
+package net.jar.session;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
