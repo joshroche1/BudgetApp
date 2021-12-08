@@ -14,8 +14,8 @@
 - /datasource
   - DBUtil.java
 **src/main/resources/META-INF/**
-- persistence.xml
-- datasource.xml ?where does this go?
+  - persistence.xml
+  - datasource.xml ?where does this go?
 **src/main/webapp/**
 - /WEB-INF
   - web.xml
