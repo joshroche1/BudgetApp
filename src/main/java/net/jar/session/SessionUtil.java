@@ -1,4 +1,4 @@
-package net.jar;
+package net.jar.session;
 
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
