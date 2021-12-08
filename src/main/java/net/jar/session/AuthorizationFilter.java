@@ -1,4 +1,4 @@
-package net.jar;
+package net.jar.session;
 
 import java.io.IOException;
 import javax.servlet.Filter;
