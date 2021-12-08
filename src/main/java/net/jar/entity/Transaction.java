@@ -1,4 +1,4 @@
-package net.jar;
+package net.jar.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
