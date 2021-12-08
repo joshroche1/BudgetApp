@@ -7,10 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpSession;
 
 public class DBUtil {
   
@@ -91,7 +88,6 @@ public class DBUtil {
     return "";
   }
   
-  
   public Boolean validateUser(String user, String pass) {
     Connection c = null;
     ResultSet rs = null;
@@ -112,5 +108,4 @@ public class DBUtil {
     }
     return false;
   }
-  
 }
