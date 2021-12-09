@@ -19,7 +19,7 @@ public class Login {
 
   private String email = "";
   private String password = "";
-  private String seesionToken = "";
+  private String sessionToken = "";
 
   public void setEmail(String em) { this.email = em;}
   public void setPassword(String pass) { this.password = pass;}
