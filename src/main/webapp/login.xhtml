@@ -7,14 +7,34 @@
 <h:head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!--
-  <h:outputStylesheet library="css" name="w3.css" />
-  -->
   <title>Login</title>
 </h:head>
 <h:body>
 
-<!-- -->
+<ui:composition template="templates/template-main.xhtml">
+
+<ui:define name="content">
+
+<div class="w3-container">
+  <h:form id="loginForm">
+    <h:dataTable value="#{beanLogin}">
+      <table class="w3-table w3-responsive">
+        <tr><td><label>Email Address</label></td><td>
+          <h:inputText id="emailInput" value="#{beanLogin.email}" required="true" class="w3-input w3-border" />
+        </td></tr>
+        <tr><td><label></label>Password</td><td>
+          <h:inputSecret id="passwordInput" value="#{beanLogin.password}" required="true" class="w3-input w3-border" />
+        </td></tr>
+      </table>
+      <h:commandButton value="LOGIN" action="#{beanLogin.login()}" class="w3-button w3-round w3-green" />
+      <h:commandLink value="REGISTER" />
+    </h:dataTable>
+  </h:form>
+</div>
+
+</ui:define>
+
+</ui:composition>
 
 </h:body>
 </html>
