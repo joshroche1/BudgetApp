@@ -19,18 +19,21 @@ public class Login {
 
   private String email = "";
   private String password = "";
+  private String seesionToken = "";
 
   public void setEmail(String em) { this.email = em;}
   public void setPassword(String pass) { this.password = pass;}
+  public void setSessionToken(String txt) { this.sessionToken = txt;}
 
   public String getEmail() { return this.email; }
   public String getPassword() { return this.password; }
+  public String getSessionToken() { return this.sessionToken; }
 
   public String getCurrentSession() {
     String result = "";
     HttpSession ses = SessionUtils.getSession();
-    String temp = ses.getAttribute("usertoken").toString();
-    user += "" + temp;
+    result = ses.getAttribute("usertoken").toString();
+    setSessionToken(result);
     return result;
   }
 
