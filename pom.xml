@@ -61,7 +61,7 @@
   </dependencies>
   
   <build>
-    <finalName>myRxJSP-${version}</finalName>
+    <finalName>BudgetApp-${version}</finalName>
     <pluginManagement>
       <plugins>
         <plugin>
