@@ -15,14 +15,18 @@
 
 <ui:define name="content">
 
-<div class="w3-container w3-content">
-  <h:form id="registrationForm">
-    <label>Email Address</label><h:inputText id="emailInput" required="true" class="w3-input w3-border" />
-    <label>Password</label><h:inputSecret id="passwordInpu1t" required="true" class="w3-input w3-border" />
-    <label>Password Again</label><h:inputSecret id="passwordInput2" required="true" class="w3-input w3-border" />
-    <h:commandButton value="REGISTER" class="w3-button w3-round w3-green" />
-    <h:commandLink value="CANCEL" />
-  </h:form>
+<div class="w3-display-container w3-mobile">
+  <div class="w3-container w3-content w3-display-middle">
+    <div class="w3-container w3-card">
+      <h:form id="registrationForm">
+        <label>Email Address</label><h:inputText id="emailInput" required="true" class="w3-input w3-border" />
+        <label>Password</label><h:inputSecret id="passwordInpu1t" required="true" class="w3-input w3-border" />
+        <label>Password Again</label><h:inputSecret id="passwordInput2" required="true" class="w3-input w3-border" />
+        <h:commandButton value="REGISTER" class="w3-button w3-round w3-green" />
+        <h:commandLink value="CANCEL" />
+      </h:form>
+    </div>
+  </div>
 </div>
 
 </ui:define>
