@@ -35,7 +35,7 @@ public class Login {
   }
 
   public String validateLogin() {
-    boolean valid = DBUtil.validate(email, password);
+    boolean valid = DBUtil.validateUser(email, password);
     if (valid) {
       HttpSession sess = SessionUtils.getSession();
       sess.setAttribute("usertoken", email);
