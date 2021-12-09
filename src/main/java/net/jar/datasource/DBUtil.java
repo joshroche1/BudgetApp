@@ -33,7 +33,7 @@ public class DBUtil {
       PreparedStatement stmt = c.prepareStatement("SELECT ? FROM ? WHERE ?",ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
       stmt.setString(1, selectors);
       stmt.setString(2, tablename);
-      stmt.setString(3, critera);
+      stmt.setString(3, criteria);
       rs = stmt.executeQuery();
     } catch (SQLException ex) {
       FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
