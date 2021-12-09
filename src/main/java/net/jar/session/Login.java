@@ -10,8 +10,8 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
-import net.jar.DBUtil;
-import net.jar.SessionUtils;
+import net.jar.datasource.DBUtil;
+import net.jar.session.SessionUtils;
 
 @ManagedBean(name = "beanLogin", eager = true)
 @SessionScoped
