@@ -7,6 +7,8 @@ import net.jar.entity.User;
 import net.jar.entity.Transaction;
 import net.jar.entity.Budget;
 
+@Stateful
+@Named("beanUser")
 public class UserBean {
   
   private String email;
