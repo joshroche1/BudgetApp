@@ -15,9 +15,9 @@ public class DBUtil {
     Connection c = null;
     try {
       Class.forName("com.mysql.cj.jdbc.Driver");
-      String url = "jdbc:mysql://localhost:3306/myRx";
-      String user = "dbuser";
-      String pass = "cmsc495";
+      String url = "jdbc:mysql://localhost:3306/budgetapp";
+      String user = "+'NGGf?/@T9[qH9tvj(qR7n4";
+      String pass = "";
       c = DriverManager.getConnection(url, user, pass);
     } catch (Exception e) {
       FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
