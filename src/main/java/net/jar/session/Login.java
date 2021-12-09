@@ -35,7 +35,7 @@ public class Login {
   }
 
   public String validateLogin() {
-    boolean valid = DAOlogin.validatePatient(username, password);
+    boolean valid = DBUtil.validate(email, password);
     if (valid) {
       HttpSession sess = SessionUtils.getSession();
       sess.setAttribute("usertoken", email);
