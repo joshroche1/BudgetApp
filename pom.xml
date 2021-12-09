@@ -6,6 +6,9 @@
   <artifactId>budgetapp</artifactId>
   <version>0.1</version>
   
+  <packaging>war</packaging>
+  <name>${project.artifactId.version}</name>
+  
   <dependencies>
     <dependency>
       <groupId>javax</groupId>
@@ -61,7 +64,7 @@
   </dependencies>
   
   <build>
-    <finalName>BudgetApp-${version}</finalName>
+    <finalName>${artifactId.version}</finalName>
     <pluginManagement>
       <plugins>
         <plugin>
