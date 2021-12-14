@@ -44,32 +44,35 @@ function closeSidebar() {
 </ui:define>
 
 <ui:define name="content">
+
 <div class="w3-container" style="margin-top: 90px;">
-<div class="w3-cell-row">
-<div id="middle" class="w3-cell w3-container">
-  <h:dataTable id="budgetTable" value="#{beanDButil.getBudget()}" var="budget" class="w3-table-all w3-responsive">
-    <h:column><f:facet name="header">Name</f:facet>#{budget.name}</h:column>
-    <h:column><f:facet name="header">Category</f:facet>#{budget.category}</h:column>
-    <h:column><f:facet name="header">Due Date</f:facet>#{budget.duedate}</h:column>
-    <h:column><f:facet name="header">Expected Value</f:facet>#{budget.expected_value}</h:column>
-    <h:column><f:facet name="header">JAN</f:facet>#{budget.value_jan}</h:column>
-    <h:column><f:facet name="header">FEB</f:facet>#{budget.value_feb}</h:column>
-    <h:column><f:facet name="header">MAR</f:facet>#{budget.value_mar}</h:column>
-    <h:column><f:facet name="header">APR</f:facet>#{budget.value_apr}</h:column>
-    <h:column><f:facet name="header">MAY</f:facet>#{budget.value_may}</h:column>
-    <h:column><f:facet name="header">JUN</f:facet>#{budget.value_jun}</h:column>
-    <h:column><f:facet name="header">JUL</f:facet>#{budget.value_jul}</h:column>
-    <h:column><f:facet name="header">AUG</f:facet>#{budget.value_aug}</h:column>
-    <h:column><f:facet name="header">SEP</f:facet>#{budget.value_sep}</h:column>
-    <h:column><f:facet name="header">OCT</f:facet>#{budget.value_oct}</h:column>
-    <h:column><f:facet name="header">NOV</f:facet>#{budget.value_nov}</h:column>
-    <h:column><f:facet name="header">DEC</f:facet>#{budget.value_dec}</h:column>
-    <h:column><f:facet name="header">Description</f:facet>#{budget.description}</h:column>
-    <h:column><f:facet name="header">Memo</f:facet>#{budget.memo}</h:column>
-  </h:dataTable>
+  <div class="w3-cell-row">
+    <div id="middle" class="w3-cell w3-container">
+    <h:dataTable id="budgetTable" value="#{beanDButil.getBudget()}" var="budget" class="w3-table-all w3-responsive">
+      <h:column><f:facet name="header">Name</f:facet>#{budget.name}</h:column>
+      <h:column><f:facet name="header">Category</f:facet>#{budget.category}</h:column>
+      <h:column><f:facet name="header">Due Date</f:facet>#{budget.duedate}</h:column>
+      <h:column><f:facet name="header">Expected Value</f:facet>#{budget.expected_value}</h:column>
+    </h:dataTable><h:dataTable id="budgetTable" value="#{beanDButil.getBudget()}" var="budget" class="w3-table-all w3-responsive">
+      <h:column><f:facet name="header">JAN</f:facet>#{budget.value_jan}</h:column>
+      <h:column><f:facet name="header">FEB</f:facet>#{budget.value_feb}</h:column>
+      <h:column><f:facet name="header">MAR</f:facet>#{budget.value_mar}</h:column>
+      <h:column><f:facet name="header">APR</f:facet>#{budget.value_apr}</h:column>
+      <h:column><f:facet name="header">MAY</f:facet>#{budget.value_may}</h:column>
+      <h:column><f:facet name="header">JUN</f:facet>#{budget.value_jun}</h:column>
+      <h:column><f:facet name="header">JUL</f:facet>#{budget.value_jul}</h:column>
+      <h:column><f:facet name="header">AUG</f:facet>#{budget.value_aug}</h:column>
+      <h:column><f:facet name="header">SEP</f:facet>#{budget.value_sep}</h:column>
+      <h:column><f:facet name="header">OCT</f:facet>#{budget.value_oct}</h:column>
+      <h:column><f:facet name="header">NOV</f:facet>#{budget.value_nov}</h:column>
+      <h:column><f:facet name="header">DEC</f:facet>#{budget.value_dec}</h:column>
+      <h:column><f:facet name="header">Description</f:facet>#{budget.description}</h:column>
+      <h:column><f:facet name="header">Memo</f:facet>#{budget.memo}</h:column>
+    </h:dataTable>
+    </div>
+  </div>
 </div>
-</div>
-</div>
+
 </ui:define>
 
 <ui:define name="footer">
