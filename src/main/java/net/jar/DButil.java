@@ -146,43 +146,5 @@ public class DButil {
                    FacesMessage.SEVERITY_INFO, ex.getMessage(), "..."));
     }
     return rs;
-  }
-  
-  public String updateBudget(String nam, String field, String content, double value) { 
-    String var1 = "";
-    String var2 = "";
-    switch (field) {
-      case "expected_value": var1 = "expected_value"; var2 = value; break;
-      case "value_jan": var1 = "value_jan"; var2 = value; break;
-      case "value_feb": var1 = "value_feb"; var2 = value; break;
-      case "value_mar": var1 = "value_mar"; var2 = value; break;
-      case "value_apr": var1 = "value_apr"; var2 = value; break;
-      case "value_may": var1 = "value_may"; var2 = value; break;
-      case "value_jun": var1 = "value_jun"; var2 = value; break;
-      case "value_jul": var1 = "value_jul"; var2 = value; break;
-      case "value_aug": var1 = "value_aug"; var2 = value; break;
-      case "value_sep": var1 = "value_sep"; var2 = value; break;
-      case "value_oct": var1 = "value_oct"; var2 = value; break;
-      case "value_nov": var1 = "value_nov"; var2 = value; break;
-      case "value_dec": var1 = "value_dec"; var2 = value; break;
-      case "description": var1 = "description"; var2 = content; break;
-      case "category": var1 = "category"; var2 = content; break;
-      case "memo": var1 = "memo"; var2 = content; break;
-      default: return "main";
-    }
-    try {
-      c = this.connect();
-      PreparedStatement stmt = c.prepareStatement("UPDATE Budget SET ?=? WHERE name=?",ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
-      stmt.setString(1,var1);
-      stmt.setString(2,var2);
-      stmt.setString(3,nam);
-      stmt.execute();
-    } catch (SQLException ex) {
-      FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
-                   FacesMessage.SEVERITY_INFO, ex.getMessage(), "..."));
-    }
-		resetValues();
-    return "main";
-  }
-  
+  }  
 }
