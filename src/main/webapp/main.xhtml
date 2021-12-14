@@ -14,9 +14,39 @@
 
 <ui:composition template="templates/template-main.xhtml">
 
-<ui:define name="content">
+<ui:define name="header">
 
-<div id="middle" class="w3-container w3-mobile w3-card">
+<nav class="w3-sidebar w3-bar-block w3-card" id="mySidebar">
+  <div class="w3-container w3-theme-d2">
+    <span onclick="closeSidebar()" class="w3-button w3-display-topright w3-large">X</span>
+    <br />
+    <div class="w3-padding w3-center">IMAGE</div>
+  </div>
+  <a class="w3-bar-item w3-button" href="#">Overview</a>
+  <a class="w3-bar-item w3-button" href="#">Modify</a>
+  <a class="w3-bar-item w3-button" href="#">About</a>
+</nav>
+<header class="w3-top w3-bar w3-theme">
+  <button class="w3-bar-item w3-button w3-xxxlarge w3-hover-theme" onclick="openSidebar()">&#9776;</button>
+  <h1 class="w3-bar-item">Budget App</h1>
+</header>
+<script>
+closeSidebar();
+function openSidebar() {
+  document.getElementById("mySidebar").style.display = "block";
+}
+
+function closeSidebar() {
+  document.getElementById("mySidebar").style.display = "none";
+}
+</script>
+
+</ui:define>
+
+<ui:define name="content">
+<div class="w3-container" style="margin-top: 90px;">
+<div class="w3-cell-row">
+<div id="middle" class="w3-cell w3-container">
   <h:dataTable id="budgetTable" value="#{beanDButil.getBudget()}" var="budget" class="w3-table-all w3-responsive">
     <h:column><f:facet name="header">Name</f:facet>#{budget.name}</h:column>
     <h:column><f:facet name="header">Category</f:facet>#{budget.category}</h:column>
@@ -38,7 +68,14 @@
     <h:column><f:facet name="header">Memo</f:facet>#{budget.memo}</h:column>
   </h:dataTable>
 </div>
+</div>
+</div>
+</ui:define>
 
+<ui:define name="footer">
+<div class="w3-container w3-bottom w3-theme w3-margin-top">
+<h3>FOOTER</h3>
+</div>
 </ui:define>
 
 </ui:composition>
