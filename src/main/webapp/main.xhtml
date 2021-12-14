@@ -19,6 +19,9 @@
 <div id="middle" class="w3-container w3-mobile w3-card">
   <h:dataTable id="budgetTable" value="#{beanDButil.getBudget()}" var="budget" class="w3-table-all w3-responsive">
     <h:column><f:facet name="header">Name</f:facet>#{budget.name}</h:column>
+    <h:column><f:facet name="header">Category</f:facet>#{budget.category}</h:column>
+    <h:column><f:facet name="header">Due Date</f:facet>#{budget.duedate}</h:column>
+    <h:column><f:facet name="header">Expected Value</f:facet>#{budget.expected_value}</h:column>
     <h:column><f:facet name="header">JAN</f:facet>#{budget.value_jan}</h:column>
     <h:column><f:facet name="header">FEB</f:facet>#{budget.value_feb}</h:column>
     <h:column><f:facet name="header">MAR</f:facet>#{budget.value_mar}</h:column>
@@ -31,9 +34,6 @@
     <h:column><f:facet name="header">OCT</f:facet>#{budget.value_oct}</h:column>
     <h:column><f:facet name="header">NOV</f:facet>#{budget.value_nov}</h:column>
     <h:column><f:facet name="header">DEC</f:facet>#{budget.value_dec}</h:column>
-    <h:column><f:facet name="header">Category</f:facet>#{budget.category}</h:column>
-    <h:column><f:facet name="header">Due Date</f:facet>#{budget.duedate}</h:column>
-    <h:column><f:facet name="header">Expected Value</f:facet>#{budget.expected_value}</h:column>
     <h:column><f:facet name="header">Description</f:facet>#{budget.description}</h:column>
     <h:column><f:facet name="header">Memo</f:facet>#{budget.memo}</h:column>
   </h:dataTable>
