@@ -168,7 +168,7 @@ public class DButil {
 	public double getIncomeAmount() {
 		double result = 0;
 		try {
-			DButil dbu = new DBUtil();
+			DButil dbu = new DButil();
 			rs = dbu.getIncomes();
 			while (rs.next()) {
 				result += rs.getDouble("value");
@@ -182,7 +182,7 @@ public class DButil {
 	public double getExpenseAmount() {
 		double result = 0;
 		try {
-			DButil dbu = new DBUtil();
+			DButil dbu = new DButil();
 			rs = dbu.getExpenses();
 			while (rs.next()) {
 				result += rs.getDouble("value");
