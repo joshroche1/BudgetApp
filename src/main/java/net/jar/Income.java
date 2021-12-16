@@ -26,7 +26,6 @@ public class Income {
   private String memo;
   
   public void setName(String txt) { this.name = txt; }
-  public void setDueDate(int val) { this.duedate = val; }
   public void setValue(double val) { this.value = val; }
   public void setValuejan(double val) { this.valuejan = val; }
   public void setValuefeb(double val) { this.valuefeb = val; }
