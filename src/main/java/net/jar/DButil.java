@@ -193,6 +193,9 @@ public class DButil {
 		}
 		return result;
 	}
+	public double getRemainderAmount(double in, double ex) {
+		return in-ex;
+	}
 	
 	public ResultSet getIncomes() {
 		rs = null;
