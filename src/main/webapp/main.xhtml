@@ -48,26 +48,43 @@ function closeSidebar() {
 <div class="w3-container" style="margin-top: 90px;">
   <div class="w3-cell-row">
     <div id="middle" class="w3-cell w3-container">
-    <h:dataTable id="budgetTable" value="#{beanDButil.getBudget()}" var="budget" class="w3-table-all w3-responsive">
-      <h:column><f:facet name="header">Name</f:facet>#{budget.name}</h:column>
-      <h:column><f:facet name="header">Category</f:facet>#{budget.category}</h:column>
-      <h:column><f:facet name="header">Due Date</f:facet>#{budget.duedate}</h:column>
-      <h:column><f:facet name="header">Expected Value</f:facet>#{budget.expected_value}</h:column>
-    </h:dataTable><h:dataTable id="budgetTable" value="#{beanDButil.getBudget()}" var="budget" class="w3-table-all w3-responsive">
-      <h:column><f:facet name="header">JAN</f:facet>#{budget.value_jan}</h:column>
-      <h:column><f:facet name="header">FEB</f:facet>#{budget.value_feb}</h:column>
-      <h:column><f:facet name="header">MAR</f:facet>#{budget.value_mar}</h:column>
-      <h:column><f:facet name="header">APR</f:facet>#{budget.value_apr}</h:column>
-      <h:column><f:facet name="header">MAY</f:facet>#{budget.value_may}</h:column>
-      <h:column><f:facet name="header">JUN</f:facet>#{budget.value_jun}</h:column>
-      <h:column><f:facet name="header">JUL</f:facet>#{budget.value_jul}</h:column>
-      <h:column><f:facet name="header">AUG</f:facet>#{budget.value_aug}</h:column>
-      <h:column><f:facet name="header">SEP</f:facet>#{budget.value_sep}</h:column>
-      <h:column><f:facet name="header">OCT</f:facet>#{budget.value_oct}</h:column>
-      <h:column><f:facet name="header">NOV</f:facet>#{budget.value_nov}</h:column>
-      <h:column><f:facet name="header">DEC</f:facet>#{budget.value_dec}</h:column>
-      <h:column><f:facet name="header">Description</f:facet>#{budget.description}</h:column>
-      <h:column><f:facet name="header">Memo</f:facet>#{budget.memo}</h:column>
+    <h:dataTable id="budgetTable" value="#{beanDButil.getIncomes()}" var="inc" class="w3-table-all w3-responsive">
+      <h:column><f:facet name="header">Name</f:facet>#{inc.name}</h:column>
+      <h:column><f:facet name="header">Expected Value</f:facet>#{inc.value}</h:column>
+      <h:column><f:facet name="header">JAN</f:facet>#{inc.valuejan}</h:column>
+      <h:column><f:facet name="header">FEB</f:facet>#{inc.valuefeb}</h:column>
+      <h:column><f:facet name="header">MAR</f:facet>#{inc.valuemar}</h:column>
+      <h:column><f:facet name="header">APR</f:facet>#{inc.valueapr}</h:column>
+      <h:column><f:facet name="header">MAY</f:facet>#{inc.valuemay}</h:column>
+      <h:column><f:facet name="header">JUN</f:facet>#{inc.valuejun}</h:column>
+      <h:column><f:facet name="header">JUL</f:facet>#{inc.valuejul}</h:column>
+      <h:column><f:facet name="header">AUG</f:facet>#{inc.valueaug}</h:column>
+      <h:column><f:facet name="header">SEP</f:facet>#{inc.valuesep}</h:column>
+      <h:column><f:facet name="header">OCT</f:facet>#{inc.valueoct}</h:column>
+      <h:column><f:facet name="header">NOV</f:facet>#{inc.valuenov}</h:column>
+      <h:column><f:facet name="header">DEC</f:facet>#{inc.valuedec}</h:column>
+      <h:column><f:facet name="header">Description</f:facet>#{inc.description}</h:column>
+      <h:column><f:facet name="header">Memo</f:facet>#{inc.memo}</h:column>
+    </h:dataTable>
+    <h:dataTable id="budgetTable" value="#{beanDButil.getExpenses()}" var="exp" class="w3-table-all w3-responsive">
+      <h:column><f:facet name="header">Name</f:facet>#{exp.name}</h:column>
+      <h:column><f:facet name="header">Category</f:facet>#{exp.category}</h:column>
+      <h:column><f:facet name="header">Due Date</f:facet>#{exp.duedate}</h:column>
+      <h:column><f:facet name="header">Expected Value</f:facet>#{exp.value}</h:column>
+      <h:column><f:facet name="header">JAN</f:facet>#{exp.valuejan}</h:column>
+      <h:column><f:facet name="header">FEB</f:facet>#{exp.valuefeb}</h:column>
+      <h:column><f:facet name="header">MAR</f:facet>#{exp.valuemar}</h:column>
+      <h:column><f:facet name="header">APR</f:facet>#{exp.valueapr}</h:column>
+      <h:column><f:facet name="header">MAY</f:facet>#{exp.valuemay}</h:column>
+      <h:column><f:facet name="header">JUN</f:facet>#{exp.valuejun}</h:column>
+      <h:column><f:facet name="header">JUL</f:facet>#{exp.valuejul}</h:column>
+      <h:column><f:facet name="header">AUG</f:facet>#{exp.valueaug}</h:column>
+      <h:column><f:facet name="header">SEP</f:facet>#{exp.valuesep}</h:column>
+      <h:column><f:facet name="header">OCT</f:facet>#{exp.valueoct}</h:column>
+      <h:column><f:facet name="header">NOV</f:facet>#{exp.valuenov}</h:column>
+      <h:column><f:facet name="header">DEC</f:facet>#{exp.valuedec}</h:column>
+      <h:column><f:facet name="header">Description</f:facet>#{exp.description}</h:column>
+      <h:column><f:facet name="header">Memo</f:facet>#{exp.memo}</h:column>
     </h:dataTable>
     </div>
   </div>
