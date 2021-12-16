@@ -67,7 +67,11 @@ function closeSidebar() {
       <h:column><f:facet name="header">Memo</f:facet>#{inc.memo}</h:column>
     </h:dataTable>
     <div>
-      <h3>#{beanDButil.getRemainderAmount(beanDButil.getIncomeAmount(),beanDButil.getExpenseAmount())}</h3>
+      <table class="w3-table-all">
+        <tr><td>Total Income</td><td><h3>#{beanDButil.getIncomeAmount()}</h3></td></tr>
+        <tr><td>Total Expenses</td><td><h3>#{beanDButil.getExpenseAmount()}</h3></td></tr>
+        <tr><td>Remainder</td><td></td><h3>#{beanDButil.getRemainderAmount(beanDButil.getIncomeAmount(),beanDButil.getExpenseAmount())}</h3></tr>
+      </table>
     </div>
     <h:dataTable id="budgetTable" value="#{beanDButil.getExpenses()}" var="exp" class="w3-table-all w3-responsive">
       <h:column><f:facet name="header">Name</f:facet>#{exp.name}</h:column>
