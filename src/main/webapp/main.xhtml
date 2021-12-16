@@ -70,7 +70,7 @@ function closeSidebar() {
       <table class="w3-table-all">
         <tr><td>Total Income</td><td><h3>#{beanDButil.getIncomeAmount()}</h3></td></tr>
         <tr><td>Total Expenses</td><td><h3>#{beanDButil.getExpenseAmount()}</h3></td></tr>
-        <tr><td>Remainder</td><td></td><h3>#{beanDButil.getRemainderAmount(beanDButil.getIncomeAmount(),beanDButil.getExpenseAmount())}</h3></tr>
+        <tr><td>Remainder</td><td><h3>#{beanDButil.getRemainderAmount(beanDButil.getIncomeAmount(),beanDButil.getExpenseAmount())}</h3></td></tr>
       </table>
     </div>
     <h:dataTable id="budgetTable" value="#{beanDButil.getExpenses()}" var="exp" class="w3-table-all w3-responsive">
