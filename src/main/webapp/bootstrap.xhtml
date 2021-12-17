@@ -16,5 +16,41 @@
 
 
 
+<div class="" style="margin-top:90px;margin-bottom:90px;">
+  <div class="w3-cell-row">
+    <div id="middle" class="w3-cell w3-container">
+      <div>
+      <h:dataTable id="incomeTable" value="#{beanDButil.getIncomes()}" var="inc" class="">
+        <h:column><h:form><h:commandButton value="-" action="#{beanDButil.deleteIncome(inc.name)}" class="" /></h:form>
+          <f:facet name="header">Name</f:facet>#{inc.name}</h:column>
+        <h:column><f:facet name="header">Expected Value</f:facet>#{inc.value}</h:column>
+        <h:column><f:facet name="header">Description</f:facet>#{inc.description}</h:column>
+        <h:column><f:facet name="header">Memo</f:facet>#{inc.memo}</h:column>
+      </h:dataTable>
+      </div>
+      <div>
+        <table class="">
+          <tr><td>Total Income</td><td><p>#{beanDButil.getIncomeAmount()}</p></td></tr>
+          <tr><td>Total Expenses</td><td><p>#{beanDButil.getExpenseAmount()}</p></td></tr>
+          <tr><td>Remainder</td><td><p>#{beanDButil.getRemainderAmount(beanDButil.getIncomeAmount(),beanDButil.getExpenseAmount())}</p></td></tr>
+        </table>
+      </div>
+      <div>
+      <h:dataTable id="expenseTable" value="#{beanDButil.getExpenses()}" var="exp" class="">
+        <h:column><h:form><h:commandButton value="-" action="#{beanDButil.deleteExpense(inc.name)}" class="" /></h:form>
+          <f:facet name="header">Name</f:facet>#{exp.name}</h:column>
+        <h:column><f:facet name="header">Category</f:facet>#{exp.category}</h:column>
+        <h:column><f:facet name="header">Due Date</f:facet>#{exp.duedate}</h:column>
+        <h:column><f:facet name="header">Expected Value</f:facet>#{exp.value}</h:column>
+        <h:column><f:facet name="header">Description</f:facet>#{exp.description}</h:column>
+        <h:column><f:facet name="header">Memo</f:facet>#{exp.memo}</h:column>
+      </h:dataTable>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 </h:body>
 </html>
