@@ -33,12 +33,12 @@
   <div class="col-sm-2">
     <button class="btn btn-info btn-lg" data-toggle="modal" data-target="#modalInsertIncomeForm">ADD INCOME</button>
     <div id="modalInsertIncomeForm" class="modal fade" role="dialog">
-      <div class="modal-dialog" style="max-width:600px">
+      <div class="modal-dialog">
         <div class="modal-content">
           <button type="button" class="close btn btn-default" data-dismiss="modal">X</button>
           <div class="modal-body">
             <h:form id="insertIncomeForm" class="container">
-              <div class="form-group">
+              <div class="form-group col-xs-4">
                 <label>Name</label>
                 <h:inputText id="incomename" value="#{beanDButil.name}" required="true" class="form-control" />
                 <label>Value</label>
