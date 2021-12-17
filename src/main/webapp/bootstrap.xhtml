@@ -14,9 +14,15 @@
 </h:head>
 <h:body>
 
-<div class="container">
+<ui:composition template="templates/bootstrap/template-main.xhtml">
 
-</div>
+<ui:define name="content">
+  <ui:include src="/views/bootstrap/budget.xhtml"></ui:include>
+</ui:define>
+  
+<ui:define name="footer">
+  <ui:include src="/views/bootstrap/budget-footer.xhtml"></ui:include>
+</ui:define>
 
 </h:body>
 </html>
