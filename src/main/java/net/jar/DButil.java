@@ -25,6 +25,11 @@ public class DButil {
 	private double expenseTotal;
 	private double remainder;
   
+	private String name;
+	private String category;
+	private String description;
+	private String memo;
+	private int duedate;
   private double in_jan;
   private double in_feb;
   private double in_mar;
@@ -77,6 +82,18 @@ public class DButil {
 	public void setIncomeTotal(double val) { this.incomeTotal = val; }
 	public void setExpenseTotal(double val) { this.expenseTotal = val; }
 	public void setRemainder(double val) { this.remainder = val; }
+	
+	public void setName(String txt) { this.name = txt; }
+	public void setDescription(String txt) { this.description = txt; }
+  public void setMemo(String txt) { this.memo = txt; }
+  public void setCategory(String txt) { this.category = txt; }
+	public void setDueDate(int x) { this.duedate = x; }
+	
+	public String getName() { return this.name; }
+	public String getDescription() { return this.description; }
+	public String getMemo() { return this.memo; }
+	public String getCategory() { return this.category; }
+	public int getDueDate() { return this.duedate; }
   
   public double getIn_jan() { return this.in_jan; }
   public double getIn_feb() { return this.in_feb; }
