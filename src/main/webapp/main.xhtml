@@ -15,9 +15,11 @@
 <ui:composition template="templates/template-main.xhtml">
 
 <ui:define name="content">
-
-
-
+  <ui:include src="/views/budget.xhtml"></ui:include>
+</ui:define>
+  
+<ui:define name="footer">
+  <ui:include src="/views/budget-footer.xhtml"></ui:include>
 </ui:define>
 
 </ui:composition>
