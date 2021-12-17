@@ -30,6 +30,7 @@ public class DButil {
 	private String description;
 	private String memo;
 	private int duedate;
+	private double value;
   private double in_jan;
   private double in_feb;
   private double in_mar;
@@ -88,12 +89,14 @@ public class DButil {
   public void setMemo(String txt) { this.memo = txt; }
   public void setCategory(String txt) { this.category = txt; }
 	public void setDueDate(int x) { this.duedate = x; }
+	public void setValue(double val) { this.value = val; }
 	
 	public String getName() { return this.name; }
 	public String getDescription() { return this.description; }
 	public String getMemo() { return this.memo; }
 	public String getCategory() { return this.category; }
 	public int getDueDate() { return this.duedate; }
+	public double getValue() { return this.value; }
   
   public double getIn_jan() { return this.in_jan; }
   public double getIn_feb() { return this.in_feb; }
