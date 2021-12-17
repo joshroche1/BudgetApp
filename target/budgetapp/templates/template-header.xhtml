@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<h:head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <h:outputStylesheet library="css" name="w3.css" />
+</h:head>
+<h:body>
+
+<ui:composition>
+
+<nav id="mySidebar" class="w3-sidebar w3-bar-block w3-card w3-teal">
+  <div class="w3-container w3-teal">
+    <span onclick="closeSidebar()" class="w3-button w3-display-topright w3-large">X</span>
+    <br />
+    <div class="w3-padding w3-center">IMAGE</div>
+  </div>
+  <a class="w3-bar-item w3-button" href="http://192.168.2.243:8080/manager">TOMCAT</a>
+  <a class="w3-bar-item w3-button" href="#">About</a>
+  <a class="w3-bar-item w3-button w3-red w3-round" href="#">Logout</a>
+</nav>
+<header class="w3-top w3-bar w3-teal">
+  <button class="w3-bar-item w3-button w3-xxxlarge w3-hover-theme" onclick="openSidebar()">&#9776;</button>
+  <h1 class="w3-bar-item">Budget App</h1>
+</header>
+<script>
+closeSidebar();
+function openSidebar() {
+  document.getElementById("mySidebar").style.display = "block";
+}
+
+function closeSidebar() {
+  document.getElementById("mySidebar").style.display = "none";
+}
+</script>
+
+</ui:composition>
+
+</h:body>
+</html>
