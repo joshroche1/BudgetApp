@@ -20,7 +20,7 @@
   <div class="w3-cell-row">
     <div id="middle" class="w3-cell w3-container">
       <div>
-      <h:dataTable id="budgetTable" value="#{beanDButil.getIncomes()}" var="inc" class="w3-table-all w3-responsive">
+      <h:dataTable id="incomeTable" value="#{beanDButil.getIncomes()}" var="inc" class="w3-table-all w3-responsive">
         <h:column><f:facet name="header">Name</f:facet>#{inc.name}</h:column>
         <h:column><f:facet name="header">Expected Value</f:facet>#{inc.value}</h:column>
         <h:column><f:facet name="header">Description</f:facet>#{inc.description}</h:column>
@@ -53,7 +53,7 @@
         </table>
       </div>
       <div>
-      <h:dataTable id="budgetTable" value="#{beanDButil.getExpenses()}" var="exp" class="w3-table-all w3-responsive">
+      <h:dataTable id="expenseTable" value="#{beanDButil.getExpenses()}" var="exp" class="w3-table-all w3-responsive">
         <h:column><f:facet name="header">Name</f:facet>#{exp.name}</h:column>
         <h:column><f:facet name="header">Category</f:facet>#{exp.category}</h:column>
         <h:column><f:facet name="header">Due Date</f:facet>#{exp.duedate}</h:column>
