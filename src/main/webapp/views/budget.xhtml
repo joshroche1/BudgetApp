@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<h:head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <h:outputStylesheet library="css" name="w3.css" />
+</h:head>
+<h:body>
+
+<ui:composition>
+
+<div class="w3-container" style="margin-top:90px;margin-bottom:90px;">
+  <div class="w3-cell-row">
+    <div id="middle" class="w3-cell w3-container">
+      <div>
+      <h:dataTable id="incomeTable" value="#{beanDButil.getIncomes()}" var="inc" class="w3-table-all w3-responsive">
+        <h:column><h:commandButton value="-" action="#{beanDButil.deleteIncome(inc.name)}" class="w3-button w3-red w3-round-large" />
+          <f:facet name="header">Name</f:facet>#{inc.name}</h:column>
+        <h:column><f:facet name="header">Expected Value</f:facet>#{inc.value}</h:column>
+        <h:column><f:facet name="header">Description</f:facet>#{inc.description}</h:column>
+        <h:column><f:facet name="header">Memo</f:facet>#{inc.memo}</h:column>
+      </h:dataTable>
+      </div>
+      <div>
+        <table class="w3-table-all">
+          <tr><td>Total Income</td><td><p>#{beanDButil.getIncomeAmount()}</p></td></tr>
+          <tr><td>Total Expenses</td><td><p>#{beanDButil.getExpenseAmount()}</p></td></tr>
+          <tr><td>Remainder</td><td><p>#{beanDButil.getRemainderAmount(beanDButil.getIncomeAmount(),beanDButil.getExpenseAmount())}</p></td></tr>
+        </table>
+      </div>
+      <div>
+      <h:dataTable id="expenseTable" value="#{beanDButil.getExpenses()}" var="exp" class="w3-table-all w3-responsive">
+        <h:column><h:commandButton value="-" action="#{beanDButil.deleteExpense(inc.name)}" class="w3-button w3-red w3-round-large" />
+          <f:facet name="header">Name</f:facet>#{exp.name}</h:column>
+        <h:column><f:facet name="header">Category</f:facet>#{exp.category}</h:column>
+        <h:column><f:facet name="header">Due Date</f:facet>#{exp.duedate}</h:column>
+        <h:column><f:facet name="header">Expected Value</f:facet>#{exp.value}</h:column>
+        <h:column><f:facet name="header">Description</f:facet>#{exp.description}</h:column>
+        <h:column><f:facet name="header">Memo</f:facet>#{exp.memo}</h:column>
+      </h:dataTable>
+      </div>
+    </div>
+  </div>
+</div>
+
+</ui:composition>
+
+</h:body>
+</html>
