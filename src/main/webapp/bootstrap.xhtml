@@ -91,7 +91,7 @@
   <!-- MIDDLE -->
   <div class="container">
     <div id="middle">
-      <div><a data-toggle="collapse" href="#incomeDiv">Income</a>
+      <div><a data-toggle="collapse" href="#incomeDiv"><button type="button" class="btn btn-default">Income</button></a>
         <div id="incomeDiv" class="panel-collapse collapse">
           <h:dataTable id="incomeTable" value="#{beanDButil.getIncomes()}" var="inc" class="table table-bordered">
             <h:column><f:facet name="header">Name</f:facet>#{inc.name}</h:column>
@@ -108,7 +108,7 @@
           <tr><td>Remainder</td><td><p>#{beanDButil.getRemainderAmount(beanDButil.getIncomeAmount(),beanDButil.getExpenseAmount())}</p></td></tr>
         </table>
       </div>
-      <div><a data-toggle="collapse" href="#expensesDiv">Income</a>
+      <div><a data-toggle="collapse" href="#expensesDiv"><button type="button" class="btn btn-default">Expenses</button></a>
         <div id="expensesDiv" class="panel-collapse collapse">
           <h:dataTable id="expenseTable" value="#{beanDButil.getExpenses()}" var="exp" class="table table-bordered">
             <h:column><f:facet name="header">Name</f:facet>#{exp.name}</h:column>
