@@ -15,7 +15,6 @@
 <h:body>
 
 
-
 <div class="container" style="margin-top:90px;margin-bottom:90px;">
   <div class="container">
     <div id="middle">
@@ -51,9 +50,10 @@
 </div>
 
 <div class="container">
-  <button onclick="document.getElementById('modalInsertIncomeForm').style.display='block'" class="container">ADD</button>
-  <div id="modalInsertIncomeForm" class="container">
-    <div style="max-width:600px">
+  <button class="btn btn-info btn-lg" data-toggle="modal" data-target="#modalInsertIncomeForm">ADD</button>
+  
+  <div id="modalInsertIncomeForm" class="modal fade" role="dialog">
+    <div class="modal-dialog" style="max-width:600px"><div class="modal-content">
     <span onclick="document.getElementById('modalInsertIncomeForm').style.display='none'">X</span>
     <h:form id="insertIncomeForm" class="container">
       <label>Name</label>
@@ -67,11 +67,13 @@
       <h:commandButton value="ADD INCOME" action="#{beanDButil.insertIncome()}"></h:commandButton> 
       <button onclick="document.getElementById('modalInsertIncomeForm').style.display='none'">CLOSE</button>
     </h:form>
-    </div>
+    </div></div>
   </div>
-  <button onclick="document.getElementById('modalInsertExpenseForm').style.display='block'" class="container">ADD EXPENSE</button>
-  <div id="modalInsertExpenseForm" class="container">
-    <div style="max-width:600px">
+  
+  <button class="btn btn-info btn-lg" data-toggle="modal" data-target="#modalInsertExpenseFormdal">ADD EXPENSE</button>
+  
+  <div id="modalInsertExpenseForm" class="modal fade" role="dialog">
+    <div class="modal-dialog" style="max-width:600px"><div class="modal-content">
     <span onclick="document.getElementById('modalInsertExpenseForm').style.display='none'">X</span>
     <h:form id="insertExpenseForm" class="container">
       <label>Name</label>
@@ -87,8 +89,9 @@
       <h:commandButton value="ADD EXPENSE" action="#{beanDButil.insertIncome()}"></h:commandButton> 
       <button onclick="document.getElementById('modalInsertExpenseForm').style.display='none'">CLOSE</button>
     </h:form>
-    </div>
+    </div></div>
   </div>
+
 </div>
 
 </h:body>
