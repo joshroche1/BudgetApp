@@ -74,18 +74,20 @@
         <button type="button" class="close" data-dismiss="modal">X</button>
         <div class="modal-body">
           <h:form id="insertIncomeForm" class="container">
+            <div class="form-group">
             <table>
               <tr><td><label>Name</label></td><td>
-              <h:inputText id="incomename" value="#{beanDButil.name}" required="true" /></td></tr>
+              <h:inputText id="incomename" value="#{beanDButil.name}" required="true" class="form-control" /></td></tr>
               <tr><td><label>Value</label></td><td>
-              <h:inputText id="incomevalue" value="#{beanDButil.value}" required="true" /></td></tr>
+              <h:inputText id="incomevalue" value="#{beanDButil.value}" required="true" class="form-control" /></td></tr>
               <tr><td><label>Description</label></td><td>
-              <h:inputText id="incomedescription" value="#{beanDButil.description}" required="false" /></td></tr>
+              <h:inputText id="incomedescription" value="#{beanDButil.description}" required="false" class="form-control" /></td></tr>
               <tr><td><label>Memo</label></td><td>
-              <h:inputText id="incomememo" value="#{beanDButil.memo}" required="false" /></td></tr>
-              <tr><td><h:commandButton value="ADD INCOME" action="#{beanDButil.insertIncome()}"></h:commandButton></td><td>
+              <h:inputText id="incomememo" value="#{beanDButil.memo}" required="false" class="form-control" /></td></tr>
+              <tr><td><h:commandButton value="ADD INCOME" action="#{beanDButil.insertIncome()}" class="btn btn-default"></h:commandButton></td><td>
               <button type="button" class="close" data-dismiss="modal">CLOSE</button></td></tr>
             </table>
+            </div>
           </h:form>
         </div>
       </div>
@@ -100,20 +102,22 @@
         <button type="button" class="close" data-dismiss="modal">X</button>
         <div class="modal-body">
           <h:form id="insertExpenseForm" class="container">
+            <div class="form-group">
             <table>
               <tr><td><label>Name</label></td><td>
-              <h:inputText id="expensename" value="#{beanDButil.name}" required="true" /></td></tr>
+              <h:inputText id="expensename" value="#{beanDButil.name}" required="true" class="form-control" /></td></tr>
               <tr><td><label>Category</label></td><td>
-              <h:inputText id="expensecategory" value="#{beanDButil.category}" required="false" /></td></tr>
+              <h:inputText id="expensecategory" value="#{beanDButil.category}" required="false" class="form-control" /></td></tr>
               <tr><td><label>Value</label></td><td>
-              <h:inputText id="expensevalue" value="#{beanDButil.value}" required="true" /></td></tr>
+              <h:inputText id="expensevalue" value="#{beanDButil.value}" required="true" class="form-control" /></td></tr>
               <tr><td><label>Description</label></td><td>
-              <h:inputText id="expensedescription" value="#{beanDButil.description}" required="false" /></td></tr>
+              <h:inputText id="expensedescription" value="#{beanDButil.description}" required="false" class="form-control" /></td></tr>
               <tr><td><label>Memo</label></td><td>
-              <h:inputText id="expensememo" value="#{beanDButil.memo}" required="false" /></td></tr>
-              <tr><td><h:commandButton value="ADD EXPENSE" action="#{beanDButil.insertIncome()}"></h:commandButton> </td><td>
+              <h:inputText id="expensememo" value="#{beanDButil.memo}" required="false" class="form-control" /></td></tr>
+              <tr><td><h:commandButton value="ADD EXPENSE" action="#{beanDButil.insertIncome()}" class="btn btn-default"></h:commandButton> </td><td>
               <button type="button" class="close" data-dismiss="modal">CLOSE</button></td></tr>
             </table>
+            </div>
           </h:form>
         </div>
       </div>
