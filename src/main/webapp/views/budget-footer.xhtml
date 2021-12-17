@@ -1,0 +1,20 @@
+<button onclick="document.getElementById('modalInsertExpenseForm').style.display='none'" class="w3-button">ADD EXPENSE</button>
+      <div id="modalInsertExpenseForm" class="w3-modal">
+        <div class="w3-modal-content w3-card">
+          <span onclick="document.getElementById('modalInsertExpenseForm').style.display='none'" class="w3-button">X</span>
+            <h:form id="insertExpenseForm" class="w3-container">
+              <label class="w3-text-blue">Name</label>
+              <h:inputText id="expensename" value="#{beanDButil.name}" required="true" class="w3-input w3-border" />
+              <label class="w3-text-blue">Category</label>
+              <h:inputText id="expensecategory" value="#{beanDButil.category}" required="false" class="w3-input w3-border" />
+              <label class="w3-text-blue">Value</label>
+              <h:inputText id="expensevalue" value="#{beanDButil.value}" required="true" class="w3-input w3-border" />
+              <label class="w3-text-blue">Description</label>
+              <h:inputText id="expensedescription" value="#{beanDButil.description}" required="false" class="w3-input w3-border" />
+              <label class="w3-text-blue">Memo</label>
+              <h:inputText id="expensememo" value="#{beanDButil.memo}" required="false" class="w3-input w3-border" />
+              <h:commandButton value="ADD EXPENSE" action="#{beanDButil.insertIncome()}" class="w3-button w3-teal"></h:commandButton> 
+              <button onclick="document.getElementById('modalInsertExpenseForm').style.display='none'" class="w3-button">CLOSE</button>
+            </h:form>
+          </div>
+        </div>
