@@ -91,13 +91,15 @@
   <!-- MIDDLE -->
   <div class="container">
     <div id="middle">
-      <div>
-      <h:dataTable id="incomeTable" value="#{beanDButil.getIncomes()}" var="inc" class="table table-bordered">
-        <h:column><f:facet name="header">Name</f:facet>#{inc.name}</h:column>
-        <h:column><f:facet name="header">Expected Value</f:facet>#{inc.value}</h:column>
-        <h:column><f:facet name="header">Description</f:facet>#{inc.description}</h:column>
-        <h:column><f:facet name="header">Memo</f:facet>#{inc.memo}</h:column>
-      </h:dataTable>
+      <div><a data-toggle="collapse" href="#incomeDiv">Income</a>
+        <div id="incomeDiv" class="panel-collapse collapse">
+          <h:dataTable id="incomeTable" value="#{beanDButil.getIncomes()}" var="inc" class="table table-bordered">
+            <h:column><f:facet name="header">Name</f:facet>#{inc.name}</h:column>
+            <h:column><f:facet name="header">Expected Value</f:facet>#{inc.value}</h:column>
+            <h:column><f:facet name="header">Description</f:facet>#{inc.description}</h:column>
+            <h:column><f:facet name="header">Memo</f:facet>#{inc.memo}</h:column>
+          </h:dataTable>
+        </div>
       </div>
       <div>
         <table class="table table-bordered">
@@ -106,15 +108,17 @@
           <tr><td>Remainder</td><td><p>#{beanDButil.getRemainderAmount(beanDButil.getIncomeAmount(),beanDButil.getExpenseAmount())}</p></td></tr>
         </table>
       </div>
-      <div>
-      <h:dataTable id="expenseTable" value="#{beanDButil.getExpenses()}" var="exp" class="table table-bordered">
-        <h:column><f:facet name="header">Name</f:facet>#{exp.name}</h:column>
-        <h:column><f:facet name="header">Category</f:facet>#{exp.category}</h:column>
-        <h:column><f:facet name="header">Due Date</f:facet>#{exp.duedate}</h:column>
-        <h:column><f:facet name="header">Expected Value</f:facet>#{exp.value}</h:column>
-        <h:column><f:facet name="header">Description</f:facet>#{exp.description}</h:column>
-        <h:column><f:facet name="header">Memo</f:facet>#{exp.memo}</h:column>
-      </h:dataTable>
+      <div><a data-toggle="collapse" href="#expensesDiv">Income</a>
+        <div id="expensesDiv" class="panel-collapse collapse">
+          <h:dataTable id="expenseTable" value="#{beanDButil.getExpenses()}" var="exp" class="table table-bordered">
+            <h:column><f:facet name="header">Name</f:facet>#{exp.name}</h:column>
+            <h:column><f:facet name="header">Category</f:facet>#{exp.category}</h:column>
+            <h:column><f:facet name="header">Due Date</f:facet>#{exp.duedate}</h:column>
+            <h:column><f:facet name="header">Expected Value</f:facet>#{exp.value}</h:column>
+            <h:column><f:facet name="header">Description</f:facet>#{exp.description}</h:column>
+            <h:column><f:facet name="header">Memo</f:facet>#{exp.memo}</h:column>
+          </h:dataTable>
+        </div>
       </div>
     </div>
   </div>
