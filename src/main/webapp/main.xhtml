@@ -16,7 +16,7 @@
 
 <ui:define name="content">
 
-<div class="w3-container" style="margin-top: 90px;">
+<div class="w3-container" style="margin-top:90px;margin-bottom:90px;">
   <div class="w3-cell-row">
     <div id="middle" class="w3-cell w3-container">
       <div>
@@ -61,7 +61,7 @@
         <h:column><f:facet name="header">Description</f:facet>#{exp.description}</h:column>
         <h:column><f:facet name="header">Memo</f:facet>#{exp.memo}</h:column>
       </h:dataTable>
-      <button onclick="document.getElementById('modalInsertExpenseForm').style.display='none'" class="w3-button">CLOSE</button>
+      <button onclick="document.getElementById('modalInsertExpenseForm').style.display='none'" class="w3-button">ADD EXPENSE</button>
       <div id="modalInsertExpenseForm" class="w3-modal">
         <div class="w3-modal-content w3-card">
           <span onclick="document.getElementById('modalInsertExpenseForm').style.display='none'" class="w3-button">X</span>
