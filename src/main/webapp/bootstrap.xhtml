@@ -50,7 +50,46 @@
   </div>
 </div>
 
-
+<div class="">
+  <button onclick="document.getElementById('modalInsertIncomeForm').style.display='block'" class="">ADD</button>
+  <div id="modalInsertIncomeForm" class="">
+    <div class="" style="max-width:600px">
+    <span onclick="document.getElementById('modalInsertIncomeForm').style.display='none'" class="">X</span>
+    <h:form id="insertIncomeForm" class="w3-container">
+      <label class="">Name</label>
+      <h:inputText id="incomename" value="#{beanDButil.name}" required="true" class="" />
+      <label class="">Value</label>
+      <h:inputText id="incomevalue" value="#{beanDButil.value}" required="true" class="" />
+      <label class="">Description</label>
+      <h:inputText id="incomedescription" value="#{beanDButil.description}" required="false" class="" />
+      <label class="">Memo</label>
+      <h:inputText id="incomememo" value="#{beanDButil.memo}" required="false" class="" />
+      <h:commandButton value="ADD INCOME" action="#{beanDButil.insertIncome()}" class=""></h:commandButton> 
+      <button onclick="document.getElementById('modalInsertIncomeForm').style.display='none'" class="">CLOSE</button>
+    </h:form>
+    </div>
+  </div>
+  <button onclick="document.getElementById('modalInsertExpenseForm').style.display='block'" class="">ADD EXPENSE</button>
+  <div id="modalInsertExpenseForm" class="">
+    <div class="" style="max-width:600px">
+    <span onclick="document.getElementById('modalInsertExpenseForm').style.display='none'" class="">X</span>
+    <h:form id="insertExpenseForm" class="">
+      <label class="">Name</label>
+      <h:inputText id="expensename" value="#{beanDButil.name}" required="true" class="" />
+      <label class="">Category</label>
+      <h:inputText id="expensecategory" value="#{beanDButil.category}" required="false" class="" />
+      <label class="">Value</label>
+      <h:inputText id="expensevalue" value="#{beanDButil.value}" required="true" class="" />
+      <label class="">Description</label>
+      <h:inputText id="expensedescription" value="#{beanDButil.description}" required="false" class="" />
+      <label class="">Memo</label>
+      <h:inputText id="expensememo" value="#{beanDButil.memo}" required="false" class="" />
+      <h:commandButton value="ADD EXPENSE" action="#{beanDButil.insertIncome()}" class=""></h:commandButton> 
+      <button onclick="document.getElementById('modalInsertExpenseForm').style.display='none'" class="">CLOSE</button>
+    </h:form>
+    </div>
+  </div>
+</div>
 
 </h:body>
 </html>
