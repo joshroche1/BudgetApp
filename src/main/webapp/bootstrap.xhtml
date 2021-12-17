@@ -11,6 +11,39 @@
   <h:outputScript library="css" name="jquery.min.js" />
   <h:outputScript library="css" name="bootstrap.min.js" />
   <title>BudgetApp</title>
+  <style>
+    /* Remove the navbar's default margin-bottom and rounded borders */ 
+    .navbar {
+      margin-bottom: 0;
+      border-radius: 0;
+    }
+    
+    /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+    .row.content {height: 450px}
+    
+    /* Set gray background color and 100% height */
+    .sidenav {
+      padding-top: 20px;
+      background-color: #f1f1f1;
+      height: 100%;
+    }
+    
+    /* Set black background color, white text and some padding */
+    footer {
+      background-color: #555;
+      color: white;
+      padding: 15px;
+    }
+    
+    /* On small screens, set height to 'auto' for sidenav and grid */
+    @media screen and (max-width: 767px) {
+      .sidenav {
+        height: auto;
+        padding: 15px;
+      }
+      .row.content {height:auto;} 
+    }
+  </style>
 </h:head>
 <h:body>
 
@@ -31,6 +64,66 @@
 
 <!-- CONTENT -->
 <div class="container" style="margin-top:90px;margin-bottom:90px;">
+  
+  <!-- LEFT PANEL -->
+  <div class="col-sm-2 sidenav">
+    <button class="btn btn-info btn-lg" data-toggle="modal" data-target="#modalInsertIncomeForm">ADD</button>
+    <div id="modalInsertIncomeForm" class="modal fade" role="dialog">
+      <div class="modal-dialog" style="max-width:600px">
+        <div class="modal-content">
+          <button type="button" class="close btn btn-default" data-dismiss="modal">X</button>
+          <div class="modal-body">
+            <h:form id="insertIncomeForm" class="container">
+              <div class="form-group">
+              <table>
+                <tr><td><label>Name</label></td><td>
+                <h:inputText id="incomename" value="#{beanDButil.name}" required="true" class="form-control" /></td></tr>
+                <tr><td><label>Value</label></td><td>
+                <h:inputText id="incomevalue" value="#{beanDButil.value}" required="true" class="form-control" /></td></tr>
+                <tr><td><label>Description</label></td><td>
+                <h:inputText id="incomedescription" value="#{beanDButil.description}" required="false" class="form-control" /></td></tr>
+                <tr><td><label>Memo</label></td><td>
+                <h:inputText id="incomememo" value="#{beanDButil.memo}" required="false" class="form-control" /></td></tr>
+                <tr><td><h:commandButton value="ADD INCOME" action="#{beanDButil.insertIncome()}" class="btn btn-default"></h:commandButton></td><td>
+                <button type="button" class="close btn btn-default" data-dismiss="modal">CLOSE</button></td></tr>
+              </table>
+              </div>
+            </h:form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-info btn-lg" data-toggle="modal" data-target="#modalInsertExpenseForm">ADD EXPENSE</button>  
+    <div id="modalInsertExpenseForm" class="modal fade" role="dialog">
+      <div class="modal-dialog" style="max-width:600px">
+        <div class="modal-content">
+          <button type="button" class="close btn btn-default" data-dismiss="modal">X</button>
+          <div class="modal-body">
+            <h:form id="insertExpenseForm" class="container">
+              <div class="form-group">
+              <table>
+                <tr><td><label>Name</label></td><td>
+                <h:inputText id="expensename" value="#{beanDButil.name}" required="true" class="form-control" /></td></tr>
+                <tr><td><label>Category</label></td><td>
+                <h:inputText id="expensecategory" value="#{beanDButil.category}" required="false" class="form-control" /></td></tr>
+                <tr><td><label>Value</label></td><td>
+                <h:inputText id="expensevalue" value="#{beanDButil.value}" required="true" class="form-control" /></td></tr>
+                <tr><td><label>Description</label></td><td>
+                <h:inputText id="expensedescription" value="#{beanDButil.description}" required="false" class="form-control" /></td></tr>
+                <tr><td><label>Memo</label></td><td>
+                <h:inputText id="expensememo" value="#{beanDButil.memo}" required="false" class="form-control" /></td></tr>
+                <tr><td><h:commandButton value="ADD EXPENSE" action="#{beanDButil.insertIncome()}" class="btn btn-default"></h:commandButton> </td><td>
+                <button type="button" class="close btn btn-default" data-dismiss="modal">CLOSE</button></td></tr>
+              </table>
+              </div>
+            </h:form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- MIDDLE -->
   <div class="container">
     <div id="middle">
       <div>
@@ -64,63 +157,7 @@
 
 <!-- FOOTER -->
 <div class="container">
-  <button class="btn btn-info btn-lg" data-toggle="modal" data-target="#modalInsertIncomeForm">ADD</button>
   
-  <div id="modalInsertIncomeForm" class="modal fade" role="dialog">
-    <div class="modal-dialog" style="max-width:600px">
-      <div class="modal-content">
-        <button type="button" class="close btn btn-default" data-dismiss="modal">X</button>
-        <div class="modal-body">
-          <h:form id="insertIncomeForm" class="container">
-            <div class="form-group">
-            <table>
-              <tr><td><label>Name</label></td><td>
-              <h:inputText id="incomename" value="#{beanDButil.name}" required="true" class="form-control" /></td></tr>
-              <tr><td><label>Value</label></td><td>
-              <h:inputText id="incomevalue" value="#{beanDButil.value}" required="true" class="form-control" /></td></tr>
-              <tr><td><label>Description</label></td><td>
-              <h:inputText id="incomedescription" value="#{beanDButil.description}" required="false" class="form-control" /></td></tr>
-              <tr><td><label>Memo</label></td><td>
-              <h:inputText id="incomememo" value="#{beanDButil.memo}" required="false" class="form-control" /></td></tr>
-              <tr><td><h:commandButton value="ADD INCOME" action="#{beanDButil.insertIncome()}" class="btn btn-default"></h:commandButton></td><td>
-              <button type="button" class="close btn btn-default" data-dismiss="modal">CLOSE</button></td></tr>
-            </table>
-            </div>
-          </h:form>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <button class="btn btn-info btn-lg" data-toggle="modal" data-target="#modalInsertExpenseForm">ADD EXPENSE</button>
-  
-  <div id="modalInsertExpenseForm" class="modal fade" role="dialog">
-    <div class="modal-dialog" style="max-width:600px">
-      <div class="modal-content">
-        <button type="button" class="close btn btn-default" data-dismiss="modal">X</button>
-        <div class="modal-body">
-          <h:form id="insertExpenseForm" class="container">
-            <div class="form-group">
-            <table>
-              <tr><td><label>Name</label></td><td>
-              <h:inputText id="expensename" value="#{beanDButil.name}" required="true" class="form-control" /></td></tr>
-              <tr><td><label>Category</label></td><td>
-              <h:inputText id="expensecategory" value="#{beanDButil.category}" required="false" class="form-control" /></td></tr>
-              <tr><td><label>Value</label></td><td>
-              <h:inputText id="expensevalue" value="#{beanDButil.value}" required="true" class="form-control" /></td></tr>
-              <tr><td><label>Description</label></td><td>
-              <h:inputText id="expensedescription" value="#{beanDButil.description}" required="false" class="form-control" /></td></tr>
-              <tr><td><label>Memo</label></td><td>
-              <h:inputText id="expensememo" value="#{beanDButil.memo}" required="false" class="form-control" /></td></tr>
-              <tr><td><h:commandButton value="ADD EXPENSE" action="#{beanDButil.insertIncome()}" class="btn btn-default"></h:commandButton> </td><td>
-              <button type="button" class="close btn btn-default" data-dismiss="modal">CLOSE</button></td></tr>
-            </table>
-            </div>
-          </h:form>
-        </div>
-      </div>
-    </div>
-  </div>
 
 </div>
 
