@@ -35,8 +35,7 @@
     <div id="middle">
       <div>
       <h:dataTable id="incomeTable" value="#{beanDButil.getIncomes()}" var="inc" class="table table-bordered">
-        <h:column><h:form><h:commandButton value="-" action="#{beanDButil.deleteIncome(inc.name)}" /></h:form>
-          <f:facet name="header">Name</f:facet>#{inc.name}</h:column>
+        <h:column><f:facet name="header">Name</f:facet>#{inc.name}</h:column>
         <h:column><f:facet name="header">Expected Value</f:facet>#{inc.value}</h:column>
         <h:column><f:facet name="header">Description</f:facet>#{inc.description}</h:column>
         <h:column><f:facet name="header">Memo</f:facet>#{inc.memo}</h:column>
@@ -51,8 +50,7 @@
       </div>
       <div>
       <h:dataTable id="expenseTable" value="#{beanDButil.getExpenses()}" var="exp" class="table table-bordered">
-        <h:column><h:form><h:commandButton value="-" action="#{beanDButil.deleteExpense(inc.name)}" /></h:form>
-          <f:facet name="header">Name</f:facet>#{exp.name}</h:column>
+        <h:column><f:facet name="header">Name</f:facet>#{exp.name}</h:column>
         <h:column><f:facet name="header">Category</f:facet>#{exp.category}</h:column>
         <h:column><f:facet name="header">Due Date</f:facet>#{exp.duedate}</h:column>
         <h:column><f:facet name="header">Expected Value</f:facet>#{exp.value}</h:column>
@@ -71,7 +69,7 @@
   <div id="modalInsertIncomeForm" class="modal fade" role="dialog">
     <div class="modal-dialog" style="max-width:600px">
       <div class="modal-content">
-        <button type="button" class="close" data-dismiss="modal">X</button>
+        <button type="button" class="close btn btn-default" data-dismiss="modal">X</button>
         <div class="modal-body">
           <h:form id="insertIncomeForm" class="container">
             <div class="form-group">
@@ -85,7 +83,7 @@
               <tr><td><label>Memo</label></td><td>
               <h:inputText id="incomememo" value="#{beanDButil.memo}" required="false" class="form-control" /></td></tr>
               <tr><td><h:commandButton value="ADD INCOME" action="#{beanDButil.insertIncome()}" class="btn btn-default"></h:commandButton></td><td>
-              <button type="button" class="close" data-dismiss="modal">CLOSE</button></td></tr>
+              <button type="button" class="close btn btn-default" data-dismiss="modal">CLOSE</button></td></tr>
             </table>
             </div>
           </h:form>
@@ -99,7 +97,7 @@
   <div id="modalInsertExpenseForm" class="modal fade" role="dialog">
     <div class="modal-dialog" style="max-width:600px">
       <div class="modal-content">
-        <button type="button" class="close" data-dismiss="modal">X</button>
+        <button type="button" class="close btn btn-default" data-dismiss="modal">X</button>
         <div class="modal-body">
           <h:form id="insertExpenseForm" class="container">
             <div class="form-group">
@@ -115,7 +113,7 @@
               <tr><td><label>Memo</label></td><td>
               <h:inputText id="expensememo" value="#{beanDButil.memo}" required="false" class="form-control" /></td></tr>
               <tr><td><h:commandButton value="ADD EXPENSE" action="#{beanDButil.insertIncome()}" class="btn btn-default"></h:commandButton> </td><td>
-              <button type="button" class="close" data-dismiss="modal">CLOSE</button></td></tr>
+              <button type="button" class="close btn btn-default" data-dismiss="modal">CLOSE</button></td></tr>
             </table>
             </div>
           </h:form>
