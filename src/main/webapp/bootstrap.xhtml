@@ -39,18 +39,16 @@
           <div class="modal-body">
             <h:form id="insertIncomeForm" class="container">
               <div class="form-group">
-              <table>
-                <tr><td><label>Name</label></td><td>
-                <h:inputText id="incomename" value="#{beanDButil.name}" required="true" class="form-control" /></td></tr>
-                <tr><td><label>Value</label></td><td>
-                <h:inputText id="incomevalue" value="#{beanDButil.value}" required="true" class="form-control" /></td></tr>
-                <tr><td><label>Description</label></td><td>
-                <h:inputText id="incomedescription" value="#{beanDButil.description}" required="false" class="form-control" /></td></tr>
-                <tr><td><label>Memo</label></td><td>
-                <h:inputText id="incomememo" value="#{beanDButil.memo}" required="false" class="form-control" /></td></tr>
-                <tr><td><h:commandButton value="ADD INCOME" action="#{beanDButil.insertIncome()}" class="btn btn-default"></h:commandButton></td><td>
-                <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button></td></tr>
-              </table>
+                <label>Name</label>
+                <h:inputText id="incomename" value="#{beanDButil.name}" required="true" class="form-control" />
+                <label>Value</label>
+                <h:inputText id="incomevalue" value="#{beanDButil.value}" required="true" class="form-control" />
+                <label>Description</label>
+                <h:inputText id="incomedescription" value="#{beanDButil.description}" required="false" class="form-control" />
+                <label>Memo</label>
+                <h:inputText id="incomememo" value="#{beanDButil.memo}" required="false" class="form-control" />
+                <h:commandButton value="ADD INCOME" action="#{beanDButil.insertIncome()}" class="btn btn-default"></h:commandButton>
+                <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
               </div>
             </h:form>
           </div>
