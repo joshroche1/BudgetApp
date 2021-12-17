@@ -27,7 +27,6 @@ public class DButil {
 	private String category;
 	private String description;
 	private String memo;
-	private Integer duedate;
 	private double value;
   
 	public void setIncomeTotal(double val) { this.incomeTotal = val; }
@@ -38,14 +37,12 @@ public class DButil {
 	public void setDescription(String txt) { this.description = txt; }
   public void setMemo(String txt) { this.memo = txt; }
   public void setCategory(String txt) { this.category = txt; }
-	public void setDueDate(Integer x) { this.duedate = x; }
 	public void setValue(double val) { this.value = val; }
 	
 	public String getName() { return this.name; }
 	public String getDescription() { return this.description; }
 	public String getMemo() { return this.memo; }
 	public String getCategory() { return this.category; }
-	public Integer getDueDate() { return this.duedate; }
 	public double getValue() { return this.value; }
   
 	public double getIncomeTotal() { return this.incomeTotal; }
@@ -159,7 +156,7 @@ public class DButil {
 		rs = null;
     try {
       c = this.connect();
-      PreparedStatement stmt = c.prepareStatement("SELECT name,duedate,value,description,category,memo FROM Expense",ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+      PreparedStatement stmt = c.prepareStatement("SELECT name,value,description,category,memo FROM Expense",ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
       rs = stmt.executeQuery();
     } catch (SQLException ex) {
       FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
