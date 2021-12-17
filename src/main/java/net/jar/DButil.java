@@ -164,6 +164,61 @@ public class DButil {
     }
     return rs;
 	}
+	public String insertIncome() {
+		try {
+      c = this.connect();
+      PreparedStatement stmt = c.prepareStatement("INSERT INTO Income VALUES (?,?,?,?)",ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+			stmt.setString(1,name);
+			stmt.setDouble(2,value);
+			stmt.setString(3,description);
+			stmt.setString(4,memo);
+      stmt.execute();
+    } catch (SQLException ex) {
+      FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+                   FacesMessage.SEVERITY_INFO, ex.getMessage(), "..."));
+    }
+		return "";
+	}
+	public String insertExpense() {
+		try {
+      c = this.connect();
+      PreparedStatement stmt = c.prepareStatement("INSERT INTO Income VALUES (name=?,value=?,description=?,category=?,memo=?)",ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+			stmt.setString(1,name);
+			stmt.setDouble(2,value);
+			stmt.setString(3,description);
+			stmt.setString(4,category);
+			stmt.setString(5,memo);
+      stmt.execute();
+    } catch (SQLException ex) {
+      FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+                   FacesMessage.SEVERITY_INFO, ex.getMessage(), "..."));
+    }
+		return "";
+	}
+	public String deleteIncome(String temp) {
+    try {
+      c = this.connect();
+      PreparedStatement stmt = c.prepareStatement("DELETE FROM Income WHERE name=?",ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+			stmt.setString(1,temp);
+      stmt.execute();
+    } catch (SQLException ex) {
+      FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+                   FacesMessage.SEVERITY_INFO, ex.getMessage(), "..."));
+    }
+		return "";
+	}
+	public String deleteExpense(String temp) {
+		try {
+      c = this.connect();
+      PreparedStatement stmt = c.prepareStatement("DELETE FROM Expense WHERE name=?",ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+			stmt.setString(1,temp);
+      stmt.execute();
+    } catch (SQLException ex) {
+      FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+                   FacesMessage.SEVERITY_INFO, ex.getMessage(), "..."));
+    }
+		return "";
+	}
   
   public ResultSet getBudget() {
     rs = null;
