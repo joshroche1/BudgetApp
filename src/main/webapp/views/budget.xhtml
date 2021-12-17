@@ -16,51 +16,95 @@
 <div class="w3-container" style="margin-top: 90px;">
   <div class="w3-cell-row">
     <div id="middle" class="w3-cell w3-container">
-    <h:dataTable id="budgetTable" value="#{beanDButil.getIncomes()}" var="inc" class="w3-table-all w3-responsive">
-      <h:column><f:facet name="header">Name</f:facet>#{inc.name}</h:column>
-      <h:column><f:facet name="header">Expected Value</f:facet>#{inc.value}</h:column>
-      <h:column><f:facet name="header">JAN</f:facet>#{inc.valuejan}</h:column>
-      <h:column><f:facet name="header">FEB</f:facet>#{inc.valuefeb}</h:column>
-      <h:column><f:facet name="header">MAR</f:facet>#{inc.valuemar}</h:column>
-      <h:column><f:facet name="header">APR</f:facet>#{inc.valueapr}</h:column>
-      <h:column><f:facet name="header">MAY</f:facet>#{inc.valuemay}</h:column>
-      <h:column><f:facet name="header">JUN</f:facet>#{inc.valuejun}</h:column>
-      <h:column><f:facet name="header">JUL</f:facet>#{inc.valuejul}</h:column>
-      <h:column><f:facet name="header">AUG</f:facet>#{inc.valueaug}</h:column>
-      <h:column><f:facet name="header">SEP</f:facet>#{inc.valuesep}</h:column>
-      <h:column><f:facet name="header">OCT</f:facet>#{inc.valueoct}</h:column>
-      <h:column><f:facet name="header">NOV</f:facet>#{inc.valuenov}</h:column>
-      <h:column><f:facet name="header">DEC</f:facet>#{inc.valuedec}</h:column>
-      <h:column><f:facet name="header">Description</f:facet>#{inc.description}</h:column>
-      <h:column><f:facet name="header">Memo</f:facet>#{inc.memo}</h:column>
-    </h:dataTable>
-    <div>
-      <table class="w3-table-all">
-        <tr><td>Total Income</td><td><p>#{beanDButil.getIncomeAmount()}</p></td></tr>
-        <tr><td>Total Expenses</td><td><p>#{beanDButil.getExpenseAmount()}</p></td></tr>
-        <tr><td>Remainder</td><td><p>#{beanDButil.getRemainderAmount(beanDButil.getIncomeAmount(),beanDButil.getExpenseAmount())}</p></td></tr>
-      </table>
-    </div>
-    <h:dataTable id="budgetTable" value="#{beanDButil.getExpenses()}" var="exp" class="w3-table-all w3-responsive">
-      <h:column><f:facet name="header">Name</f:facet>#{exp.name}</h:column>
-      <h:column><f:facet name="header">Category</f:facet>#{exp.category}</h:column>
-      <h:column><f:facet name="header">Due Date</f:facet>#{exp.duedate}</h:column>
-      <h:column><f:facet name="header">Expected Value</f:facet>#{exp.value}</h:column>
-      <h:column><f:facet name="header">JAN</f:facet>#{exp.valuejan}</h:column>
-      <h:column><f:facet name="header">FEB</f:facet>#{exp.valuefeb}</h:column>
-      <h:column><f:facet name="header">MAR</f:facet>#{exp.valuemar}</h:column>
-      <h:column><f:facet name="header">APR</f:facet>#{exp.valueapr}</h:column>
-      <h:column><f:facet name="header">MAY</f:facet>#{exp.valuemay}</h:column>
-      <h:column><f:facet name="header">JUN</f:facet>#{exp.valuejun}</h:column>
-      <h:column><f:facet name="header">JUL</f:facet>#{exp.valuejul}</h:column>
-      <h:column><f:facet name="header">AUG</f:facet>#{exp.valueaug}</h:column>
-      <h:column><f:facet name="header">SEP</f:facet>#{exp.valuesep}</h:column>
-      <h:column><f:facet name="header">OCT</f:facet>#{exp.valueoct}</h:column>
-      <h:column><f:facet name="header">NOV</f:facet>#{exp.valuenov}</h:column>
-      <h:column><f:facet name="header">DEC</f:facet>#{exp.valuedec}</h:column>
-      <h:column><f:facet name="header">Description</f:facet>#{exp.description}</h:column>
-      <h:column><f:facet name="header">Memo</f:facet>#{exp.memo}</h:column>
-    </h:dataTable>
+      <div>
+      <h:dataTable id="budgetTable" value="#{beanDButil.getIncomes()}" var="inc" class="w3-table-all w3-responsive">
+        <h:column><f:facet name="header">Name</f:facet>#{inc.name}</h:column>
+        <h:column><f:facet name="header">Expected Value</f:facet>#{inc.value}</h:column>
+        <h:column><f:facet name="header">JAN</f:facet>#{inc.valuejan}</h:column>
+        <h:column><f:facet name="header">FEB</f:facet>#{inc.valuefeb}</h:column>
+        <h:column><f:facet name="header">MAR</f:facet>#{inc.valuemar}</h:column>
+        <h:column><f:facet name="header">APR</f:facet>#{inc.valueapr}</h:column>
+        <h:column><f:facet name="header">MAY</f:facet>#{inc.valuemay}</h:column>
+        <h:column><f:facet name="header">JUN</f:facet>#{inc.valuejun}</h:column>
+        <h:column><f:facet name="header">JUL</f:facet>#{inc.valuejul}</h:column>
+        <h:column><f:facet name="header">AUG</f:facet>#{inc.valueaug}</h:column>
+        <h:column><f:facet name="header">SEP</f:facet>#{inc.valuesep}</h:column>
+        <h:column><f:facet name="header">OCT</f:facet>#{inc.valueoct}</h:column>
+        <h:column><f:facet name="header">NOV</f:facet>#{inc.valuenov}</h:column>
+        <h:column><f:facet name="header">DEC</f:facet>#{inc.valuedec}</h:column>
+        <h:column><f:facet name="header">Description</f:facet>#{inc.description}</h:column>
+        <h:column><f:facet name="header">Memo</f:facet>#{inc.memo}</h:column>
+      </h:dataTable>
+        <button onclick="document.getElementById('modalInsertIncomeForm').style.display='block'" class="w3-button">ADD</button>
+        <div id="modalInsertIncomeForm" class="w3-modal">
+          <div class="w3-modal-content w3-card">
+            <span onclick="document.getElementById('modalInsertIncomeForm').style.display='none'" class="w3-button">X</span>
+            <h:form id="insertIncomeForm" class="w3-container">
+              <label class="w3-text-blue">Name</label>
+              <h:inputText id="incomename" value="#{beanDButil.name}" required="true" class="w3-input w3-border" />
+              <label class="w3-text-blue">Value</label>
+              <h:inputText id="incomevalue" value="#{beanDButil.value}" required="true" class="w3-input w3-border" />
+              <label class="w3-text-blue">Description</label>
+              <h:inputText id="incomedescription" value="#{beanDButil.description}" required="false" class="w3-input w3-border" />
+              <label class="w3-text-blue">Memo</label>
+              <h:inputText id="incomememo" value="#{beanDButil.memo}" required="false" class="w3-input w3-border" />
+              <h:commandButton value="ADD INCOME" action="#{beanDButil.insertIncome()}" class="w3-button w3-teal"></h:commandButton> 
+              <button onclick="document.getElementById('modalInsertIncomeForm').style.display='none'" class="w3-button">CLOSE</button>
+            </h:form>
+          </div>
+        </div>
+      </div>
+      <div>
+        <table class="w3-table-all">
+          <tr><td>Total Income</td><td><p>#{beanDButil.getIncomeAmount()}</p></td></tr>
+          <tr><td>Total Expenses</td><td><p>#{beanDButil.getExpenseAmount()}</p></td></tr>
+          <tr><td>Remainder</td><td><p>#{beanDButil.getRemainderAmount(beanDButil.getIncomeAmount(),beanDButil.getExpenseAmount())}</p></td></tr>
+        </table>
+      </div>
+      <div>
+      <h:dataTable id="budgetTable" value="#{beanDButil.getExpenses()}" var="exp" class="w3-table-all w3-responsive">
+        <h:column><f:facet name="header">Name</f:facet>#{exp.name}</h:column>
+        <h:column><f:facet name="header">Category</f:facet>#{exp.category}</h:column>
+        <h:column><f:facet name="header">Due Date</f:facet>#{exp.duedate}</h:column>
+        <h:column><f:facet name="header">Expected Value</f:facet>#{exp.value}</h:column>
+        <h:column><f:facet name="header">JAN</f:facet>#{exp.valuejan}</h:column>
+        <h:column><f:facet name="header">FEB</f:facet>#{exp.valuefeb}</h:column>
+        <h:column><f:facet name="header">MAR</f:facet>#{exp.valuemar}</h:column>
+        <h:column><f:facet name="header">APR</f:facet>#{exp.valueapr}</h:column>
+        <h:column><f:facet name="header">MAY</f:facet>#{exp.valuemay}</h:column>
+        <h:column><f:facet name="header">JUN</f:facet>#{exp.valuejun}</h:column>
+        <h:column><f:facet name="header">JUL</f:facet>#{exp.valuejul}</h:column>
+        <h:column><f:facet name="header">AUG</f:facet>#{exp.valueaug}</h:column>
+        <h:column><f:facet name="header">SEP</f:facet>#{exp.valuesep}</h:column>
+        <h:column><f:facet name="header">OCT</f:facet>#{exp.valueoct}</h:column>
+        <h:column><f:facet name="header">NOV</f:facet>#{exp.valuenov}</h:column>
+        <h:column><f:facet name="header">DEC</f:facet>#{exp.valuedec}</h:column>
+        <h:column><f:facet name="header">Description</f:facet>#{exp.description}</h:column>
+        <h:column><f:facet name="header">Memo</f:facet>#{exp.memo}</h:column>
+      </h:dataTable>
+      <button onclick="document.getElementById('modalInsertExpenseForm').style.display='none'" class="w3-button">CLOSE</button>
+      <div id="modalInsertExpenseForm" class="w3-modal">
+        <div class="w3-modal-content w3-card">
+          <span onclick="document.getElementById('modalInsertExpenseForm').style.display='none'" class="w3-button">X</span>
+            <h:form id="insertExpenseForm" class="w3-container">
+              <label class="w3-text-blue">Name</label>
+              <h:inputText id="expensename" value="#{beanDButil.name}" required="true" class="w3-input w3-border" />
+              <label class="w3-text-blue">Category</label>
+              <h:inputText id="expensecategory" value="#{beanDButil.category}" required="false" class="w3-input w3-border" />
+              <label class="w3-text-blue">Due Date</label>
+              <h:inputText id="expenseduedate" value="#{beanDButil.duedate}" required="true" class="w3-input w3-border" />
+              <label class="w3-text-blue">Value</label>
+              <h:inputText id="expensevalue" value="#{beanDButil.value}" required="true" class="w3-input w3-border" />
+              <label class="w3-text-blue">Description</label>
+              <h:inputText id="expensedescription" value="#{beanDButil.description}" required="false" class="w3-input w3-border" />
+              <label class="w3-text-blue">Memo</label>
+              <h:inputText id="expensememo" value="#{beanDButil.memo}" required="false" class="w3-input w3-border" />
+              <h:commandButton value="ADD EXPENSE" action="#{beanDButil.insertIncome()}" class="w3-button w3-teal"></h:commandButton> 
+              <button onclick="document.getElementById('modalInsertExpenseForm').style.display='none'" class="w3-button">CLOSE</button>
+            </h:form>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
