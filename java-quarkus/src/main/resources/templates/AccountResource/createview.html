@@ -1,0 +1,101 @@
+{#include base-user}
+  {#title}BudgetApp - Create Account{/title}
+
+{#content}
+<div class="container">
+<div class="card m-3 p-3">
+  <h3>Add a Account</h3>
+  <form action="/accounts/view/create" method="post">
+    <div class="row">
+      <div class="col">
+        <fieldset><legend>Account Base Info</legend>
+          <div class="m-3">
+            <input type="submit" value="Save" class="btn btn-sm btn-success"><input type="reset" class="btn btn-sm btn-secondary">
+          </div>
+          <div class="m-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" id="name" name="name" placeholder="Bank Account Name" class="form-control" />
+          </div>
+          <div class="m-3">
+            <label for="type" class="form-label">Type</label>
+            <select id="type" name="type" class="form-select">
+              <option value="" disabled selected>Select a Type</option>
+              <option value="Checking">Checking</option>
+              <option value="Savings">Savings</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="m-3">
+            <label for="currency" class="form-label">Currency</label>
+            <select id="category" name="category" class="form-select">
+              <option value="" disabled selected>Select a Currency</option>
+              <option value="USD">US Dollar</option>
+              <option value="EUR">Euro</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </fieldset>
+      </div>
+      
+      <div class="col">
+        <fieldset><legend>Account Properties</legend>
+          <div class="m-3">
+            <label for="number" class="form-label">Number</label>
+            <input type="text" id="number" name="number" placeholder="Account Number" class="form-control" />
+          </div>
+          <div class="m-3">
+            <label for="iban" class="form-label">IBAN</label>
+            <input type="text" id="iban" name="iban" placeholder="IBAN" class="form-control" />
+          </div>
+          <div class="m-3">
+            <label for="bic" class="form-label">BIC</label>
+            <input type="text" id="bic" name="bic" placeholder="BIC" class="form-control" />
+          </div>
+          
+        </fieldset>
+      </div>
+    
+      <div class="col">
+        <fieldset><legend>Account Contact Info</legend>
+          <div class="m-3">
+            <label for="address" class="form-label">Address</label>
+            <input type="text" id="address" name="address" placeholder="Address" class="form-control" />
+          </div>
+          <div class="m-3">
+            <label for="city" class="form-label">City</label>
+            <input type="text" id="city" name="city" placeholder="City" class="form-control" />
+          </div>
+          <div class="m-3">
+            <label for="state" class="form-label">State</label>
+            <input type="text" id="state" name="state" placeholder="State" class="form-control" />
+          </div>
+          <div class="m-3">
+            <label for="country" class="form-label">Country</label>
+             <select id="country" name="country" class="form-select">
+              <option value="" disabled selected>Select a Country</option>
+              <option value="US">USA</option>
+              <option value="DE">Germany</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="m-3">
+            <label for="telephone" class="form-label">Telephone</label>
+            <input type="text" id="telephone" name="telephone" placeholder="Telephone" class="form-control" />
+          </div>
+        </fieldset> api_credential
+      </div>
+      <div class="col">
+        <fieldset><legend>API Credential</legend>
+          <div class="m-3">
+            <input type="text" id="api_credential" name="api_credential" placeholder="API Credential" class="form-control" />
+          </div>
+        </fieldset>
+      </div>
+    </div>
+    
+  </form>
+</div>
+</div>
+{/content}
+
+{/include}

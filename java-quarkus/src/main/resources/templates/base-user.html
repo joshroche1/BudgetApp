@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+  <link rel="shortcut icon" href="/img/favicon.ico">
+  <script src="/js/bootstrap.bundle.min.js"></script>
+  <title>{#insert title}{/}</title>
+  {#insert pagehead}{/}
+</head>
+<body>
+
+<header>
+  <nav class="navbar navbar-expand-sm bg-light">
+    <div class="container-fluid">
+      <li class="navbar-brand dropdown">
+        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">BudgetApp</a>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="/admin/view/settings">Settings</a></li>
+          <li><a class="dropdown-item" href="/users/list">User List</a></li>
+          <li><a class="dropdown-item" href="/users/create">Create User</a></li>
+        </ul>
+      </li>
+      <ul class="navbar-nav">
+        {#insert navbar}{/}
+        
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Accounts</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/accounts/view/list">List</a></li>
+            <li><a class="dropdown-item" href="/accounts/view/create">Create</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="/accounts/list">REST</a></li>
+          </ul>
+        </li>
+        
+        <li class="nav-item"><a class="nav-link" href="/admin/view/test">TEST</a></li>
+        <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<div class="container-fluid">
+  {#insert content}CONTENT SECTION{/}
+</div>
+
+</body>
+</html>

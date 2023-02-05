@@ -1,0 +1,32 @@
+{#include base}
+  {#title}BudgetApp{/title}
+
+{#content}
+<div class="row">
+
+<div class="col-3"></div>
+<div class="col-6">
+<div class="container">
+  <div class="card m-3">
+    <form action="/login" method="POST">
+      <h2>Login</h2>
+      <div class="m-3">
+        <input type="text" id="username" name="username" placeholder="Username" class="form-control" autocomplete="off" required>
+      </div>
+      <div class="m-3">
+        <input type="password" id="password" name="password" placeholder="Password" class="form-control" required>
+      </div>
+      <div class="m-3">
+        <input type="submit" value="Login" class="btn btn-success">
+        <input type="reset" class="btn btn-primary">
+      </div>
+    </form>
+  </div>
+</div>
+</div>
+<div class="col-3"></div>
+
+</div>
+{/content}
+
+{/include}

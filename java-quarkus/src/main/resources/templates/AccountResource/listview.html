@@ -1,0 +1,31 @@
+{#include base-user}
+  {#title}BudgetApp - Account List{/title}
+
+{#content}
+<div class="container">
+  <table class="table">
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Number</th>
+      <th>IBAN</th>
+      <th>BIC</th>
+      <th>Type</th>
+      <th>Currency</th>
+    </tr>
+    {#for account in accountlist}
+    <tr>
+      <td>{account.id}</td>
+      <td><a href="/accounts/view/detail/{account.id}">{account.name}</a></td>
+      <td>{account.number}</td>
+      <td>{account.iban}</td>
+      <td>{account.bic}</td>
+      <td>{account.type}</td>
+      <td>{account.currency}</td>
+    </tr>
+    {/for}
+  </table>
+</div>
+{/content}
+
+{/include}

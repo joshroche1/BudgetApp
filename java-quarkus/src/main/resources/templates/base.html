@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+  <link rel="shortcut icon" href="/img/favicon.ico">
+  <script src="/js/bootstrap.bundle.min.js"></script>
+  <title>{#insert title}{/}</title>
+  {#insert pagehead}{/}
+</head>
+<body>
+
+<header>
+  <nav class="navbar navbar-expand-sm bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">BudgetApp</a>
+      <ul class="navbar-nav">
+        {#insert navbar}{/}
+        <li class="nav-item"><a class="nav-link" href="/admin/view/test">TEST</a></li>
+        <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<div class="container-fluid">
+  {#insert content}CONTENT SECTION{/}
+</div>
+
+</body>
+</html>
