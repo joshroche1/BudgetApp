@@ -1,6 +1,6 @@
 # Budget App 
 ## based on Java Quarkus Webapp Template
-<https://github.com.joshroche1/projects.git>
+<https://github.com/joshroche1/projects/tree/master/templates/java-quarkus>
 
 <http://quarkus.io>
 
@@ -30,12 +30,18 @@ Contains:
 - - - - - - login.html
 - - - - - /UserResource/
 - - - - - - list.html
-- - - /java/net/jar/quarkus/webapp/
+- - - - - /AccountResource/
+- - - - - - list.html
+- - - - - - detail.html
+- - - - - - create.html
+- - - /java/net/jar/quarkus/budgetapp/
 - - - - - - - - AdminResource.java
 - - - - - - - - PublicResource.java
 - - - - - - - - Startup.java
 - - - - - - - - UserEntity.java
 - - - - - - - - UserResource.java
+- - - - - - - - AccountEntity.java
+- - - - - - - - AccountResource.java
 
 ## Web/REST Endpoints:
 
