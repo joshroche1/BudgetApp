@@ -1,62 +1,58 @@
-# BudgetApp
-## App for monthly budgeting.
-### Directory Tree 
+# Java Quarkus Webapp Template
 
-**src/main/java**
-  - /entity
-    - Transaction.java (String source[bank], Date datetime, double value, String description, String category, String memo)
-    - Budget.java (String name, int duedate[1...31], double value, String description, String category, String memo)
-    - User.java (String email, String password, String phone)
-  - /session
-    - AuthorizationFilter.java
-    - SessionUtil.java
-    - Login.java
-  - /datasource
-    - DBUtil.java
+<http://quarkus.io>
 
-**src/main/resources/META-INF/**
-  - persistence.xml
-  - datasource.xml ?where does this go?
+Contains:
+ - RESTEasy Reactive Jackson
+ - Qute templating
+ - Agroal
+ - Hibernate ORM with Panache
+ - Quarkus JPA Security
+ - JDBC PostgreSQL/H2 driver/module
 
-**src/main/webapp/**
-  - /WEB-INF
-    - web.xml
-    - ?faces-config.xml?
-  - /templates
-    - template-main.xhtml
-  - /resources
-    - /css/w3.css
-  - index.xhtml
-  - login.xhtml
-  - main.xhtml
+## Directory Structure
+
+- mvnw
 - pom.xml
+- /src/
+- - /main/
+- - - /resources/
+- - - - application.properties
+- - - - import.sql
+- - - - /META-INF/resources/css|img|js/
+- - - - /templates/
+- - - - - base.html
+- - - - - base-user.html
+- - - - - /PublicResouce/
+- - - - - - index.html
+- - - - - - login.html
+- - - - - /UserResource/
+- - - - - - list.html
+- - - /java/net/jar/quarkus/webapp/
+- - - - - - - - AdminResource.java
+- - - - - - - - PublicResource.java
+- - - - - - - - Startup.java
+- - - - - - - - UserEntity.java
+- - - - - - - - UserResource.java
 
-### SQLite3
-##### budgetapp.db
-```
-CREATE TABLE Transaction (
-source TEXT,
-datetime TEXT,
-value REAL,
-description TEXT,
-category TEXT,
-memo TEXT
-);
-```
-```
-CREATE TABLE Budget (
-name TEXT,
-duedate INTEGER,
-value REAL,
-description TEXT,
-category TEXT,
-memo TEXT
-);
-```
-```
-CREATE TABLE Users (
-email TEXT,
-password TEXT,
-phone TEXT
-);
-```
+## Web/REST Endpoints:
+
+<http://localhost:8080/>
+
+<http://localhost:8080/login>
+
+<http://localhost:8080/users/list>
+
+<http://localhost:8080/users/me>
+
+## To Run in Developer Mode:
+
+> quarkus dev
+
+### Build JAR file
+
+> quarkus build
+
+### Run Application:
+
+> java -jar ./target/quarkus-app/quarkus-run.jar
