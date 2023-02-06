@@ -34,9 +34,9 @@
         <td>
           <select id="type" name="type" class="form-select">
             <option value="" disabled selected>Select a Type</option>
-            <option value="Checking">Checking</option>
-            <option value="Savings">Savings</option>
-            <option value="Other">Other</option>
+            {#for accounttype in accounttypelist}
+            <option value="{accounttype.value}">{accounttype.value}</option>
+            {/for}
           </select>
         </td>
       </tr>
@@ -46,9 +46,9 @@
         <td>
           <select id="currency" name="currency" class="form-select">
             <option value="" disabled selected>Select a Currency</option>
-            <option value="USD">US Dollar</option>
-            <option value="EUR">Euro</option>
-            <option value="Other">Other</option>
+            {#for currency in currencylist}
+            <option value="{currency.value}">{currency.value}</option>
+            {/for}
           </select>
         </td>
       </tr>
@@ -110,9 +110,9 @@
         <td>
           <select id="country" name="country" class="form-select">
             <option value="" disabled selected>Select a Country</option>
-            <option value="US">USA</option>
-            <option value="DE">Germany</option>
-            <option value="Other">Other</option>
+            {#for country in countrylist}
+            <option value="{country.value}">{country.value}</option>
+            {/for}
           </select>
         </td>
       </tr>

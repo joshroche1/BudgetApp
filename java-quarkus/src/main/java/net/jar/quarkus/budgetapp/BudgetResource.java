@@ -36,29 +36,38 @@ import io.smallrye.common.annotation.Blocking;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-@Path("admin")
+@Path("budget")
 @ApplicationScoped
-public class ConfigResource {
+public class BudgetResource {
 
-  private static final Logger LOGGER = Logger.getLogger(ConfigResource.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(BudgetResource.class.getName());
 
 
   @CheckedTemplate
   static class Templates {
-    static native TemplateInstance settingsview(List<ConfigEntity> categorylist, List<ConfigEntity> accounttypelist, List<ConfigEntity> currencylist, List<ConfigEntity> countrylist);
+    static native TemplateInstance overview();
   }
   
   @GET
-  @Path("view/settings")
+  @Path("overview")
   @RolesAllowed("user")
   @Produces(MediaType.TEXT_HTML)
   @Blocking
-  public TemplateInstance settings_view() {
+  public TemplateInstance overview() {
+    return Templates.overview();
+  }
+  /*
+  @GET
+  @Path("overview")
+  @RolesAllowed("user")
+  @Produces(MediaType.TEXT_HTML)
+  @Blocking
+  public TemplateInstance overview() {
     List<ConfigEntity> categorylist = ConfigEntity.findByName("category");
     List<ConfigEntity> accounttypelist = ConfigEntity.findByName("accounttype");
     List<ConfigEntity> currencylist = ConfigEntity.findByName("currency");
     List<ConfigEntity> countrylist = ConfigEntity.findByName("country");
-    return Templates.settingsview(categorylist, accounttypelist, currencylist, countrylist);
+    return Templates.overview(categorylist, accounttypelist, currencylist, countrylist);
   }
   
   @POST
@@ -136,6 +145,7 @@ public class ConfigResource {
     }
     entity.delete();
   }
+  */
 
 
   @Provider

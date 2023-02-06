@@ -11,8 +11,12 @@ public class ConfigEntity extends PanacheEntity {
   public String name;
   public String value;
   
-  public static ConfigEntity findByName(String name) {
-    return find("name", name).firstResult();
+  public static ConfigEntity findByValue(String value) {
+    return find("value", value).firstResult();
+  }
+  
+  public static List<ConfigEntity> findByName(String name) {
+    return list("name", name);
   }
 
 }

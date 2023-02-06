@@ -20,18 +20,18 @@
             <label for="type" class="form-label">Type</label>
             <select id="type" name="type" class="form-select">
               <option value="" disabled selected>Select a Type</option>
-              <option value="Checking">Checking</option>
-              <option value="Savings">Savings</option>
-              <option value="Other">Other</option>
+              {#for accounttype in accounttypelist}
+              <option value="{accounttype.value}">{accounttype.value}</option>
+              {/for}
             </select>
           </div>
           <div class="m-3">
             <label for="currency" class="form-label">Currency</label>
-            <select id="category" name="category" class="form-select">
+            <select id="currency" name="currency" class="form-select">
               <option value="" disabled selected>Select a Currency</option>
-              <option value="USD">US Dollar</option>
-              <option value="EUR">Euro</option>
-              <option value="Other">Other</option>
+              {#for currency in currencylist}
+              <option value="{currency.value}">{currency.value}</option>
+              {/for}
             </select>
           </div>
         </fieldset>
@@ -73,16 +73,16 @@
             <label for="country" class="form-label">Country</label>
              <select id="country" name="country" class="form-select">
               <option value="" disabled selected>Select a Country</option>
-              <option value="US">USA</option>
-              <option value="DE">Germany</option>
-              <option value="Other">Other</option>
+              {#for country in countrylist}
+              <option value="{country.value}">{country.value}</option>
+              {/for}
             </select>
           </div>
           <div class="m-3">
             <label for="telephone" class="form-label">Telephone</label>
             <input type="text" id="telephone" name="telephone" placeholder="Telephone" class="form-control" />
           </div>
-        </fieldset> api_credential
+        </fieldset>
       </div>
       <div class="col">
         <fieldset><legend>API Credential</legend>

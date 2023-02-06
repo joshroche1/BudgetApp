@@ -1,0 +1,168 @@
+{#include base-user}
+  {#title}BudgetApp - Settings{/title}
+
+{#content}
+<div class="container">
+  <h1>Settings</h1>
+  
+  <div class="card m-3 p-3">
+    <h3>...</h3>
+    
+  </div>
+  
+  <div class="card m-3 p-3">
+    <h3>...</h3>
+    
+  </div>
+  
+  <div class="accordion" id="accordionSection">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingA">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseA" aria-expanded="true" aria-controls="collapseA">
+          Categories
+        </button>
+      </h2>
+      <div id="collapseA" class="accordion-collapse collapse show" aria-labelledby="headingA" data-bs-parent="#accordionSection">
+        <div class="accordion-body">
+          <form action="/admin/category/create" method="post">
+            <div class="input-group">
+              <input type="text" id="category" name="category" Placeholder="Enter a new category" class="form-control">
+              <input type="submit" value="Add" class="btn btn-sm btn-success"><input type="reset" class="btn btn-sm btn-secondary">
+            </div>
+          </form>
+          <table class="table">
+            <tr>
+              <th></th>
+              <th>Category</th>
+              <th></th>
+            </tr>
+            {#for category in categorylist}
+            <tr>
+              <td>{category.id}</td>
+              <td>{category.value}</td>
+              <td>
+                <form action="/admin/category/delete/{category.id}" method="post">
+                  <input type="submit" value="Delete" class="btn btn-sm btn-danger">
+                </form>
+              </td>
+            </tr>
+            {/for}
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingB">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseB" aria-expanded="true" aria-controls="collapseB">
+          Account Types
+        </button>
+      </h2>
+      <div id="collapseB" class="accordion-collapse collapse" aria-labelledby="headingB" data-bs-parent="#accordionSection">
+        <div class="accordion-body">
+          <form action="/admin/accounttype/create" method="post">
+            <div class="input-group">
+              <input type="text" id="accounttype" name="accounttype" Placeholder="Enter a new Account Type" class="form-control">
+              <input type="submit" value="Add" class="btn btn-sm btn-success"><input type="reset" class="btn btn-sm btn-secondary">
+            </div>
+          </form>
+          <table class="table">
+            <tr>
+              <th></th>
+              <th>Account Type</th>
+              <th></th>
+            </tr>
+            {#for accounttype in accounttypelist}
+            <tr>
+              <td>{accounttype.id}</td>
+              <td>{accounttype.value}</td>
+              <td>
+                <form action="/admin/accounttype/delete/{accounttype.id}" method="post">
+                  <input type="submit" value="Delete" class="btn btn-sm btn-danger">
+                </form>
+              </td>
+            </tr>
+            {/for}
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingC">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseC" aria-expanded="true" aria-controls="collapseC">
+          Currencies
+        </button>
+      </h2>
+      <div id="collapseC" class="accordion-collapse collapse" aria-labelledby="headingC" data-bs-parent="#accordionSection">
+        <div class="accordion-body">
+          <form action="/admin/currency/create" method="post">
+            <div class="input-group">
+              <input type="text" id="currency" name="currency" Placeholder="Enter a new currency" class="form-control">
+              <input type="submit" value="Add" class="btn btn-sm btn-success"><input type="reset" class="btn btn-sm btn-secondary">
+            </div>
+          </form>
+          <table class="table">
+            <tr>
+              <th></th>
+              <th>Currency</th>
+              <th></th>
+            </tr>
+            {#for currency in currencylist}
+            <tr>
+              <td>{currency.id}</td>
+              <td>{currency.value}</td>
+              <td>
+                <form action="/admin/currency/delete/{currency.id}" method="post">
+                  <input type="submit" value="Delete" class="btn btn-sm btn-danger">
+                </form>
+              </td>
+            </tr>
+            {/for}
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingD">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseD" aria-expanded="true" aria-controls="collapseD">
+          Countries
+        </button>
+      </h2>
+      <div id="collapseD" class="accordion-collapse collapse" aria-labelledby="headingD" data-bs-parent="#accordionSection">
+        <div class="accordion-body">
+          <form action="/admin/country/create" method="post">
+            <div class="input-group">
+              <input type="text" id="country" name="country" Placeholder="Enter a new country" class="form-control">
+              <input type="submit" value="Add" class="btn btn-sm btn-success"><input type="reset" class="btn btn-sm btn-secondary">
+            </div>
+          </form>
+          <table class="table">
+            <tr>
+              <th></th>
+              <th>Country</th>
+              <th></th>
+            </tr>
+            {#for country in countrylist}
+            <tr>
+              <td>{country.id}</td>
+              <td>{country.value}</td>
+              <td>
+                <form action="/admin/country/delete/{country.id}" method="post">
+                  <input type="submit" value="Delete" class="btn btn-sm btn-danger">
+                </form>
+              </td>
+            </tr>
+            {/for}
+          </table>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  
+</div>
+{/content}
+
+{/include}

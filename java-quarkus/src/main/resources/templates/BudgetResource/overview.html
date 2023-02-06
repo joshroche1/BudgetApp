@@ -1,0 +1,185 @@
+{#include base-user}
+  {#title}BudgetApp - Budget Overview{/title}
+
+{#content}
+<div class="container">
+  <h1>Budget Overview</h1>
+  
+  <div class="row">
+    <h3>January 2023</h3>
+    <div class="col">
+      <fieldset><legend>Income</legend>
+        <table class="table">
+          <tr>
+            <td>
+              <input type="checkbox" id="paycheck" name="paycheck" value="paycheck" class="form-check-input">
+              <label class="form-check-label" for="paycheck">Paycheck</label>
+            </td>
+            <td>9876.54</td>
+          </tr>
+          <tr>
+            <td>
+              <input type="checkbox" id="retirement" name="retirement" value="retirement" class="form-check-input">
+              <label class="form-check-label" for="retirement">Retirement</label></td>
+            <td>1234.56</td>
+          </tr>
+          <tr>
+            <td>
+              <input type="checkbox" id="misc" name="misc" value="misc" class="form-check-input">
+              <label class="form-check-label" for="misc">Misc</label></td>
+            <td>345.76</td>
+          </tr>
+        </table>
+      </fieldset>
+    </div>
+
+    <div class="col">
+      <fieldset><legend>Expenses</legend>
+        <table class="table">
+          <tr>
+            <td>
+              <input type="checkbox" id="rent" name="rent" value="rent">
+            </td>
+            <td>Rent</td>
+            <td>987.65</td>
+          </tr>
+          <tr>
+            <td>
+              <input type="checkbox" id="rent" name="rent" value="rent">
+            </td>
+            <td>Utilities</td>
+            <td>123.45</td>
+          </tr>
+          <tr>
+            <td>
+              <input type="checkbox" id="rent" name="rent" value="rent">
+            </td>
+            <td>Phone</td>
+            <td>98.76</td>
+          </tr>
+          <tr>
+            <td>
+              <input type="checkbox" id="rent" name="rent" value="rent">
+            </td>
+            <td>Credit Card</td>
+            <td>123.45</td>
+          </tr>
+          <tr>
+            <td>
+              <input type="checkbox" id="rent" name="rent" value="rent">
+            </td>
+            <td>Car Loan</td>
+            <td>234.56</td>
+          </tr>
+          <tr>
+            <td>
+              <input type="checkbox" id="rent" name="rent" value="rent">
+            </td>
+            <td>Gas</td>
+            <td>123.45</td>
+          </tr>
+          <tr>
+            <td>
+              <input type="checkbox" id="rent" name="rent" value="rent">
+            </td>
+            <td>Groceries</td>
+            <td>345.67</td>
+          </tr>
+          <tr>
+            <td>
+              <input type="checkbox" id="rent" name="rent" value="rent">
+            </td>
+            <td>Internet</td>
+            <td>56.78</td>
+          </tr>
+          <tr>
+            <td>
+              <input type="checkbox" id="rent" name="rent" value="rent">
+            </td>
+            <td>Misc 1</td>
+            <td>12.34</td>
+          </tr>
+          <tr>
+            <td>
+              <input type="checkbox" id="rent" name="rent" value="rent">
+            </td>
+            <td>Misc 2</td>
+            <td>23.45</td>
+          </tr>
+        </table>
+      </fieldset>
+    </div>
+
+    <div class="col">
+      <fieldset><legend>Remainder</legend>
+        <p>
+          Income and expenses will be autocalculated either as an injected EJB value or via JavaScript in page. Currently paid will dynamically change depending on what Bills are flagged as paid (toggles here or somewhere else).
+        </p>
+        <table class="table">
+          <tr>
+            <td>Total Income</td>
+            <td>11456.77</td>
+          </tr>
+          <tr>
+            <td>Total Expenses</td>
+            <td>2129.56</td>
+          </tr>
+          <tr>
+            <td>Currently Paid</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Remainder</td>
+            <td><b>9327.21</b></td>
+          </tr>
+        </table>
+      </fieldset>
+    </div>
+  </div>
+  
+  <div class="accordion" id="accordionSection">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingA">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseA" aria-expanded="true" aria-controls="collapseA">
+          Income
+        </button>
+      </h2>
+      <div id="collapseA" class="accordion-collapse collapse show" aria-labelledby="headingA" data-bs-parent="#accordionSection">
+        <div class="accordion-body">
+          ...
+        </div>
+      </div>
+    </div>
+    
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingA">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseA" aria-expanded="true" aria-controls="collapseA">
+          Expenses
+        </button>
+      </h2>
+      <div id="collapseA" class="accordion-collapse collapse show" aria-labelledby="headingA" data-bs-parent="#accordionSection">
+        <div class="accordion-body">
+          ...
+        </div>
+      </div>
+    </div>
+    
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingA">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseA" aria-expanded="true" aria-controls="collapseA">
+          Results
+        </button>
+      </h2>
+      <div id="collapseA" class="accordion-collapse collapse show" aria-labelledby="headingA" data-bs-parent="#accordionSection">
+        <div class="accordion-body">
+          ...
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  
+</div>
+{/content}
+
+{/include}

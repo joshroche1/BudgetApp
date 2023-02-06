@@ -43,8 +43,8 @@ public class AccountResource {
   @CheckedTemplate
   static class Templates {
     static native TemplateInstance listview(List<AccountEntity> accountlist);
-    static native TemplateInstance createview();
-    static native TemplateInstance detailview(AccountEntity account);
+    static native TemplateInstance createview(List<ConfigEntity> accounttypelist, List<ConfigEntity> countrylist, List<ConfigEntity> currencylist);
+    static native TemplateInstance detailview(AccountEntity account, List<ConfigEntity> accounttypelist, List<ConfigEntity> countrylist, List<ConfigEntity> currencylist);
   }
   
   @GET
@@ -63,7 +63,10 @@ public class AccountResource {
   @Produces(MediaType.TEXT_HTML)
   @Blocking
   public TemplateInstance create_view() {
-    return Templates.createview();
+    List<ConfigEntity> accounttypelist = ConfigResource.getList("accounttype");
+    List<ConfigEntity> countrylist = ConfigResource.getList("country");
+    List<ConfigEntity> currencylist = ConfigResource.getList("currency");
+    return Templates.createview(accounttypelist, countrylist, currencylist);
   }
   
   @POST
@@ -103,7 +106,10 @@ public class AccountResource {
     if (account == null) {
       throw new WebApplicationException("Account with id: " + id + " not found", 404);
     }
-    return Templates.detailview(account);
+    List<ConfigEntity> accounttypelist = ConfigResource.getList("accounttype");
+    List<ConfigEntity> countrylist = ConfigResource.getList("country");
+    List<ConfigEntity> currencylist = ConfigResource.getList("currency");
+    return Templates.detailview(account, accounttypelist, countrylist, currencylist);
   }
   
   @POST
@@ -132,7 +138,10 @@ public class AccountResource {
     if (currency != "") { entity.currency = currency; }
     if (telephone != "") { entity.telephone = telephone; }
     entity.persist();
-    return Templates.detailview(entity);
+    List<ConfigEntity> accounttypelist = ConfigResource.getList("accounttype");
+    List<ConfigEntity> countrylist = ConfigResource.getList("country");
+    List<ConfigEntity> currencylist = ConfigResource.getList("currency");
+    return Templates.detailview(entity, accounttypelist, countrylist, currencylist);
   }
   
   @POST

@@ -13,17 +13,18 @@
 <header>
   <nav class="navbar navbar-expand-sm bg-light">
     <div class="container-fluid">
-      <li class="navbar-brand dropdown">
+      <h3 class="navbar-brand dropdown">
         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">BudgetApp</a>
         <ul class="dropdown-menu">
           <li><a class="dropdown-item" href="/admin/view/settings">Settings</a></li>
           <li><a class="dropdown-item" href="/users/list">User List</a></li>
           <li><a class="dropdown-item" href="/users/create">Create User</a></li>
         </ul>
-      </li>
+      </h3>
       <ul class="navbar-nav">
         {#insert navbar}{/}
         
+        <li class="nav-item"><a class="nav-link" href="/budget/overview">Overview</a></li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Accounts</a>
           <ul class="dropdown-menu">
@@ -31,6 +32,24 @@
             <li><a class="dropdown-item" href="/accounts/view/create">Create</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="/accounts/list">REST</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Bills</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/bills/view/list">List</a></li>
+            <li><a class="dropdown-item" href="/bills/view/create">Create</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="/bills/list">REST</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Transactions</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/transactions/view/list">List</a></li>
+            <li><a class="dropdown-item" href="/transactions/view/create">Create</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="/transactions/list">REST</a></li>
           </ul>
         </li>
         
