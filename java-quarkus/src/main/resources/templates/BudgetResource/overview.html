@@ -5,30 +5,92 @@
 <div class="container">
   <h1>Budget Overview</h1>
   
+  <div class="accordion" id="accordionSection">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingA">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseA" aria-expanded="true" aria-controls="collapseA">
+          Income - {incometotal}
+        </button>
+      </h2>
+      <div id="collapseA" class="accordion-collapse collapse show" aria-labelledby="headingA" data-bs-parent="#accordionSection">
+        <div class="accordion-body">
+          <table class="table">
+            {#for income in incomelist}
+            <tr>
+              <td><input type="checkbox" id="{income.name}" name="{income.name}" value="{income.active}" class="form-check-input"></td>
+              <td>{income.name} - {income.incometype}</td>
+              <td>{income.amount}</td>
+            </tr>
+            {/for}
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingB">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseB" aria-expanded="true" aria-controls="collapseB">
+          Expenses - {billtotal}
+        </button>
+      </h2>
+      <div id="collapseB" class="accordion-collapse collapse show" aria-labelledby="headingB" data-bs-parent="#accordionSection">
+        <div class="accordion-body">
+          <table class="table">
+            {#for bill in billlist}
+            <tr>
+              <td><input type="checkbox" id="{bill.name}" name="{bill.name}" value="{bill.active}"></td>
+              <td>{bill.name}</td>
+              <td>{bill.amount}</td>
+            </tr>
+            {/for}
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingC">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseC" aria-expanded="true" aria-controls="collapseC">
+          Results - {remainder}
+        </button>
+      </h2>
+      <div id="collapseC" class="accordion-collapse collapse show" aria-labelledby="headingC" data-bs-parent="#accordionSection">
+        <div class="accordion-body">
+          <table class="table">
+            <tr>
+              <td>Total Income</td>
+              <td>{incometotal}</td>
+            </tr>
+            <tr>
+              <td>Total Expenses</td>
+              <td>{billtotal}</td>
+            </tr>
+            <tr>
+              <td>Currently Paid</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Remainder</td>
+              <td><b>{remainder}</b></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  
   <div class="row">
     <h3>January 2023</h3>
     <div class="col">
       <fieldset><legend>Income</legend>
         <table class="table">
+          {#for income in incomelist}
           <tr>
-            <td>
-              <input type="checkbox" id="paycheck" name="paycheck" value="paycheck" class="form-check-input">
-              <label class="form-check-label" for="paycheck">Paycheck</label>
-            </td>
-            <td>9876.54</td>
+            <td><input type="checkbox" id="{income.name}" name="{income.name}" value="{income.active}" class="form-check-input"></td>
+            <td>{income.name} - {income.incometype}</td>
+            <td>{income.amount}</td>
           </tr>
-          <tr>
-            <td>
-              <input type="checkbox" id="retirement" name="retirement" value="retirement" class="form-check-input">
-              <label class="form-check-label" for="retirement">Retirement</label></td>
-            <td>1234.56</td>
-          </tr>
-          <tr>
-            <td>
-              <input type="checkbox" id="misc" name="misc" value="misc" class="form-check-input">
-              <label class="form-check-label" for="misc">Misc</label></td>
-            <td>345.76</td>
-          </tr>
+          {/for}
         </table>
       </fieldset>
     </div>
@@ -36,76 +98,14 @@
     <div class="col">
       <fieldset><legend>Expenses</legend>
         <table class="table">
+          {#for bill in billlist}
           <tr>
-            <td>
-              <input type="checkbox" id="rent" name="rent" value="rent">
-            </td>
-            <td>Rent</td>
-            <td>987.65</td>
+            <td><input type="checkbox" id="{bill.name}" name="{bill.name}" value="{bill.active}"></td>
+            <td>{bill.name}</td>
+            <td>{bill.amount}</td>
           </tr>
-          <tr>
-            <td>
-              <input type="checkbox" id="rent" name="rent" value="rent">
-            </td>
-            <td>Utilities</td>
-            <td>123.45</td>
-          </tr>
-          <tr>
-            <td>
-              <input type="checkbox" id="rent" name="rent" value="rent">
-            </td>
-            <td>Phone</td>
-            <td>98.76</td>
-          </tr>
-          <tr>
-            <td>
-              <input type="checkbox" id="rent" name="rent" value="rent">
-            </td>
-            <td>Credit Card</td>
-            <td>123.45</td>
-          </tr>
-          <tr>
-            <td>
-              <input type="checkbox" id="rent" name="rent" value="rent">
-            </td>
-            <td>Car Loan</td>
-            <td>234.56</td>
-          </tr>
-          <tr>
-            <td>
-              <input type="checkbox" id="rent" name="rent" value="rent">
-            </td>
-            <td>Gas</td>
-            <td>123.45</td>
-          </tr>
-          <tr>
-            <td>
-              <input type="checkbox" id="rent" name="rent" value="rent">
-            </td>
-            <td>Groceries</td>
-            <td>345.67</td>
-          </tr>
-          <tr>
-            <td>
-              <input type="checkbox" id="rent" name="rent" value="rent">
-            </td>
-            <td>Internet</td>
-            <td>56.78</td>
-          </tr>
-          <tr>
-            <td>
-              <input type="checkbox" id="rent" name="rent" value="rent">
-            </td>
-            <td>Misc 1</td>
-            <td>12.34</td>
-          </tr>
-          <tr>
-            <td>
-              <input type="checkbox" id="rent" name="rent" value="rent">
-            </td>
-            <td>Misc 2</td>
-            <td>23.45</td>
-          </tr>
+          {/for}
+          
         </table>
       </fieldset>
     </div>
@@ -118,11 +118,11 @@
         <table class="table">
           <tr>
             <td>Total Income</td>
-            <td>11456.77</td>
+            <td>{incometotal}</td>
           </tr>
           <tr>
             <td>Total Expenses</td>
-            <td>2129.56</td>
+            <td>{billtotal}</td>
           </tr>
           <tr>
             <td>Currently Paid</td>
@@ -130,53 +130,11 @@
           </tr>
           <tr>
             <td>Remainder</td>
-            <td><b>9327.21</b></td>
+            <td><b>{remainder}</b></td>
           </tr>
         </table>
       </fieldset>
     </div>
-  </div>
-  
-  <div class="accordion" id="accordionSection">
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingA">
-        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseA" aria-expanded="true" aria-controls="collapseA">
-          Income
-        </button>
-      </h2>
-      <div id="collapseA" class="accordion-collapse collapse show" aria-labelledby="headingA" data-bs-parent="#accordionSection">
-        <div class="accordion-body">
-          ...
-        </div>
-      </div>
-    </div>
-    
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingA">
-        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseA" aria-expanded="true" aria-controls="collapseA">
-          Expenses
-        </button>
-      </h2>
-      <div id="collapseA" class="accordion-collapse collapse show" aria-labelledby="headingA" data-bs-parent="#accordionSection">
-        <div class="accordion-body">
-          ...
-        </div>
-      </div>
-    </div>
-    
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingA">
-        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseA" aria-expanded="true" aria-controls="collapseA">
-          Results
-        </button>
-      </h2>
-      <div id="collapseA" class="accordion-collapse collapse show" aria-labelledby="headingA" data-bs-parent="#accordionSection">
-        <div class="accordion-body">
-          ...
-        </div>
-      </div>
-    </div>
-    
   </div>
   
 </div>

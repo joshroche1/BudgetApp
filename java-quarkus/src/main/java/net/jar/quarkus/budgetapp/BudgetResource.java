@@ -1,5 +1,8 @@
 package net.jar.quarkus.budgetapp;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -45,7 +48,7 @@ public class BudgetResource {
 
   @CheckedTemplate
   static class Templates {
-    static native TemplateInstance overview();
+    static native TemplateInstance overview(List<IncomeEntity> incomelist, List<BillEntity> billlist, String incometotal, String billtotal, String remainder);
   }
   
   @GET
@@ -54,7 +57,27 @@ public class BudgetResource {
   @Produces(MediaType.TEXT_HTML)
   @Blocking
   public TemplateInstance overview() {
-    return Templates.overview();
+    DateFormat dateformatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm");
+    Date currentdate = new Date();
+    List<IncomeEntity> incomelist = IncomeEntity.listAll(Sort.by("id"));
+    List<BillEntity> billlist = BillEntity.listAll(Sort.by("id"));
+    double income = 0.0;
+    double bills = 0.0;
+    for (IncomeEntity entity: incomelist) {
+      String tmp1 = entity.amount;
+      double tmp2 = Double.parseDouble(tmp1);
+      income += tmp2;
+    }
+    String incometotal = String.valueOf(income);
+    for (BillEntity entity1: billlist) {
+      String tmp3 = entity1.amount;
+      double tmp4 = Double.parseDouble(tmp3);
+      bills += tmp4;
+    }
+    String billtotal = String.valueOf(bills);
+    double remain = income - bills;
+    String remainder = String.valueOf(remain);
+    return Templates.overview(incomelist, billlist, incometotal, billtotal, remainder);
   }
   /*
   @GET
