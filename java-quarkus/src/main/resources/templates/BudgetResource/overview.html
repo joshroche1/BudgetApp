@@ -9,7 +9,8 @@
     <div class="accordion-item">
       <h2 class="accordion-header" id="headingA">
         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseA" aria-expanded="true" aria-controls="collapseA">
-          Income - {incometotal}
+          <div class="m-3">Income</div>
+          <div class="m-3">{systemcurrencies[0].value} {incometotal}</div>
         </button>
       </h2>
       <div id="collapseA" class="accordion-collapse collapse show" aria-labelledby="headingA" data-bs-parent="#accordionSection">
@@ -19,7 +20,7 @@
             <tr>
               <td><input type="checkbox" id="{income.name}" name="{income.name}" value="{income.active}" class="form-check-input"></td>
               <td>{income.name} - {income.incometype}</td>
-              <td>{income.amount}</td>
+              <td>{systemcurrencies[0].value} {income.amount}</td>
             </tr>
             {/for}
           </table>
@@ -30,7 +31,8 @@
     <div class="accordion-item">
       <h2 class="accordion-header" id="headingB">
         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseB" aria-expanded="true" aria-controls="collapseB">
-          Expenses - {billtotal}
+          <div class="m-3">Expenses</div>
+          <div class="m-3">{systemcurrencies[0].value} {billtotal}</div>
         </button>
       </h2>
       <div id="collapseB" class="accordion-collapse collapse show" aria-labelledby="headingB" data-bs-parent="#accordionSection">
@@ -40,7 +42,7 @@
             <tr>
               <td><input type="checkbox" id="{bill.name}" name="{bill.name}" value="{bill.active}"></td>
               <td>{bill.name}</td>
-              <td>{bill.amount}</td>
+              <td>{systemcurrencies[0].value} {bill.amount}</td>
             </tr>
             {/for}
           </table>
@@ -51,7 +53,8 @@
     <div class="accordion-item">
       <h2 class="accordion-header" id="headingC">
         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseC" aria-expanded="true" aria-controls="collapseC">
-          Results - {remainder}
+          <div class="m-3">Results</div>
+          <div class="m-3">{systemcurrencies[0].value} {remainder}</div>
         </button>
       </h2>
       <div id="collapseC" class="accordion-collapse collapse show" aria-labelledby="headingC" data-bs-parent="#accordionSection">
@@ -59,11 +62,11 @@
           <table class="table">
             <tr>
               <td>Total Income</td>
-              <td>{incometotal}</td>
+              <td>{systemcurrencies[0].value} {incometotal}</td>
             </tr>
             <tr>
               <td>Total Expenses</td>
-              <td>{billtotal}</td>
+              <td>{systemcurrencies[0].value} {billtotal}</td>
             </tr>
             <tr>
               <td>Currently Paid</td>
@@ -71,7 +74,7 @@
             </tr>
             <tr>
               <td>Remainder</td>
-              <td><b>{remainder}</b></td>
+              <td><b>{systemcurrencies[0].value} {remainder}</b></td>
             </tr>
           </table>
         </div>

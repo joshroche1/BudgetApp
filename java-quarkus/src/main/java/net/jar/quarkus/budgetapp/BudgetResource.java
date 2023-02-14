@@ -48,7 +48,7 @@ public class BudgetResource {
 
   @CheckedTemplate
   static class Templates {
-    static native TemplateInstance overview(List<IncomeEntity> incomelist, List<BillEntity> billlist, String incometotal, String billtotal, String remainder);
+    static native TemplateInstance overview(List<IncomeEntity> incomelist, List<BillEntity> billlist, String incometotal, String billtotal, String remainder, List<ConfigEntity> systemcurrencies);
   }
   
   @GET
@@ -77,7 +77,8 @@ public class BudgetResource {
     String billtotal = String.valueOf(bills);
     double remain = income - bills;
     String remainder = String.valueOf(remain);
-    return Templates.overview(incomelist, billlist, incometotal, billtotal, remainder);
+    List<ConfigEntity> systemcurrencies = ConfigEntity.findByName("systemcurrency");
+    return Templates.overview(incomelist, billlist, incometotal, billtotal, remainder, systemcurrencies);
   }
   /*
   @GET

@@ -45,7 +45,7 @@ public class ConfigResource {
 
   @CheckedTemplate
   static class Templates {
-    static native TemplateInstance settingsview(List<ConfigEntity> categorylist, List<ConfigEntity> accounttypelist, List<ConfigEntity> currencylist, List<ConfigEntity> countrylist);
+    static native TemplateInstance settingsview(List<ConfigEntity> categorylist, List<ConfigEntity> accounttypelist, List<ConfigEntity> currencylist, List<ConfigEntity> countrylist, List<ConfigEntity> systemcurrencies);
   }
   
   @GET
@@ -58,7 +58,8 @@ public class ConfigResource {
     List<ConfigEntity> accounttypelist = ConfigEntity.findByName("accounttype");
     List<ConfigEntity> currencylist = ConfigEntity.findByName("currency");
     List<ConfigEntity> countrylist = ConfigEntity.findByName("country");
-    return Templates.settingsview(categorylist, accounttypelist, currencylist, countrylist);
+    List<ConfigEntity> systemcurrencies = ConfigEntity.findByName("systemcurrency");
+    return Templates.settingsview(categorylist, accounttypelist, currencylist, countrylist, systemcurrencies);
   }
   
   @POST
@@ -76,7 +77,8 @@ public class ConfigResource {
     List<ConfigEntity> accounttypelist = ConfigEntity.findByName("accounttype");
     List<ConfigEntity> currencylist = ConfigEntity.findByName("currency");
     List<ConfigEntity> countrylist = ConfigEntity.findByName("country");
-    return Templates.settingsview(categorylist, accounttypelist, currencylist, countrylist);
+    List<ConfigEntity> systemcurrencies = ConfigEntity.findByName("systemcurrency");
+    return Templates.settingsview(categorylist, accounttypelist, currencylist, countrylist, systemcurrencies);
   }
   
   @POST
@@ -95,7 +97,8 @@ public class ConfigResource {
     List<ConfigEntity> accounttypelist = ConfigEntity.findByName("accounttype");
     List<ConfigEntity> currencylist = ConfigEntity.findByName("currency");
     List<ConfigEntity> countrylist = ConfigEntity.findByName("country");
-    return Templates.settingsview(categorylist, accounttypelist, currencylist, countrylist);
+    List<ConfigEntity> systemcurrencies = ConfigEntity.findByName("systemcurrency");
+    return Templates.settingsview(categorylist, accounttypelist, currencylist, countrylist, systemcurrencies);
   }
   
   public static List<ConfigEntity> getList(String name) {
