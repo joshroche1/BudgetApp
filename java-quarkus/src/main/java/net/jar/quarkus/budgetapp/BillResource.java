@@ -130,6 +130,19 @@ public class BillResource {
     List<BillEntity> billlist = BillEntity.listAll(Sort.by("id"));
     return Templates.listview(billlist);
   }
+  
+  /* CALENDAR FILE FOR BILLS
+  
+  @GET
+  @Path("view/ical")
+  @RolesAllowed("user")
+  @Produces(MediaType.TEXT_HTML)
+  @Blocking
+  public String getCalendarFile(Long id) {
+    //
+    return result;
+  }
+  */
 
   /* REST INTERFACE */
 
