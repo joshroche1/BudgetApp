@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+
+{% if g.user %}
+Settings
+{% else %}
+{% endif %}
+
+{% endblock %}
+
+
+{% block header %}
+
+{% if g.user %}
+Settings
+{% else %}
+{% endif %}
+
+{% endblock %}
+
+
+{% block content %}
+
+{% if g.user %}
+<div class="m-3 p-3">
+  <h1>Settings</h1>
+  
+  <table class="table">
+    <tr>
+      <td>Working Directory</td>
+      <td>{{ workingdir }}</td>
+    </tr>
+    {% for key,value in settings %}
+    <tr>
+      <td>{{ key }}</td>
+      <td>{{ value }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+
+<div class="card m-3 p-3">
+  <h3>Web UI Lists</h3>
+  <div class="row">
+    
+    <div class="col p-1">
+      <div class="card p-1">
+        <div class="card-header">
+          <h5 class="card-title"></h5>
+        </div>
+        <div class="card-body">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <form action="/weblist/create" method="post">
+                <div class="input-group">
+                  <input type="text" id="weblistname" name="weblistname" placeholder="Enter a Name" class="form-control" required />
+                  <input type="text" id="weblistvalue" name="weblistvalue" placeholder="Enter a Value" class="form-control" required />
+                  <input type="submit" value="Add" class="btn btn-sm btn-success">
+                  <input type="reset" class="btn btn-sm btn-secondary">
+                </div>
+              </form>
+            </li>
+            {% for wlitem in weblistitems %}
+            <li class="list-group-item">
+              <form action="/weblist/delete/{{ wlitem.value }}" method="post">
+                <div class="input-group">
+                  <a href="" class="btn btn-sm">{{ wlitem.name }}</a>
+                  <a href="" class="btn btn-sm">{{ wlitem.value }}</a>
+                  <input type="submit" value="X" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-danger">
+                </div>
+              </form>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="card-footer">
+          <select class="form-select">
+            <option value="Default" selected>Select an Option</option>
+            {% for wlitem in weblistitems %}
+            <option value="{{ wlitem.value }}">{{ wlitem.name }}: {{ wlitem.value }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+    </div>
+        
+  </div>
+</div>
+
+<div class="card m-3 p-3">
+  <h3>User List</h3>
+  <div class="row">
+    
+    <div class="col-12 col-sm-6 col-md-6 col-lg-6 p-1">
+      <div class="card p-1">
+        <div class="card-body">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <div class="input-group">
+                <input type="email" id="email" name="email" placeholder="Email Address" class="form-control" autocomplete="off" required />
+                <input type="submit" value="Add" class="btn btn-sm btn-success">
+                <input type="reset" class="btn btn-sm btn-secondary">
+              </div>
+            </li>
+            <li class="list-group-item">
+              <input type="text" id="username" name="username" placeholder="Username" class="form-control" autocomplete="off" required />
+            </li>
+            <li class="list-group-item">
+              <input type="password" id="password" name="password" placeholder="Password" class="form-control" autocomplete="off" required />
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-12 col-sm-6 col-md-6 col-lg-6 p-1">
+      <div class="card table-resposive p-1">
+        <table class="table">
+          <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+          </tr>
+          {% for user in userlist %}
+          <tr>
+            <td>
+              <form action="" method="">
+                <div class="input-group">
+                  <a href="" class="btn btn-sm">{{ user.id }}</a>
+                  <input type="submit" value="X" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-danger">
+                </div>
+              </form>
+            </td>
+            <td><a href="" class="btn btn-sm">{{ user.username }}</a></td>
+            <td><a href="mailto:{{ user.email }}" class="btn btn-sm">{{ user.email }}</a></td>
+          </tr>
+          {% endfor %}
+        </table>
+        
+      </div>
+    </div>
+      
+  </div>
+</div>
+
+{% else %}
+<div class="container">
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="{{ url_for('static', path='/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='/bootstrap-icons.css') }}"/>
+  <link rel="shortcut icon" href="{{ url_for('static', path='/favicon.ico') }}">
+  <script src="{{ url_for('static', path='/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', path='/jquery-3.6.3.min.js') }}"></script>
+  <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+
+<header>
+  <nav class="navbar navbar-expand-sm bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand dropdown" href="/">WEBAPP</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        <ul class="navbar-nav">
+          {% if g.user %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">{% block header %} {% endblock %}</a>
+            <ul class="dropdown-menu">
+              <li>
+                <div class="btn-group" role="group" aria-label="Settings Button group">
+                  <a class="btn btn-sm dropdown-item" href="/settings">Settings</a>
+                </div>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="/docs">Docs</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a href="/logout" class="nav-link">Logout</a></li>
+          {% else %}
+          <li class="nav-item"><a href="/login" class="nav-link">Login</a></li>
+          {% endif %}
+        </ul>
+      </div>
+
+    </div>
+  </nav>
+  
+</header>
+
+<div class="container-fluid">
+  {% block content %}{% endblock %}
+</div>
+
+<div class="container m-1 p-1">
+{% for message in messages %}
+  <div class="m-1 p-1">
+    <pre style="overflow-wrap: break-word;">{{ message }}</pre>
+  </div>
+{% endfor %}
+</div>
+
+<footer>
+  {% block footer %}{% endblock %}
+</footer>
+
+</body>
+</html>

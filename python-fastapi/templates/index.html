@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+
+{% if g.user %}
+BudgetApp
+{% else %}
+WEBAPP
+{% endif %}
+
+{% endblock %}
+
+
+{% block header %}
+
+{% if g.user %}
+BudgetApp
+{% else %}
+WEBAPP
+{% endif %}
+
+{% endblock %}
+
+
+{% block content %}
+<div class="container">
+  <div class="m-3 p-3">
+    <h1>Budget App</h1>
+    <p>Python web application built on FastAPI and Uvicorn</p>
+    <p>Components:</p>
+    <ul>
+      <li><a href="https://fastapi.tiangolo.com/" target="_blank">FastAPI</a></li>
+      <li><a href="https://www.sqlalchemy.org/" target="_blank">SQLAlchemy</a></li>
+      <li><a href="https://www.uvicorn.org/" target="_blank">Uvicorn</a></li>
+    </ul>
+    <div class="card p-1">
+      <div class="card-header">
+        <p class="m-1 p-1">REST Endpoints:</p>
+      </div>
+      <div class="card-body">
+        <ul class="m-1 p-1">
+          <li><a href="/">Web Pages</a></li>
+          <li><a href="/docs">OpenAPI Docs</a></li>
+          <li><a href="/info">Info</a></li>
+          <li><a href="/users">Users</a></li>
+          <li><a href="/weblist">Weblist</a></li>
+        </ul>
+      </div>
+      <div class="card-footer">
+        <p class="m-1 p-1">To run in developer mode</p>
+        <code class="m-1 p-1">
+          # uvicorn webapp.main:app --reload
+        </code>
+      </div>
+    </div>
+  </div>
+</div>
+{% if g.user %}
+<div class="container">
+  <div class="card p-1">
+    <div class="card-header">
+      <p class="m-1 p-1">G Object:</p>
+    </div>
+    <div class="card-body">
+      <ul class="m-1 p-1">
+        {% for item in g %}
+        <li>{{ g[item] }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% else %}
+<div class="container">
+</div>
+{% endif %}
+
+{% endblock %}
