@@ -55,6 +55,36 @@ WEBAPP
       </div>
     </div>
   </div>
+  <div class="m-3 p-3">
+    <div class="border">
+      <p>
+        The budget objects are based on iCal formatted files so that they can easily be added to emails and calendars.
+        Example:
+      </p>
+      <div class="container">
+        <a href="{{ url_for('static', path='/examplebill.ics') }}" class="btn btn-sm">iCAL</a>
+        <pre>
+          <code class="m-1 p-1">
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//joshroche
+BEGIN:VEVENT
+UID:20230330T162101CET@fd42:ad2:b23e:c209::1/64
+TRANSP:TRANSPARENT
+DTSTART:20230330T162101L
+DTEND:20230330T162101L
+DTSTAMP:20230330T162101L
+ORGANIZER;CN=Josh Roche:mailto:josh_roche@hotmail.com
+SUMMARY:$123.45
+DESCRIPTION:<p>Electric Bill</p>
+LOCATION:https://www.paypal.com/
+END:VEVENT
+END:VCALENDAR
+          </code>
+        </pre>
+      </div>
+    </div>
+  </div>
 </div>
 {% if g.user %}
 <div class="container">

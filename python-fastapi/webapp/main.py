@@ -12,8 +12,10 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from .database import SessionLocal, engine
-from . import models, schema, config, users, weblist
+from . import models, schema, config, users, weblist, budget, budgetitem
 from .auth import authenticate_user, create_user, get_current_user, oauth2_scheme, get_users
+from .budget import router, get_budget, get_budgets, create_budget, delete_budget
+from .budgetitem import router, get_budgetitems, get_budgetitem, get_items_for_budget, create_budgetitem, delete_budgetitem
 
 
 ### Initialization
@@ -57,6 +59,7 @@ def message(message: str = ""):
 
 app.include_router(users.router)
 app.include_router(weblist.router)
+app.include_router(budget.router)
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
@@ -105,3 +108,13 @@ async def test(request: Request, db: Session = Depends(get_db)):
   return templates.TemplateResponse("settings.html", {"request": request, "messages": messages, "g": g, "userlist": userlist, "settings": settings, "weblistitems": weblistitems})
 
 ##
+
+@app.get("/budget/", tags=["budget"])
+async def view_budget(request: Request, db: Session = Depends(get_db)):
+  budgets = await get_budgets(db)
+  budgetitemdict = {}
+  for bdgt in budgets:
+    budgetitems = await get_items_for_budget(bdgt.id, db)
+    budgetitemdict[bdgt.id] = budgetitems
+  message()
+  return templates.TemplateResponse("budget.html", {"request": request, "messages": messages, "g": g, "budgets": budgets, "budgetitemdict": budgetitemdict})
