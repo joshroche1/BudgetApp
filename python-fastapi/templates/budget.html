@@ -37,7 +37,7 @@ WEBAPP
       <div class="card-header">
         <div class="row">
           <div class="col"><h3>{{ budget.id }}</h3></div>
-          <div class="col"><h3>{{ budget.name }}</h3></div>
+          <div class="col"><h3><a href="/budget/detail/{{ budget.id }}">{{ budget.name }}</a></h3></div>
           <div class="col"><p>{{ budget.owner }}</p></div>
           <div class="col"><p>{{ budget.currency }}</p></div>
         </div>
@@ -58,8 +58,12 @@ WEBAPP
       <div class="card-footer">
         <table class="table">
           <tr>
+            <th>INCOME</th>
+            <th>{{ budget.incometotal }}</th>
+            <th>EXPENSES</th>
+            <th>{{ budget.expensetotal }}</th>
             <th>REMAINDER</th>
-            <th>123.45</th>
+            <th>{{ budget.remainder }}</th>
           </tr>
         </table>
       </div>
@@ -67,8 +71,34 @@ WEBAPP
     {% endfor %}
     <div class="card m-1 p-1">
       <div class="card-header">
+        <h2>Create A Budget</h2>
       </div>
       <div class="card-body">
+        <form action="/budget/create" method="post">
+          <div class="row">
+            <div class="col">
+              <input type="text" id="name" name="name" placeholder="Name" class="form-control">
+            </div>
+            <div class="col">
+              <input type="email" id="owner" name="owner" placeholder="Email" class="form-control">
+            </div>
+            <div class="col">
+              <select id="currency" name="currency" class="form-select">
+                <option value="" disabled selected>Currency</option>
+                {% for curr in wl_currency %}
+                <option value="{{ curr.value }}">{{ curr.value }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col">
+              <textarea id="notes" name="notes" placeholder="Notes" rows="1" class="form-control"></textarea>
+            </div>
+            <div class="col">
+              <input type="submit" value="Add" class="btn btn-sm btn-success">
+              <input type="reset" class="btn btn-sm btn-secondary">
+            </div>
+          </div>
+        </form>
       </div>
       <div class="card-footer">
       </div>

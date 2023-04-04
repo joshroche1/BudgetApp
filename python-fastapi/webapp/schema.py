@@ -38,6 +38,9 @@ class BudgetBase(BaseModel):
 
 class BudgetCreate(BudgetBase):
   notes: str
+  incometotal: float
+  expensetotal: float
+  remainder: float
 
 class Budget(BudgetBase):
   id: int
@@ -48,7 +51,7 @@ class Budget(BudgetBase):
 
 class BudgetItemBase(BaseModel):
   name: str
-  amount: str
+  amount: float
   budget: int
   itemtype: str
   category: str
@@ -67,7 +70,7 @@ class BudgetItem(BudgetItemBase):
 
 class TransactionItemBase(BaseModel):
   name: str
-  amount: str
+  amount: float
   datetimestamp: str
   itemtype: str
   category: str

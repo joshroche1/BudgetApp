@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, LargeBinary
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, Float, String, LargeBinary
 from sqlalchemy.orm import relationship
 
 from .database import Base
@@ -29,6 +29,9 @@ class Budget(Base):
   owner = Column(String)   # email address
   currency = Column(String)   # USD, EUR, ect...
   notes = Column(String)
+  incometotal = Column(Float)
+  expensetotal = Column(Float)
+  remainder = Column(Float)
 
 
 class BudgetItem(Base):
@@ -37,7 +40,7 @@ class BudgetItem(Base):
   id = Column(Integer, primary_key=True, index=True)
   name = Column(String)
   description = Column(String)
-  amount = Column(String)
+  amount = Column(Float)
   budget = Column(Integer)   # Budget ID it is attached to
   itemtype = Column(String)   # Income, Bill, Expense, ect...
   category = Column(String)   # Paycheck, Pension, Mortgage, Rent, Utilities, Telecommunications, Entertainment, ect... 
@@ -51,7 +54,7 @@ class TransactionItem(Base):
   id = Column(Integer, primary_key=True, index=True)
   name = Column(String)
   description = Column(String)
-  amount = Column(String)
+  amount = Column(Float)
   itemtype = Column(String)   # Income, Bill, Expense, ect...
   category = Column(String)   # Paycheck, Pension, Mortgage, Rent, Utilities, Telecommunications, Entertainment, ect... 
   datetimestamp = Column(String)
