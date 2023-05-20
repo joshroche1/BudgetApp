@@ -34,6 +34,20 @@ def create_user(db: Session, user: schema.UserCreate):
   db.refresh(db_user)
   return db_user
 
+def update_user_email(db: Session, username: str, email: str):
+  user = db.query(models.User).filter(models.User.username == username).first()
+  user.email = email
+  db.add(user)
+  db.commit()
+  return user
+
+def update_user_password(db: Session, username: str, password: str):
+  user = db.query(models.User).filter(models.User.username == username).first()
+  user.password = hash_password(password)
+  db.add(user)
+  db.commit()
+  return user
+
 #
 def hash_password(password: str):
   bytestr = str.encode(password)
@@ -55,7 +69,7 @@ def authenticate_user(db: Session, username: str, password: str):
 
 #
 def fake_decode_token(token):
-  return models.User(email="user@test.tst", username="user" + str(token), password="testTEST")
+  return models.User(email="user@test.tst", username="user" + token, password="testTEST")
 
 def get_current_user(token: str = Depends(oauth2_scheme)):
   user = fake_decode_token(token)

@@ -1,44 +1,53 @@
-# Budget App 
-## based on Python FastAPI Template
-<https://github.com/joshroche1/projects/tree/master/templates/>
+# Python 3 Uvicorn/FastAPI Web Application Template
 
-<http://fastapi.tiangolo.com>
+###
 
-Contains:
- - FastAPI
- - SQLAlchemy
- - Uvicorn
+NOTE: Use user-management.py to fix users in db after updating repo.
 
-## Directory Structure
+## Dependencies:
 
-- .env
-- db.sqlite
-- /webapp/
-- - __init__.py
-- - main.py
-- - auth.py
-- - config.py
-- - database.py
-- - models.py
-- - schema.py
-- /templates/
-- - base.html
-- - index.html
-- - login.html
-- - settings.html
-- /static/
-- - CSS, JS, IMG, ect...
+- python3
+- python3-pip
+- gunicorn (manages uvicorn)
+- (pip) uvicorn
+- (pip) fastapi[all]
+  - rfc3986
+  - websockets
+  - uvloop
+  - ujson
+  - typing-extensions
+  - sniffio
+  - python-multipart
+  - orjson
+  - httptools
+  - email-validator
+  - pydantic
+  - anyio
+  - watchfiles, 
+  - starlette
+  - httpcore
+  - httpx
 
-## Web/REST Endpoints:
+To use PostgreSQL:
+- postgresql
+- (pip) psycopg2
 
-<http://localhost:8000/>
+### To run:
 
-<http://localhost:8000/login>
+- uvicorn main:app --reload --host 0.0.0.0
 
-## To Run in Developer Mode:
+gunicorn webapp.main:app -D \
+  --workers 1 \
+  --worker-class uvicorn.workers.UvicornWorker \
+  --chdir /opt/smc/fastapi/ \
+  --bind 0.0.0.0:8000 \
+  --log-level INFO \
+  --log-file /opt/smc/fastapi/gunicorn.log
 
-> uvicorn webapp.main:app --reload
+### Docker
 
-### Build
+> docker build --tag smc:latest .
 
-> uvicorn
+> docker container create smc:latest --name smc-py
+
+> docker exec -it --rm NAME/CONTAINERID

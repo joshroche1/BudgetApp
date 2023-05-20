@@ -1,0 +1,9 @@
+# System Management Console - Python-FastAPI version
+# Requirements
+
+dotenv
+sqlalchemy
+ansible
+ansible_runner
+fastapi[all]
+uvicorn

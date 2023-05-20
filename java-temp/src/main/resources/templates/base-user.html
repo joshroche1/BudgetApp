@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+  <link rel="shortcut icon" href="/img/favicon.ico">
+  <script src="/js/bootstrap.bundle.min.js"></script>
+  <title>{#insert title}{/}</title>
+  {#insert pagehead}{/}
+</head>
+<body>
+
+<header>
+  <nav class="navbar navbar-expand-sm bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand dropdown" href="/">BudgetApp</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        <ul class="navbar-nav">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">{#insert header}{/}</a>
+            <ul class="dropdown-menu">
+              <li><a class="btn btn-sm dropdown-item" href="/admin/settings">Settings</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <div class="btn-group" role="group" aria-label="Overview Button group">
+                  <a class="btn btn-sm dropdown-item" href="/overview">Overview</a>
+                </div>
+              </li>
+              <li>
+                <div class="btn-group" role="group" aria-label="Analysis Button group">
+                  <a class="btn btn-sm dropdown-item" href="/">Analysis</a>
+                </div>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <div class="btn-group" role="group" aria-label="Budget Button group">
+                  <a class="btn btn-sm dropdown-item" href="/budget/list">Budgets</a>
+                  <a class="btn btn-sm" href="/budget/add">+</a>
+                </div>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <div class="btn-group" role="group" aria-label="Account Button group">
+                  <a class="btn btn-sm dropdown-item" href="/account/list">Accounts</a>
+                  <a class="btn btn-sm" href="/account/add">+</a>
+                </div>
+              </li>
+              <li>
+                <div class="btn-group" role="group" aria-label="Transaction Button group">
+                  <a class="btn btn-sm dropdown-item" href="/transaction/list">Transactions</a>
+                  <a class="btn btn-sm" href="/transaction/import">+</a>
+                </div>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="/q/dev/">Dev UI</a></li>
+              <li><a class="dropdown-item" href="/test">Test Page</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">User</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/admin/userprofile">Profile</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item btn btn-sm btn-danger" href="/logout">Logout</a></li>
+            </ul>
+          </li>
+          {#insert navbar}{/}
+        </ul>
+      </div>
+
+    </div>
+  </nav>
+</header>
+
+<div class="container-fluid">
+  {#insert content}CONTENT SECTION{/}
+</div>
+
+</body>
+</html>

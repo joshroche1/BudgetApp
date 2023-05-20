@@ -18,6 +18,10 @@ class Settings(BaseSettings):
   database_name: str = ""
   database_user: str = ""
   database_password: str = ""
+  ansible_config: str = ""
+  ansible_hostsfile: str = ""
+  ansible_basedir: str = ""
+  ansible_playbookdir: str = ""
   base_dir: str = ""
   upload_dir: str = ""
     

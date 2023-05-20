@@ -1,0 +1,79 @@
+{#include base-user}
+{#title}BudgetApp - Account - {account.id}{/title}
+{#header}Account - {account.id}{/header}
+{#content}
+<div class="card m-1 p-1">
+  <div class="row">
+    <div class="col">
+      <a href="/account/list" class="btn btn-sm btn-secondary">LIST</a>
+    </div>
+    <div class="col">
+      <a href="#" class="btn btn-sm btn-secondary">#</a>
+    </div>
+    <div class="col">
+      <a href="#" class="btn btn-sm btn-secondary">#</a>
+    </div>
+    <div class="col">
+      <button class="btn btn-sm btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#filterpanel" aria-expanded="false" aria-controls="filterpanel">
+        Filters
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  
+  <div class="m-3 p-3">
+    
+    <a href="/account/detail/{account.id}" class="btn"><h3>{account.name}</h3></a>
+    
+    <div class="row m-1 p-1">
+      <div class="text-bg-light col-12 col-sm-3">ID</div>
+      <div class="col-12 col-sm-9">{account.id}</div>
+    </div>
+
+    <div class="row m-1 p-1">
+      <div class="text-bg-light col-12 col-sm-3">Name</div>
+      <div class="col-12 col-sm-9">{account.name}</div>
+    </div>
+    
+    <div class="row m-1 p-1">
+      <div class="text-bg-light col-12 col-sm-3">Type</div>
+      <div class="col-12 col-sm-9">{account.type}
+        <form action="#" method="">
+          <div class="input-group">
+            <select id="newvalue" name="newvalue" class="form-select">
+              <option value="" selected disabled>Select a Type</option>
+            </select>
+            <input type="submit" value="Update" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-success">
+          </div>
+        </form>
+      </div>
+    </div>
+    
+    <div class="row m-1 p-1">
+      <div class="text-bg-light col-12 col-sm-3">Currency</div>
+      <div class="col-12 col-sm-9">{account.currency}</div>
+    </div>
+    
+    <div class="row m-1 p-1">
+      <div class="text-bg-light col-12 col-sm-3">IBAN</div>
+      <div class="col-12 col-sm-9">{account.iban}</div>
+    </div>
+    
+    <div class="row m-1 p-1">
+      <div class="text-bg-light col-12 col-sm-3">BIC</div>
+      <div class="col-12 col-sm-9">{account.bic}</div>
+    </div>
+    
+    <div class="row m-1 p-1">
+      <div class="text-bg-light col-12 col-sm-3">Country</div>
+      <div class="col-12 col-sm-9">{account.country}</div>
+    </div>
+    
+  </div>
+</div>
+
+{/content}
+
+{/include}

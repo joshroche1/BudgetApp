@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+
+{% if g.user %}
+Account Detail - {{ account.id }}
+{% else %}
+{% endif %}
+
+{% endblock %}
+
+
+{% block header %}
+
+{% if g.user %}
+Account: {{ account.id }}
+{% else %}
+{% endif %}
+
+{% endblock %}
+
+
+{% block content %}
+
+{% if g.user %}
+<div class="card m-1 p-1">
+  <div class="row">
+    <div class="col">
+      <a href="/account/list" class="btn btn-sm btn-secondary">LIST</a>
+    </div>
+    <div class="col">
+      <a href="#" class="btn btn-sm btn-secondary">#</a>
+    </div>
+    <div class="col">
+      <a href="#" class="btn btn-sm btn-secondary">#</a>
+    </div>
+    <div class="col">
+      <form action="/account/delete/{{ account.id }}" method="post">
+        <input type="submit" value="DELETE" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-danger">
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  
+  <div class="m-3 p-3">
+    
+    <a href="/account/detail/{{ account.id }}" class="btn"><h3>Account: {{ account.id }}</h3></a>
+    
+    <div class="row m-1 p-1">
+      <div class="text-bg-light col-12 col-sm-3">ID</div>
+      <div class="col-12 col-sm-9">
+        <div class="btn-group">
+          <button type="button" class="btn btn-sm btn-light">{{ account.id }}</button>
+        </div>
+      </div>
+    </div>
+    <div class="row m-1 p-1">
+      <div class="text-bg-light col-12 col-sm-3">Name</div>
+      <div class="col-12 col-sm-9">
+        <form action="/account/update/{{ account.id }}/name" method="post">
+          <div class="input-group">
+            <input type="text" id="newvalue" name="newvalue" placeholder="{{ account.name }}" class="form-control" />
+            <input type="submit" value="Update" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-success">
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="row m-1 p-1">
+      <div class="text-bg-light col-12 col-sm-3">Type</div>
+      <div class="col-12 col-sm-9">
+        <form action="/account/update/{{ account.id }}/accounttype" method="post">
+          <div class="input-group">
+            <button type="button" class="btn btn-sm btn-light">{{ account.accounttype }}</button>
+            <select id="newvalue" name="newvalue" class="form-select">
+              <option value="" selected diabled>Type</option>
+              {% for accounttype in accounttypelist %}
+              <option value="{{ accounttype.value }}">{{ accounttype.value }}</option>
+              {% endfor %}
+            </select>
+            <input type="submit" value="Update" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-success">
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="row m-1 p-1">
+      <div class="text-bg-light col-12 col-sm-3">Currency</div>
+      <div class="col-12 col-sm-9">
+        <form action="/account/update/{{ account.id }}/currency" method="post">
+          <div class="input-group">
+            <button type="button" class="btn btn-sm btn-light">{{ account.currency }}</button>
+            <select id="newvalue" name="newvalue" class="form-select">
+              <option value="" selected diabled>Currency</option>
+              {% for currency in currencylist %}
+              <option value="{{ currency.value }}">{{ currency.value }}</option>
+              {% endfor %}
+            </select>
+            <input type="submit" value="Update" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-success">
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="row m-1 p-1">
+      <div class="text-bg-light col-12 col-sm-3">IBAN</div>
+      <div class="col-12 col-sm-9">
+        <form action="/account/update/{{ account.id }}/iban" method="post">
+          <div class="input-group">
+            <input type="text" id="newvalue" name="newvalue" placeholder="{{ account.iban }}" class="form-control" />
+            <input type="submit" value="Update" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-success">
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="row m-1 p-1">
+      <div class="text-bg-light col-12 col-sm-3">BIC</div>
+      <div class="col-12 col-sm-9">
+        <form action="/account/update/{{ account.id }}/bic" method="post">
+          <div class="input-group">
+            <input type="text" id="newvalue" name="newvalue" placeholder="{{ account.bic }}" class="form-control" />
+            <input type="submit" value="Update" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-success">
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="row m-1 p-1">
+      <div class="text-bg-light col-12 col-sm-3">Country</div>
+      <div class="col-12 col-sm-9">
+        <form action="/account/update/{{ account.id }}/category" method="post">
+          <div class="input-group">
+            <button type="button" class="btn btn-sm btn-light">{{ account.country }}</button>
+            <select id="newvalue" name="newvalue" class="form-select">
+              <option value="" selected diabled>Country</option>
+              {% for country in countrylist %}
+              <option value="{{ country.value }}">{{ country.value }}</option>
+              {% endfor %}
+            </select>
+            <input type="submit" value="Update" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-success">
+          </div>
+        </form>
+      </div>
+    </div>
+    
+  </div>
+  
+</div>
+
+{% else %}
+<div class="container">
+</div>
+{% endif %}
+
+{% endblock %}

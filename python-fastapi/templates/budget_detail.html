@@ -4,9 +4,8 @@
 {% block title %}
 
 {% if g.user %}
-BudgetApp
+Budget Detail - {{ budget.id }}
 {% else %}
-WEBAPP
 {% endif %}
 
 {% endblock %}
@@ -15,153 +14,150 @@ WEBAPP
 {% block header %}
 
 {% if g.user %}
-BudgetApp
+Budget: {{ budget.id }}
 {% else %}
-WEBAPP
 {% endif %}
 
 {% endblock %}
 
 
 {% block content %}
-<div class="container">
-  <div class="m-3 p-3">
+
+{% if g.user %}
+<div class="card m-1 p-1">
+  <div class="row">
+    <div class="col">
+      <a href="/budget/list" class="btn btn-sm btn-secondary">LIST</a>
+    </div>
+    <div class="col">
+      <a href="#" class="btn btn-sm btn-secondary">#</a>
+    </div>
+    <div class="col">
+      <a href="#" class="btn btn-sm btn-secondary">#</a>
+    </div>
+    <div class="col">
+      <form action="/budget/delete/{{ budget.id }}" method="post">
+        <input type="submit" value="DELETE" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-danger">
+      </form>
+    </div>
   </div>
 </div>
-{% if g.user %}
-<div class="container">
-  <div class="m-3 p-3">
-    <h1>{{ budget.name }}</h1>
 
-    <div class="card m-1 p-1">
-      <div class="card-header">
-        <div class="row">
-          <div class="col"><h3>{{ budget.id }} {{ budget.name }}</h3></div>
-          <div class="col"><p>{{ budget.owner }}</p></div>
-          <div class="col"><p>{{ budget.currency }}</p></div>
-          <div class="col">
-            <form action="/budget/detail/{{ budget.id }}/updatevalues" method="post">
-              <input type="submit" value="Update" class="btn btn-sm btn-primary">
-            </form>
-          </div>
-          <div class="col">
-            <form action="/budget/delete/{{ budget.id }}" method="post">
-              <input type="submit" value="Delete" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-danger">
-            </form>
-          </div>
+<div class="container">
+  
+  <div class="m-3 p-3">
+    
+    <a href="/budget/detail/{{ budget.id }}" class="btn"><h3>{{ budget.name }}</h3></a>
+    
+    <div class="row m-1 p-1">
+      <div class="text-bg-light col-12 col-sm-3">ID</div>
+      <div class="col-12 col-sm-9">
+        <div class="btn-group">
+          <button type="button" class="btn btn-sm btn-light">{{ budget.id }}</button>
         </div>
       </div>
-      <div class="card-body">
-        <table class="table">
-          {% for incitem in incomeitems %}
-            <tr>
-              <td>
-                <a href="/budgetitem/ical/{{ incitem.id }}" class="btn btn-sm btn-light">{{ incitem.name }}</a>
-              </td>
-              <td>{{ incitem.amount }}</td>
-              <td>{{ incitem.category }}</td>
-              <td>{{ incitem.recurrence }} - {{ incitem.recurrence_day }}</td>
-              <td>{{ incitem.description }}</td>
-              <td>
-                <form action="/budgetitem/delete/{{ incitem.id }}" method="post">
-                  <input type="hidden" id="budgetid" name="budgetid" value="{{ budget.id }}">
-                  <input type="submit" value="Delete" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-danger">
-                </form>
-              </td>
-            </tr>
-          {% endfor %}
-          <tr>
-            <th>Income Total</th>
-            <th>{{ budget.incometotal }}</th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-          </tr>
-          {% for expitem in expenseitems %}
-            <tr>
-              <td>
-                <a href="/budgetitem/ical/{{ expitem.id }}" class="btn btn-sm btn-light">{{ expitem.name }}</a>
-              </td>
-              <td>{{ expitem.amount }}</td>
-              <td>{{ expitem.category }}</td>
-              <td>{{ expitem.recurrence }} - {{ expitem.recurrence_day }}</td>
-              <td>{{ expitem.description }}</td>
-              <td>
-                <form action="/budgetitem/delete/{{ expitem.id }}" method="post">
-                  <input type="hidden" id="budgetid" name="budgetid" value="{{ budget.id }}">
-                  <input type="submit" value="Delete" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-danger">
-                </form>
-              </td>
-            </tr>
-          {% endfor %}
-          <tr>
-            <th>Expense Total</th>
-            <th>{{ budget.expensetotal }}</th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-          </tr>
-          <tr>
-            <th>Remainder</th>
-            <th>{{ budget.remainder }}</th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-          </tr>
-        </table>
-      </div>
-      <div class="card-footer">
-        <form action="/budgetitem/create" method="post">
-          <div class="row">
-            <div class="col">
-              <input type="text" id="name" name="name" placeholder="Name" class="form-control">
-            </div>
-            <div class="col">
-              <input type="text" id="amount" name="amount" placeholder="Amount" class="form-control">
-              <input type="hidden" id="budgetid" name="budgetid" value="{{ budget.id }}">
-            </div>
-            <div class="col">
-              <select id="itemtype" name="itemtype" class="form-select">
-                <option value="" disabled selected>Type</option>
-                {% for ityp in wl_type %}
-                <option value="{{ ityp.value }}">{{ ityp.value }}</option>
-                {% endfor %}
-              </select>
-            </div>
-            <div class="col">
-              <select id="category" name="category" class="form-select">
-                <option value="" disabled selected>Category</option>
-                {% for cat in wl_category %}
-                <option value="{{ cat.value }}">{{ cat.value }}</option>
-                {% endfor %}
-              </select>
-            </div>
-            <div class="col">
-              <select id="recurrence" name="recurrence" class="form-select">
-                <option value="" disabled selected>Recurrence</option>
-                {% for recur in wl_recurrence %}
-                <option value="{{ recur.value }}">{{ recur.value }}</option>
-                {% endfor %}
-              </select>
-            </div>
-            <div class="col">
-              <input type="number" id="recurrence_day" name="recurrence_day" placeholder="Day" min="1" max="31" class="form-control">
-            </div>
-            <div class="col">
-              <input type="submit" value="Add" class="btn btn-sm btn-success">
-              <input type="reset" class="btn btn-sm btn-secondary">
-            </div>
+    </div>
+    <div class="row m-1 p-1">
+      <div class="text-bg-light col-12 col-sm-3">Name</div>
+      <div class="col-12 col-sm-9">
+        <form action="/budget/update/{{ budget.id }}/name" method="post">
+          <div class="input-group">
+            <input type="text" id="newvalue" name="newvalue" placeholder="{{ budget.name }}" class="form-control" />
+            <input type="submit" value="Update" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-success">
           </div>
         </form>
       </div>
-      
+    </div>
+    <div class="row m-1 p-1">
+      <div class="text-bg-light col-12 col-sm-3">Description</div>
+      <div class="col-12 col-sm-9">
+        <form action="/budget/update/{{ budget.id }}/description" method="post">
+          <textarea id="newvalue" name="newvalue" placeholder="{{ budget.description }}" class="form-control"></textarea>
+          <input type="submit" value="Update" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-success">
+        </form>
+      </div>
     </div>
     
   </div>
+  
+  <div class="m-1 p-1">
+        
+    <form action="/budget/{{ budget.id }}/item/create" method="post">
+      <fieldset><legend>New Budget Item</legend>
+      <div class="row">
+        <input type="hidden" id="budgetid" name="budgetid" value="{{ budget.id }}" />
+        <div class="col-12 col-sm-6 col-md-3">
+          <input type="text" id="name" name="name" placeholder="Name" class="form-control" />
+          <input type="text" id="description" name="description" placeholder="Description" class="form-control" />
+        </div>
+        <div class="col-12 col-sm-5 col-md-3">
+          <input type="text" id="amount" name="amount" placeholder="Amount" class="form-control" />
+        </div>
+        <div class="col-12 col-sm-6 col-md-3">
+          <select id="category" name="category" class="form-select">
+            <option value="" selected disabled>Category</option>
+            {% for category in categories %}
+            <option value="{{ category.value }}">{{ category.value }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-12 col-sm-5 col-md-2">
+          <input type="number" id="recurrenceday" name="recurrenceday" class="form-control" />
+          <select id="recurrence" name="recurrence" class="form-select">
+            <option value="" selected disabled>Recurrence</option>
+            <option value="Weekly">Weekly</option>
+            <option value="Bi-weekly">Bi-weekly</option>
+            <option value="Monthly">Monthly</option>
+            <option value="Bi-monthly">Bi-monthly</option>
+            <option value="Yearly">Yearly</option>
+          </select>
+        </div>
+      </div>
+      <div class="btn-group" role="group" aria-label="Submit Reset group">
+        <input type="submit" value="&#9655;" class="btn btn-sm btn-success">
+        <input type="reset" value="&#8634;" class="btn btn-sm btn-secondary">
+      </div>
+      </fieldset>
+    </form>
+    
+    <table class="table">
+
+      <tr>
+        <th><a href="" class="btn btn-sm">ID</a></th>
+        <th><a href="" class="btn btn-sm">Name</a></th>
+        <th><a href="" class="btn btn-sm">Description</a></th>
+        <th><a href="" class="btn btn-sm">Amount</a></th>
+        <th><a href="" class="btn btn-sm">Category</a></th>
+        <th><a href="" class="btn btn-sm">Recurrence</a></th>
+        <th><a href="" class="btn btn-sm">Recur Day</a></th>
+        <th></th>
+      </tr>
+      {% for budgetitem in budgetitemlist %}
+      <tr>
+        <td>{{ budgetitem.id }}
+          <div class="input-group">
+            
+          </div>
+        </td>
+        <td>{{ budgetitem.name }}</td>
+        <td>{{ budgetitem.description }}</td>
+        <td>{{ budgetitem.amount }}</td>
+        <td>{{ budgetitem.category }}</td>
+        <td>{{ budgetitem.recurrence }}</td>
+        <td>{{ budgetitem.recurrenceday }}</td>
+        <td>
+          <form action="/budget/{{ budget.id }}/item/delete/{{ budgetitem.id }}" method="post">
+            <input type="submit" value="X" onclick="return confirm('Are you sure you want to delete this item?');" class="btn btn-sm btn-danger">
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+    
+  </div>
+  
 </div>
+
 {% else %}
 <div class="container">
 </div>

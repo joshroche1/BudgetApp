@@ -17,30 +17,11 @@ class User(UserBase):
     orm_mode = True
 
 
-class WeblistBase(BaseModel):
-  name: str
-  value: str
-
-class WeblistCreate(WeblistBase):
-  notes: str
-
-class Weblist(WeblistBase):
-  id: int
-
-  class Config:
-    orm_mode = True
-
-
 class BudgetBase(BaseModel):
   name: str
-  owner: str
-  currency: str
 
 class BudgetCreate(BudgetBase):
-  notes: str
-  incometotal: float
-  expensetotal: float
-  remainder: float
+  description: str
 
 class Budget(BudgetBase):
   id: int
@@ -52,33 +33,50 @@ class Budget(BudgetBase):
 class BudgetItemBase(BaseModel):
   name: str
   amount: float
-  budget: int
-  itemtype: str
-  category: str
-  recurrence: str
-  recurrence_day: str
 
 class BudgetItemCreate(BudgetItemBase):
-  description: str
+  budgetid: int
+  category: str
+  recurrence: str
+    
 
 class BudgetItem(BudgetItemBase):
   id: int
+  description: str
+  recurrenceday: int
 
   class Config:
     orm_mode = True
 
 
-class TransactionItemBase(BaseModel):
-  name: str
-  amount: float
+class TransactionBase(BaseModel):
   datetimestamp: str
-  itemtype: str
-  category: str
+  amount: float
+  name: str
 
-class TransactionItemCreate(TransactionItemBase):
+class TransactionCreate(TransactionBase):
   description: str
+  category: str
+  accountid: int
 
-class TransactionItem(BudgetItemBase):
+
+class Transaction(TransactionBase):
+  id: int
+  description: str
+  recurrenceday: int
+
+  class Config:
+    orm_mode = True
+
+
+class WeblistBase(BaseModel):
+  name: str
+  value: str
+
+class WeblistCreate(WeblistBase):
+  notes: str
+
+class Weblist(WeblistBase):
   id: int
 
   class Config:

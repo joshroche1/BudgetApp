@@ -1,0 +1,73 @@
+{#include base-user}
+{#title}BudgetApp - Overview{/title}
+{#header}Overview{/header}
+{#content}
+<div class="card m-1 p-1">
+  <div class="row">
+    <div class="col">
+      <a href="/budget/list" class="btn btn-sm btn-secondary">Budgets</a>
+    </div>
+    <div class="col">
+      <a href="/account/list" class="btn btn-sm btn-secondary">Accounts</a>
+    </div>
+    <div class="col">
+      <a href="/transactions/list" class="btn btn-sm btn-secondary">Transactions</a>
+    </div>
+    <div class="col">
+      <button class="btn btn-sm btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#filterpanel" aria-expanded="false" aria-controls="filterpanel">
+        Filters
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="filterpanel" class="collapse m-1 p-1">
+  <div class="row">
+    
+    <div class="col-12 col-sm-4">
+      <form action="" method="">
+        <div class="input-group">
+          <input type="hidden" id="filterkey" name="filterkey" value="Category">
+          <select id="filtervalue" name="filtervalue" class="form-select">
+            <option value="" disabled selected>Category</option>
+          </select>
+          <input type="submit" value="Filter" class="btn btn-sm btn-success">
+        </div>
+      </form>
+    </div>
+    <div class="col-12 col-sm-4">
+      <form action="" method="">
+        <div class="input-group">
+          <input type="hidden" id="filterkey" name="filterkey" value="Category">
+          <select id="filtervalue" name="filtervalue" class="form-select">
+            <option value="" disabled selected>Category</option>
+          </select>
+          <input type="submit" value="Filter" class="btn btn-sm btn-success">
+        </div>
+      </form>
+    </div>
+    <div class="col-12 col-sm-4">
+      <form action="" method="">
+        <div class="input-group">
+          <input type="hidden" id="filterkey" name="filterkey" value="Category">
+          <select id="filtervalue" name="filtervalue" class="form-select">
+            <option value="" disabled selected>Category</option>
+          </select>
+          <input type="submit" value="Filter" class="btn btn-sm btn-success">
+        </div>
+      </form>
+    </div>
+    
+  </div>
+</div>
+
+<div class="m-3 p-3">
+  
+  <h2>Overview</h2>
+  
+  <p>Place current overview charts here</p>
+  
+</div>
+{/content}
+
+{/include}

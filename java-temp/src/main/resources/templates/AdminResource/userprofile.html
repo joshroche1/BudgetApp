@@ -1,0 +1,88 @@
+{#include base-user}
+{#title}SMC - User Profile{/title}
+{#header}User Profile{/header}
+{#content}
+
+<div class="container">
+  <div class="card m-1 p-1">
+    <div class="card-header">
+      <h3>Profile - {currentuser.username}</h3>
+    </div>
+    
+    <div class="card-body">
+      
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+          <div class="row">
+            <div class="col">
+              ID
+            </div>
+            <div class="col">
+              {currentuser.id}
+            </div>
+          </div>
+        </li>
+        
+        <li class="list-group-item">
+          <div class="row">
+            <div class="col">
+              Username
+            </div>
+            <div class="col">
+              {currentuser.username}
+            </div>
+          </div>
+        </li>
+        
+        <li class="list-group-item">
+          <div class="row">
+            <div class="col">
+              Email
+            </div>
+            <div class="col">
+              <div class="btn-group">
+                <a href="mailto:{currentuser.email}"><span class="btn btn-sm">&#128231;</span><b class="btn btn-sm btn-light">{currentuser.email}</b></a>
+              </div>
+              <form action="/admin/user/{currentuser.id}/email/update" method="post">
+                <input type="email" id="email" name="email" placeholder="Update email address" class="form-control m-1 p-1" autocomplete="off" required> 
+                <div class="input-group">
+                  <input type="submit" value="Update" onclick="return confirm('Update email?');" class="btn btn-sm btn-success">
+                  <input type="reset" class="btn btn-sm btn-secondary">
+                </div>
+              </form>
+            </div>
+          </div>
+        </li>
+        
+        <li class="list-group-item">
+          <div class="row">
+            <div class="col">
+              Password
+            </div>
+            <div class="col">
+              <form action="/admin/user/{currentuser.id}/password/update" method="post">
+                <input type="password" id="newpassword" name="newpassword" placeholder="Enter a new password" class="form-control m-1 p-1" autocomplete="off" required>
+                <input type="password" id="passwordcheck" name="passwordcheck" placeholder="Verify password" class="form-control m-1 p-1" autocomplete="off" required> 
+                <div class="input-group">
+                  <input type="submit" value="Update" onclick="return confirm('Update password?');" class="btn btn-sm btn-success">
+                  <input type="reset" class="btn btn-sm btn-secondary">
+                </div>
+              </form>
+            </div>
+          </div>
+        </li>
+        
+      </ul>
+    </div>
+    
+    <div class="card-footer">
+      <form action="" method="">
+        <input type="submit" value="Delete User" onclick="return confirm('Are you sure you want to delete your user?');" class="btn btn-sm btn-danger">
+      </form>
+    </div>
+    
+  </div>
+</div>
+{/content}
+
+{/include}

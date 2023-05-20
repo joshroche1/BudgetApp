@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+
+{% if g.user %}
+Transaction Import
+{% else %}
+{% endif %}
+
+{% endblock %}
+
+
+{% block header %}
+
+{% if g.user %}
+Transaction Import
+{% else %}
+{% endif %}
+
+{% endblock %}
+
+
+{% block content %}
+
+{% if g.user %}
+<div class="card m-1 p-1">
+  <div class="row">
+    <div class="col">
+      <a href="/transaction/list" class="btn btn-sm btn-secondary">LIST</a>
+    </div>
+    <div class="col">
+      <a href="/transaction/importview" class="btn btn-sm btn-secondary">IMPORT</a>
+    </div>
+    <div class="col">
+      <a href="#" class="btn btn-sm btn-secondary">#</a>
+    </div>
+    <div class="col">
+    </div>
+  </div>
+</div>
+
+<div class="m-1 p-1">
+  
+  <form action="/transaction/import" method="post" enctype="multipart/form-data">
+    <div class="row">
+      <div class="col">
+        <input type="file" id="uploadedfile" name="uploadedfile" class="form-control" />
+      </div>
+      <div class="col">
+        <select id="fileformat" name="fileformat" class="form-select">
+          <option value="csv" selected>CSV</option>
+          <option value="txt">TXT</option>
+        </select>
+      </div>
+      <div class="col">
+        <select id="delimiter" name="delimiter" class="form-select">
+          <option value="," selected>","</option>
+          <option value=";">";"</option>
+        </select>
+      </div>
+      <div class="col">
+        <label for="header" class="form-label">Has Header</label>
+        <select id="header" name="header" class="form-select">
+          <option value="yes" selected>Yes</option>
+          <option value="no">No</option>
+        </select>
+      </div>
+      <div class="col">
+        <div class="input-group">
+          <input type="submit" value="Add" class="btn btn-sm btn-success">
+          <input type="reset" class="btn btn-sm btn-secondary">
+        </div>
+      </div>
+    </div>
+  </form>
+  
+  <div class="row">
+    
+    <div class="col">
+      <div class="table-responsive">
+        <table class="table">
+          {% for linearr in importdict %}
+          <tr>
+            {% if loop.first %}
+            {% for item in linearr %}
+            <th>
+              <input type="checkbox" id="column-{{ loop.index }}" name="column-{{ loop.index }}" class="form-check-input">
+              <label for="column-{{ loop.index }}" class="form-check-label">Keep Col-{{ loop.index }}</label>
+              <select id="col-{{ loop.index }}-category" name="col-{{ loop.index }}-category" class="form-select">
+                <option value="Default" selected>Select a Category</option>
+                {% for category in categories %}
+                <option value="{{ category.value }}">{{ category.value }}</option>
+                {% endfor %}
+              </select>
+            </th>
+            {% endfor %}
+            {% else %}
+            {% for item in linearr %}
+            <td>{{ item }}</td>
+            {% endfor %}
+            {% endif %}
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+        
+  </div>
+</div>
+
+{% else %}
+<div class="container">
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,10 +1,8 @@
-from fastapi import Depends
-
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from . import models, schema
-from .database import SessionLocal
-
+from .database import SessionLocal, engine
+from . import models, schema, config
 
 
 def get_db():
@@ -15,46 +13,57 @@ def get_db():
     db.close()
 
 
-async def get_budgetitems(db: Session = Depends(get_db)):
-  budgetitems = db.query(models.BudgetItem).order_by(models.BudgetItem.id).all()
-  return budgetitems
+def get_budgetitems(db: Session):
+  budgetitemlist = db.query(models.BudgetItem).all()
+  return budgetitemlist
 
-async def get_budgetitem(id: int, db: Session = Depends(get_db)):
-  budgetitem = db.query(models.BudgetItem).filter(models.BudgetItem.id == id).first()
+def get_budgetitem(db: Session, bid):
+  budgetitem = db.query(models.BudgetItem).filter(models.BudgetItem.id == bid).first()
   return budgetitem
 
-async def get_items_for_budget(budgetid: int, db: Session = Depends(get_db)):
-  budgetitem = db.query(models.BudgetItem).filter(models.BudgetItem.budget == budgetid).all()
+def get_budgetitems_for_budget(db: Session, bid):
+  budgetitem = db.query(models.BudgetItem).filter(models.BudgetItem.budgetid == bid).all()
   return budgetitem
 
-async def get_items_for_budget_by_type(bid: int, itemtype: str, db: Session = Depends(get_db)):
-  budgetitem = db.query(models.BudgetItem).filter(models.BudgetItem.budget == bid).filter(models.BudgetItem.itemtype == itemtype).all()
-  return budgetitem
-
-async def create_budgetitem(newname: str, newamount: str, newbudget: int, newitemtype: str, newcategory: str, newrecurrence: str, newrecurrence_day: int, db: Session = Depends(get_db)):
-  if not newname:
-    return {"error":"Name needed"}
-  if not newamount:
-    return {"error":"Value needed"}
-  if not newbudget:
-    newbudget = 1
-  if not newitemtype:
-    newitemtype = "Expense"
-  if not newcategory:
-    newcategory = "Other"
-  if not newrecurrence:
-    newrecurrence = "Monthly"
-  if not newrecurrence_day:
-    newrecurrence_day = 1
-  budgetitem = models.BudgetItem(name=newname, amount=newamount, budget=newbudget, itemtype=newitemtype, category=newcategory, recurrence=newrecurrence, recurrence_day=newrecurrence_day)
+def add_budgetitem(db: Session, newbudgetitem):
+  budgetitem = models.BudgetItem(name=newbudgetitem['name'], description=newbudgetitem['description'], amount=newbudgetitem['amount'], budgetid=newbudgetitem['budgetid'], category=newbudgetitem['category'], recurrence=newbudgetitem['recurrence'], recurrenceday=newbudgetitem['recurrenceday'])
   db.add(budgetitem)
   db.commit()
   return budgetitem
 
-async def delete_budgetitem(id: int, db: Session = Depends(get_db)):
-  budgetitem = db.query(models.BudgetItem).filter(models.BudgetItem.id == id).first()
+def delete_budgetitem(db: Session, bid):
+  budgetitem = db.query(models.BudgetItem).filter(models.BudgetItem.id == bid).first()
   if budgetitem is None:
     raise HTTPException(status_code=404, detail="BudgetItem not found")
   db.delete(budgetitem)
   db.commit()
-  return {"message":"Successfully delete budgetitem item"}
+  return True
+
+def update_budgetitem_field(db: Session, bid, field, newvalue):
+  budgetitem = db.query(models.BudgetItem).filter(models.BudgetItem.id == bid).first()
+  if field == "name": 
+    budgetitem.name = newvalue
+    db.commit()
+  elif field == "description": 
+    budgetitem.description = newvalue
+    db.commit()
+  elif field == "amount": 
+    budgetitem.amount = newvalue
+    db.commit()
+  elif field == "budgetid": 
+    budgetitem.budgetid = newvalue
+    db.commit()
+  elif field == "category": 
+    budgetitem.category = newvalue
+    db.commit()
+  elif field == "recurrence": 
+    budgetitem.recurrence = newvalue
+    db.commit()
+  elif field == "recurrenceday": 
+    budgetitem.recurrenceday = newvalue
+    db.commit()
+  else: 
+    return False
+  return True
+
+#
