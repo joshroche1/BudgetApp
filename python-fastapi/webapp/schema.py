@@ -62,8 +62,7 @@ class TransactionCreate(TransactionBase):
 
 class Transaction(TransactionBase):
   id: int
-  description: str
-  recurrenceday: int
+  currency: str
 
   class Config:
     orm_mode = True

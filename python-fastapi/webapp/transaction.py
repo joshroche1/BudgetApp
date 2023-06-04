@@ -65,35 +65,57 @@ def parse_csv_info(csvfilecontent, delimiter, filename, fileformat):
     csvlines = csvfilecontent.splitlines()
     numcols = len(csvlines[0].split(delimiter))
     numrows = len(csvlines)
-    resultarr.append(filename)
-    resultarr.append(fileformat)
-    msg = "Colums: " + str(numcols) + " Rows: " + str(numrows)
-    resultarr.append(msg)
     for csvline in csvlines:
       csvitems = csvline.split(delimiter)
       tmplist = []
       for csvitem in csvitems:
-        tmplist.append(csvitem)
+        tmpstr = csvitem.replace("\"","")
+        tmplist.append(tmpstr)
       resultarr.append(tmplist)
   except Exception as ex:
     resultarr.append(str(ex))
   return resultarr
 
-def parse_format_csv(csvfilecontent, delimiter, datetimefield, amountfield, categoryfield, namefield, descriptionfield):
+def parse_format_csv(db: Session, csvfilecontent, delimiter, header, datetimefield, amountfield, categoryfield, namefield, descriptionfield, currency, accountid):
+  print("parse_format_csv")
   resultarr = []
   try:
     csvlines = csvfilecontent.splitlines()
     numcols = len(csvlines[0].split(delimiter))
     numrows = len(csvlines)
     for csvline in csvlines:
-      csvitems = csvline.split(delimiter)
-      tmplist = []
-      tmplist.append(csvitems[int(datetimefield)-1])
-      tmplist.append(csvitems[int(amountfield)-1])
-      tmplist.append(csvitems[int(categoryfield)-1])
-      tmplist.append(csvitems[int(namefield)-1])
-      tmplist.append(csvitems[int(descriptionfield)-1])
-      resultarr.append(tmplist)
+      if header == "yes":
+        resultarr.append("")
+        header = "no"
+      else:
+        csvitems = csvline.split(delimiter)
+        tmplist = []
+        tmp1 = csvitems[int(datetimefield)-1].replace('"','')
+        tmplist.append(tmp1)
+        print(tmp1)
+        tmp2 = csvitems[int(amountfield)-1].replace('"','').replace(',','.')
+        tmplist.append(tmp2)
+        print(tmp2)
+        tmp3 = csvitems[int(categoryfield)-1].replace('"','')
+        tmplist.append(tmp3)
+        print(tmp3)
+        tmp4 = csvitems[int(namefield)-1].replace('"','')
+        tmplist.append(tmp4)
+        print(tmp4)
+        tmp5 = csvitems[int(descriptionfield)-1].replace('"','')
+        tmplist.append(tmp5)
+        print(tmp5)
+        resultarr.append(tmplist)
+        newtransaction = {
+          "datetimestamp": tmp1,
+          "amount": float(tmp2),
+          "category": tmp3,
+          "name": tmp4,
+          "description": tmp5,
+          "currency": currency,
+          "accountid": int(accountid)
+        }
+        add_transaction(db, newtransaction)
   except Exception as ex:
     resultarr.append(str(ex))
   return resultarr

@@ -32,8 +32,8 @@ INSERT INTO weblist (name,value) VALUES ('Country','DE');
 --- Sample Data
 ---
 
-INSERT INTO transactions (datetimestamp,amount,category,name,description,accountid) VALUES (
-  '20230101 00:00:00',1234.56,'Income','Paycheck','Work Income',1
+INSERT INTO transactions (datetimestamp,amount,category,currency,name,description,accountid) VALUES (
+  '20230101 00:00:00',1234.56,'Income','USD','Paycheck','Work Income',1
 );
 
 INSERT INTO accounts (name,accounttype,currency,iban,bic,country) VALUES (

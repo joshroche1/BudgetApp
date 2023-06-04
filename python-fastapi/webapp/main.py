@@ -322,8 +322,11 @@ async def transaction_importview(request: Request, db: Session = Depends(get_db)
   message()
   importdict = {}
   uploadedfilelist = get_uploaded_files()
+  accountlist = get_accounts(db)
   categories = config.get_weblist(db, "Category")
-  return templates.TemplateResponse("transaction_import.html", {"request": request, "messages": messages, "g": g, "categories": categories, "importdict": importdict, "uploadedfilelist": uploadedfilelist})
+  currencylist = config.get_weblist(db, "Currency")
+  accounttypelist = config.get_weblist(db, "AccountType")
+  return templates.TemplateResponse("transaction_import.html", {"request": request, "messages": messages, "g": g, "categories": categories, "currencylist": currencylist, "accountlist": accountlist, "importdict": importdict, "uploadedfilelist": uploadedfilelist})
 
 """
 Import writes file into upload folder.
@@ -346,8 +349,11 @@ async def transaction_import(request: Request, uploadedfile: UploadFile = File(.
     result = str(ex)
   message(result)
   uploadedfilelist = get_uploaded_files()
+  accountlist = get_accounts(db)
   categories = config.get_weblist(db, "Category")
-  return templates.TemplateResponse("transaction_import.html", {"request": request, "messages": messages, "g": g, "categories": categories, "importdict": importdict, "uploadedfilelist": uploadedfilelist})
+  currencylist = config.get_weblist(db, "Currency")
+  accounttypelist = config.get_weblist(db, "AccountType")
+  return templates.TemplateResponse("transaction_import.html", {"request": request, "messages": messages, "g": g, "categories": categories, "currencylist": currencylist, "accountlist": accountlist, "importdict": importdict, "uploadedfilelist": uploadedfilelist})
 
 @app.post("/transaction/uploadedfileview", response_class=HTMLResponse)
 async def transaction_uploadedfileview(request: Request, uploadedfile: str = Form(...), db: Session = Depends(get_db)):
@@ -361,8 +367,11 @@ async def transaction_uploadedfileview(request: Request, uploadedfile: str = For
     result = str(ex)
   message(result)
   uploadedfilelist = get_uploaded_files()
+  accountlist = get_accounts(db)
   categories = config.get_weblist(db, "Category")
-  return templates.TemplateResponse("transaction_import.html", {"request": request, "messages": messages, "g": g, "categories": categories, "importdict": importdict, "uploadedfilelist": uploadedfilelist})
+  currencylist = config.get_weblist(db, "Currency")
+  accounttypelist = config.get_weblist(db, "AccountType")
+  return templates.TemplateResponse("transaction_import.html", {"request": request, "messages": messages, "g": g, "categories": categories, "currencylist": currencylist, "accountlist": accountlist, "importdict": importdict, "uploadedfilelist": uploadedfilelist})
 
 @app.post("/transaction/uploadedformatview", response_class=HTMLResponse)
 async def transaction_uploadedformatview(request: Request, uploadedfile: str = Form(...), delimiter: str = Form(...), fileformat: str = Form(...), db: Session = Depends(get_db)):
@@ -377,24 +386,30 @@ async def transaction_uploadedformatview(request: Request, uploadedfile: str = F
     result = str(ex)
   message(result)
   uploadedfilelist = get_uploaded_files()
+  accountlist = get_accounts(db)
   categories = config.get_weblist(db, "Category")
-  return templates.TemplateResponse("transaction_import.html", {"request": request, "messages": messages, "g": g, "categories": categories, "importdict": importdict, "uploadedfilelist": uploadedfilelist})
+  currencylist = config.get_weblist(db, "Currency")
+  accounttypelist = config.get_weblist(db, "AccountType")
+  return templates.TemplateResponse("transaction_import.html", {"request": request, "messages": messages, "g": g, "categories": categories, "currencylist": currencylist, "accountlist": accountlist, "importdict": importdict, "uploadedfilelist": uploadedfilelist})
 
 @app.post("/transaction/importformatted", response_class=HTMLResponse)
-async def transaction_importformatted(request: Request, uploadedfile: str = Form(...), datetimefield: str = Form(...), amountfield: str = Form(...), categoryfield: str = Form(...), namefield: str = Form(...), descriptionfield: str = Form(...), db: Session = Depends(get_db)):
+async def transaction_importformatted(request: Request, uploadedfile: str = Form(...), delimiter: str = Form(...), currency: str = Form(...), header: str = Form(...), accountid: str = Form(...), datetimefield: str = Form(...), amountfield: str = Form(...), categoryfield: str = Form(...), namefield: str = Form(...), descriptionfield: str = Form(...), db: Session = Depends(get_db)):
+  print("transaction_importformatted")
   result = ""
   importdict = {}
   try:
     filepath = "/upload/" + uploadedfile
     filecontents = read_file(filepath)
-    importdict = parse_format_csv(filecontents, delimiter, datetimefield, amountfield, categoryfield, namefield, descriptionfield)
-    result = "File: " + filename + "\nFile Format: " + fileformat + "\n- Date/Time: " + datetimefield + "\n- Amount: " + amountfield + "\n- Category: " + categoryfield + "\n- Name: " + namefield + "\n- Description: " + descriptionfield
+    result = parse_format_csv(db, filecontents, delimiter, header, datetimefield, amountfield, categoryfield, namefield, descriptionfield, currency, accountid)
   except Exception as ex:
     result = str(ex)
   message(result)
   uploadedfilelist = get_uploaded_files()
+  accountlist = get_accounts(db)
   categories = config.get_weblist(db, "Category")
-  return templates.TemplateResponse("transaction_import.html", {"request": request, "messages": messages, "g": g, "categories": categories, "importdict": importdict, "uploadedfilelist": uploadedfilelist})
+  currencylist = config.get_weblist(db, "Currency")
+  importdict = {}
+  return templates.TemplateResponse("transaction_import.html", {"request": request, "messages": messages, "g": g, "categories": categories, "currencylist": currencylist, "accountlist": accountlist, "importdict": importdict, "uploadedfilelist": uploadedfilelist})
 
 ###
 

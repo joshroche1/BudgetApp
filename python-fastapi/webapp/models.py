@@ -49,6 +49,7 @@ class Transaction(Base):
   datetimestamp = Column(String)
   amount = Column(Float)
   category = Column(String, default="")
+  currency = Column(String, default="")
   name = Column(String, default="")
   description = Column(String, default="")
   accountid = Column(Integer)

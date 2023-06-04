@@ -213,6 +213,23 @@ Transaction Import
                   <option value=",">","</option>
                   <option value=";">";"</option>
                 </select>
+                <select id="header" name="header" class="form-select">
+                  <option value="yes" selected>Has Header</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+                <select id="accountid" name="accountid" class="form-select">
+                  <option value="0" selected>Account ID</option>
+                  {% for account in accountlist %}
+                  <option value="{{ account.id }}">{{ account.name }}</option>
+                  {% endfor %}
+                </select>
+                <select id="currency" name="currency" class="form-select">
+                  <option value="" selected disabled>Currency</option>
+                  {% for currency in currencylist %}
+                  <option value="{{ currency.value }}">{{ currency.value }}</option>
+                  {% endfor %}
+                </select>
                 <div class="input-group">
                   <input type="submit" value="Add" class="btn btn-sm btn-success">
                   <input type="reset" class="btn btn-sm btn-secondary">
