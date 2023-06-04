@@ -41,16 +41,80 @@ Overview
   </div>
 </div>
 
-<div class="container">
+<div class="m-1 p-1">
   
-  <div class="m-3 p-3">
+  <h2>Overview</h2>
+  
+  <div class="row">
     
-    <h2>Overview</h2>
+    <div class="col-12 col-sm-06 col-md-4 col-sm-3">
+      <div id="lineChart" style="max-width:640px; height:480px"></div>
+    </div>
+    <div class="col-12 col-sm-06 col-md-4 col-sm-3">
+      <div id="plotChart" style="max-width:640px; height:480px"></div>
+    </div>
+    <div class="col-12 col-sm-06 col-md-4 col-sm-3">
+      <div id="barChart" style="max-width:640px; height:480px"></div>
+    </div>
+    <div class="col-12 col-sm-06 col-md-4 col-sm-3">
+      <div id="pieChart" style="max-width:640px; height:480px"></div>
+    </div>
     
   </div>
   
 </div>
-
+<script>
+google.charts.load('current',{packages:['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+//
+function drawChart() {
+// Set Data
+var data = google.visualization.arrayToDataTable([
+  ['Price', 'Size'],
+  [50,7],[60,8],[70,8],[80,9],[90,9],
+  [100,9],[110,10],[120,11],
+  [130,14],[140,14],[150,15]
+]);
+var data2 = google.visualization.arrayToDataTable([
+  ['Contry', 'Mhl'],
+  ['Italy', 55],
+  ['France', 49],
+  ['Spain', 44],
+  ['USA', 24],
+  ['Argentina', 15]
+]);
+var data3 = google.visualization.arrayToDataTable([
+  ['Contry', 'Mhl'],
+  ['Italy',54.8],
+  ['France',48.6],
+  ['Spain',44.4],
+  ['USA',23.9],
+  ['Argentina',14.5]
+]);
+// Set Options
+var options = {
+  title: 'Example Graph: House Prices vs. Size',
+  hAxis: {title: 'Square Meters'},
+  vAxis: {title: 'Price in Millions'},
+  legend: 'none'
+};
+var options2 = {
+  title: 'World Wide Wine Production'
+};
+var options3 = {
+  title:'World Wide Wine Production'
+};
+// Draw
+var chart = new google.visualization.LineChart(document.getElementById('lineChart'));
+chart.draw(data, options);
+var chart2 = new google.visualization.ScatterChart(document.getElementById('plotChart'));
+chart2.draw(data, options);
+var chart3 = new google.visualization.BarChart(document.getElementById('barChart'));
+chart3.draw(data2, options2);
+var chart4 = new google.visualization.PieChart(document.getElementById('pieChart'));
+chart4.draw(data3, options3);
+}
+</script>
 {% else %}
 <div class="container">
 </div>

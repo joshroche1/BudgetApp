@@ -1,5 +1,6 @@
 import os
 import shutil
+import json
 from typing import Union
 from functools import lru_cache
 
@@ -14,11 +15,11 @@ from sqlalchemy.orm import Session
 from .database import SessionLocal, engine
 from . import models, schema, config
 from .auth import authenticate_user, create_user, get_current_user, oauth2_scheme, get_users, get_user_by_username, update_user_email, update_user_password
-from .filesystem import read_file, write_file, append_line, insert_line, delete_line
+from .filesystem import read_file, write_file, append_line, insert_line, delete_line, upload_file, get_uploaded_files
 from .budget import get_budgets, get_budget, add_budget, delete_budget, update_budget_field
 from .budgetitem import get_budgetitems, get_budgetitem, add_budgetitem, delete_budgetitem, update_budgetitem_field, get_budgetitems_for_budget
 from .account import get_accounts, get_account, add_account, delete_account, update_account_field
-from .transaction import get_transactions, get_transaction, add_transaction, delete_transaction, update_transaction_field
+from .transaction import get_transactions, get_transaction, add_transaction, delete_transaction, update_transaction_field, parse_csv_info, parse_format_csv
 
 ### Initialization
 
@@ -63,6 +64,11 @@ async def index(request: Request):
 async def info(settings: config.Settings = Depends(get_settings)):
   settings = get_settings()
   return settings
+
+@app.get("/testdata")
+async def info(request: Request):
+  testarr = "Price Size,50 4,48 2,42 3,55 5,58 6,59 1,52 3,51 2,61 7,60 8"
+  return testarr
 
 @app.get("/login", response_class=HTMLResponse)
 async def loginpage(request: Request):
@@ -315,27 +321,15 @@ async def transaction_delete(request: Request, id: int, db: Session = Depends(ge
 async def transaction_importview(request: Request, db: Session = Depends(get_db)):
   message()
   importdict = {}
+  uploadedfilelist = get_uploaded_files()
   categories = config.get_weblist(db, "Category")
-  return templates.TemplateResponse("transaction_import.html", {"request": request, "messages": messages, "g": g, "categories": categories, "importdict": importdict})
+  return templates.TemplateResponse("transaction_import.html", {"request": request, "messages": messages, "g": g, "categories": categories, "importdict": importdict, "uploadedfilelist": uploadedfilelist})
 
-def parse_csv_info(csvfilecontent, delimiter):
-  resultarr = []
-  try:
-    csvlines = csvfilecontent.splitlines()
-    numcols = len(csvlines[0].split(delimiter))
-    numrows = len(csvlines)
-    for csvline in csvlines:
-      csvitems = csvline.split(delimiter)
-      tmplist = []
-      for csvitem in csvitems:
-        tmplist.append(csvitem)
-      resultarr.append(tmplist)
-    msg = "Colums: " + str(numcols) + " Rows: " + str(numrows)
-    resultarr.append(msg)
-  except Exception as ex:
-    resultarr.append(str(ex))
-  return resultarr
+"""
+Import writes file into upload folder.
+MAKE SELECTION BOX FOR FILE TO PARSE INTO TRANSACTIONS WITH FORMAT
 
+"""
 @app.post("/transaction/import", response_class=HTMLResponse)
 async def transaction_import(request: Request, uploadedfile: UploadFile = File(...), fileformat: str = Form(...), header: str = Form(...), delimiter: str = Form(...), db: Session = Depends(get_db)):
   result = ""
@@ -344,13 +338,64 @@ async def transaction_import(request: Request, uploadedfile: UploadFile = File(.
     filename = uploadedfile.filename
     fileread = await uploadedfile.read()
     filecontents = str(fileread, 'iso-8859-1')
-    importdict = parse_csv_info(filecontents, delimiter)
+    upload_result = upload_file(filename, filecontents)
+    message(upload_result)
+    importdict = parse_csv_info(filecontents, delimiter, filename, fileformat)
     result = "File: " + filename + "\nFile Format: " + fileformat + "\nFile Contents:\n" + filecontents
   except Exception as ex:
     result = str(ex)
   message(result)
-  transactionlist = get_transactions(db)
+  uploadedfilelist = get_uploaded_files()
   categories = config.get_weblist(db, "Category")
-  return templates.TemplateResponse("transaction_import.html", {"request": request, "messages": messages, "g": g, "categories": categories, "importdict": importdict})
+  return templates.TemplateResponse("transaction_import.html", {"request": request, "messages": messages, "g": g, "categories": categories, "importdict": importdict, "uploadedfilelist": uploadedfilelist})
+
+@app.post("/transaction/uploadedfileview", response_class=HTMLResponse)
+async def transaction_uploadedfileview(request: Request, uploadedfile: str = Form(...), db: Session = Depends(get_db)):
+  result = ""
+  importdict = {}
+  try:
+    filepath = "/upload/" + uploadedfile
+    filecontents = read_file(filepath)
+    result = "File: " + uploadedfile + "\nFile Contents:\n" + filecontents
+  except Exception as ex:
+    result = str(ex)
+  message(result)
+  uploadedfilelist = get_uploaded_files()
+  categories = config.get_weblist(db, "Category")
+  return templates.TemplateResponse("transaction_import.html", {"request": request, "messages": messages, "g": g, "categories": categories, "importdict": importdict, "uploadedfilelist": uploadedfilelist})
+
+@app.post("/transaction/uploadedformatview", response_class=HTMLResponse)
+async def transaction_uploadedformatview(request: Request, uploadedfile: str = Form(...), delimiter: str = Form(...), fileformat: str = Form(...), db: Session = Depends(get_db)):
+  result = ""
+  importdict = {}
+  try:
+    filepath = "/upload/" + uploadedfile
+    filecontents = read_file(filepath)
+    importdict = parse_csv_info(filecontents, delimiter, uploadedfile, fileformat)
+    result = "File: " + uploadedfile
+  except Exception as ex:
+    result = str(ex)
+  message(result)
+  uploadedfilelist = get_uploaded_files()
+  categories = config.get_weblist(db, "Category")
+  return templates.TemplateResponse("transaction_import.html", {"request": request, "messages": messages, "g": g, "categories": categories, "importdict": importdict, "uploadedfilelist": uploadedfilelist})
+
+@app.post("/transaction/importformatted", response_class=HTMLResponse)
+async def transaction_importformatted(request: Request, uploadedfile: str = Form(...), datetimefield: str = Form(...), amountfield: str = Form(...), categoryfield: str = Form(...), namefield: str = Form(...), descriptionfield: str = Form(...), db: Session = Depends(get_db)):
+  result = ""
+  importdict = {}
+  try:
+    filepath = "/upload/" + uploadedfile
+    filecontents = read_file(filepath)
+    importdict = parse_format_csv(filecontents, delimiter, datetimefield, amountfield, categoryfield, namefield, descriptionfield)
+    result = "File: " + filename + "\nFile Format: " + fileformat + "\n- Date/Time: " + datetimefield + "\n- Amount: " + amountfield + "\n- Category: " + categoryfield + "\n- Name: " + namefield + "\n- Description: " + descriptionfield
+  except Exception as ex:
+    result = str(ex)
+  message(result)
+  uploadedfilelist = get_uploaded_files()
+  categories = config.get_weblist(db, "Category")
+  return templates.TemplateResponse("transaction_import.html", {"request": request, "messages": messages, "g": g, "categories": categories, "importdict": importdict, "uploadedfilelist": uploadedfilelist})
+
+###
 
 ###

@@ -1,9 +1,9 @@
-# System Management Console - Python-FastAPI version
+# BudgetApp - Python-FastAPI version
 # Requirements
 
 dotenv
 sqlalchemy
-ansible
-ansible_runner
+bcrypt
+pandas
 fastapi[all]
 uvicorn

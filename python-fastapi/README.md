@@ -1,4 +1,5 @@
-# Python 3 Uvicorn/FastAPI Web Application Template
+# BudgetApp
+# from Python 3 Uvicorn/FastAPI Web Application Template
 
 ###
 
@@ -8,25 +9,12 @@ NOTE: Use user-management.py to fix users in db after updating repo.
 
 - python3
 - python3-pip
+- python3-bcrypt
+- python3-pandas
+- python3-fastapi
+- sqlite3 (unless using a different database)
+- uvicorn
 - gunicorn (manages uvicorn)
-- (pip) uvicorn
-- (pip) fastapi[all]
-  - rfc3986
-  - websockets
-  - uvloop
-  - ujson
-  - typing-extensions
-  - sniffio
-  - python-multipart
-  - orjson
-  - httptools
-  - email-validator
-  - pydantic
-  - anyio
-  - watchfiles, 
-  - starlette
-  - httpcore
-  - httpx
 
 To use PostgreSQL:
 - postgresql

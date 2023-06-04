@@ -54,3 +54,28 @@ def delete_line(filepath: str, linestr: str):
     print(str(ex))
     return str(ex)
   return 0
+
+def upload_file(filename: str, filecontents: str):
+  result = ""
+  try:
+    print(filename)
+    filepath = workingdir + settings.upload_dir + "/" + filename
+    print(filepath)
+    file = open(filepath, "w")
+    file.write(filecontents)
+    file.close()
+    result = "File uploaded successfully: " + filename
+  except Exception as ex:
+    result = str(ex)
+  print(result)
+  return result
+
+def get_uploaded_files():
+  resultlist = []
+  try:
+    uploadpath = workingdir + settings.upload_dir
+    resultlist = os.listdir(uploadpath)
+  except Exception as ex:
+    resultlist.append(str(ex))
+  return resultlist
+#

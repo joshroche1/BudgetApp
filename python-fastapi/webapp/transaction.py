@@ -59,4 +59,43 @@ def update_transaction_field(db: Session, bid, field, newvalue):
     return False
   return True
 
+def parse_csv_info(csvfilecontent, delimiter, filename, fileformat):
+  resultarr = []
+  try:
+    csvlines = csvfilecontent.splitlines()
+    numcols = len(csvlines[0].split(delimiter))
+    numrows = len(csvlines)
+    resultarr.append(filename)
+    resultarr.append(fileformat)
+    msg = "Colums: " + str(numcols) + " Rows: " + str(numrows)
+    resultarr.append(msg)
+    for csvline in csvlines:
+      csvitems = csvline.split(delimiter)
+      tmplist = []
+      for csvitem in csvitems:
+        tmplist.append(csvitem)
+      resultarr.append(tmplist)
+  except Exception as ex:
+    resultarr.append(str(ex))
+  return resultarr
+
+def parse_format_csv(csvfilecontent, delimiter, datetimefield, amountfield, categoryfield, namefield, descriptionfield):
+  resultarr = []
+  try:
+    csvlines = csvfilecontent.splitlines()
+    numcols = len(csvlines[0].split(delimiter))
+    numrows = len(csvlines)
+    for csvline in csvlines:
+      csvitems = csvline.split(delimiter)
+      tmplist = []
+      tmplist.append(csvitems[int(datetimefield)-1])
+      tmplist.append(csvitems[int(amountfield)-1])
+      tmplist.append(csvitems[int(categoryfield)-1])
+      tmplist.append(csvitems[int(namefield)-1])
+      tmplist.append(csvitems[int(descriptionfield)-1])
+      resultarr.append(tmplist)
+  except Exception as ex:
+    resultarr.append(str(ex))
+  return resultarr
+
 #
