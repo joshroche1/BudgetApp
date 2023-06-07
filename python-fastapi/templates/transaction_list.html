@@ -52,17 +52,6 @@ Transaction List
           <input type="hidden" id="filterkey" name="filterkey" value="Category">
           <select id="filtervalue" name="filtervalue" class="form-select">
             <option value="" selected disabled>Category</option>
-          </select>
-          <input type="submit" value="Filter" class="btn btn-sm btn-success">
-        </div>
-      </form>
-    </div>
-    <div class="col">
-      <form action="#" method="">
-        <div class="input-group">
-          <input type="hidden" id="filterkey" name="filterkey" value="Category">
-          <select id="filtervalue" name="filtervalue" class="form-select">
-            <option value="" selected disabled>Category</option>
             {% for category in categories %}
             <option value="{{ category.value }}">{{ category.value }}</option>
             {% endfor %}
@@ -72,12 +61,34 @@ Transaction List
       </form>
     </div>
     <div class="col">
-      <form action="#" method="">
+      <form action="/transaction/list/filtered/month" method="post">
         <div class="input-group">
-          <input type="hidden" id="filterkey" name="filterkey" value="Category">
-          <select id="filtervalue" name="filtervalue" class="form-select">
-            <option value="" selected disabled>Category</option>
+          <select id="month" name="month" class="form-select">
+            <option value="" selected disabled>Month</option>
+            <option value="01">JAN</option>
+            <option value="02">FEB</option>
+            <option value="03">MAR</option>
+            <option value="04">APR</option>
+            <option value="05">MAY</option>
+            <option value="06">JUN</option>
+            <option value="07">JUL</option>
+            <option value="08">AUG</option>
+            <option value="09">SEP</option>
+            <option value="10">OCT</option>
+            <option value="11">NOV</option>
+            <option value="12">DEC</option>
           </select>
+          <input type="submit" value="Filter" class="btn btn-sm btn-success">
+        </div>
+      </form>
+    </div>
+    <div class="col">
+      <form action="/transaction/list/filtered/date" method="post">
+        <div class="input-group">
+          <span class="input-group-text">Start</span>
+          <input type="date" id="startdate" name="startdate" class="form-control">
+          <span class="input-group-text">End</span>
+          <input type="date" id="enddate" name="enddate" class="form-control">
           <input type="submit" value="Filter" class="btn btn-sm btn-success">
         </div>
       </form>
@@ -118,7 +129,7 @@ Transaction List
   </div>
   
   <table class="table table-hover table-bordered">
-    
+
     <tr>
       <th><a href="/transaction/list/sorted/id" class="btn btn-sm">ID</a></th>
       <th><a href="/transaction/list/sorted/datetimestamp" class="btn btn-sm">Date</a></th>
@@ -128,7 +139,7 @@ Transaction List
       <th><a href="" class="btn btn-sm">Description</a></th>
       <th><a href="/transaction/list/sorted/accountid" class="btn btn-sm">Account ID</a></th>
     </tr>
-    
+
     {% for transaction in transactionlist %}
     <tr>
       <td>{{ transaction.id }}</td>
@@ -140,7 +151,7 @@ Transaction List
       <td>{{ transaction.accountid }}</td>
     </tr>
     {% endfor %}
-    
+
   </table>
 </div>
 

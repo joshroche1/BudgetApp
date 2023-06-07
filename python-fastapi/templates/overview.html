@@ -45,14 +45,10 @@ Overview
   
   <h2>Overview</h2>
   
+  <div id="test"></div>
+  
   <div class="row">
     
-    <div class="col-12 col-sm-06 col-md-4 col-sm-3">
-      <div id="lineChart" style="max-width:640px; height:480px"></div>
-    </div>
-    <div class="col-12 col-sm-06 col-md-4 col-sm-3">
-      <div id="plotChart" style="max-width:640px; height:480px"></div>
-    </div>
     <div class="col-12 col-sm-06 col-md-4 col-sm-3">
       <div id="barChart" style="max-width:640px; height:480px"></div>
     </div>
@@ -61,6 +57,63 @@ Overview
     </div>
     
   </div>
+  
+</div>
+
+<div class="m-3 p-3">
+  
+  <div class="row">
+    <div class="col">
+      <form action="/budget/overview/filtered/month" method="post">
+        <div class="input-group">
+          <select id="month" name="month" class="form-select">
+            <option value="" selected disabled>Month</option>
+            <option value="01">JAN</option>
+            <option value="02">FEB</option>
+            <option value="03">MAR</option>
+            <option value="04">APR</option>
+            <option value="05">MAY</option>
+            <option value="06">JUN</option>
+            <option value="07">JUL</option>
+            <option value="08">AUG</option>
+            <option value="09">SEP</option>
+            <option value="10">OCT</option>
+            <option value="11">NOV</option>
+            <option value="12">DEC</option>
+          </select>
+          <input type="submit" value="Filter" class="btn btn-sm btn-success">
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <p id="tabledata">{{ tabledata }}</p>
+  
+  <table class="table table-hover table-bordered">
+
+    <tr>
+      <th><a href="/transaction/list/sorted/id" class="btn btn-sm">ID</a></th>
+      <th><a href="/transaction/list/sorted/datetimestamp" class="btn btn-sm">Date</a></th>
+      <th><a href="/transaction/list/sorted/amount" class="btn btn-sm">Amount</a></th>
+      <th><a href="/transaction/list/sorted/category" class="btn btn-sm">Category</a></th>
+      <th><a href="/transaction/list/sorted/name" class="btn btn-sm">Name</a></th>
+      <th><a href="" class="btn btn-sm">Description</a></th>
+      <th><a href="/transaction/list/sorted/accountid" class="btn btn-sm">Account ID</a></th>
+    </tr>
+
+    {% for transaction in transactionlist %}
+    <tr>
+      <td>{{ transaction.id }}</td>
+      <td>{{ transaction.datetimestamp }}</td>
+      <td>{{ transaction.amount }}</td>
+      <td>{{ transaction.category }}</td>
+      <td><a href="/transaction/detail/{{ transaction.id }}" class="btn btn-sm btn-light"><b>{{ transaction.name }}</b></a></td>
+      <td>{{ transaction.description }}</td>
+      <td>{{ transaction.accountid }}</td>
+    </tr>
+    {% endfor %}
+
+  </table>
   
 </div>
 <script>
@@ -105,15 +158,13 @@ var options3 = {
   title:'World Wide Wine Production'
 };
 // Draw
-var chart = new google.visualization.LineChart(document.getElementById('lineChart'));
-chart.draw(data, options);
-var chart2 = new google.visualization.ScatterChart(document.getElementById('plotChart'));
-chart2.draw(data, options);
 var chart3 = new google.visualization.BarChart(document.getElementById('barChart'));
 chart3.draw(data2, options2);
 var chart4 = new google.visualization.PieChart(document.getElementById('pieChart'));
 chart4.draw(data3, options3);
 }
+var tdata = document.getElementById("tabledata").innerHTML;
+document.getElementById("test").innerHTML = tdata;
 </script>
 {% else %}
 <div class="container">

@@ -3,6 +3,7 @@ import shutil
 import json
 from typing import Union
 from functools import lru_cache
+from datetime import datetime
 
 from fastapi import Depends, FastAPI, HTTPException, File, Form, Request, UploadFile
 from fastapi.responses import RedirectResponse, HTMLResponse
@@ -19,7 +20,7 @@ from .filesystem import read_file, write_file, append_line, insert_line, delete_
 from .budget import get_budgets, get_budget, add_budget, delete_budget, update_budget_field
 from .budgetitem import get_budgetitems, get_budgetitem, add_budgetitem, delete_budgetitem, update_budgetitem_field, get_budgetitems_for_budget
 from .account import get_accounts, get_account, add_account, delete_account, update_account_field
-from .transaction import get_transactions, get_transactions_sorted, get_transaction, add_transaction, delete_transaction, update_transaction_field, parse_csv_info, parse_format_csv
+from .transaction import get_transactions, get_transactions_sorted, get_transaction, add_transaction, delete_transaction, update_transaction_field, parse_csv_info, parse_format_csv,get_transactions_dates, get_table_data
 
 ### Initialization
 
@@ -156,8 +157,15 @@ async def category_delete(request: Request, id: int, db: Session = Depends(get_d
 @app.get("/budget/overview", response_class=HTMLResponse)
 async def budget_overview(request: Request, db: Session = Depends(get_db)):
   message()
+  currentdate = datetime.now()
+  month = str(currentdate.month-1)
+  if len(month) < 2: month = "0" + month
+  startdate = str(currentdate.year) + "-" + month + "-01"
+  enddate = str(currentdate.year) + "-" + month + "-32"
+  transactionlist = get_transactions_dates(db, startdate, enddate)
+  tabledata = get_table_data(transactionlist)
   categories = config.get_weblist(db, "Category")
-  return templates.TemplateResponse("overview.html", {"request": request, "messages": messages, "g": g, "categories": categories})
+  return templates.TemplateResponse("overview.html", {"request": request, "messages": messages, "g": g, "categories": categories, "transactionlist": transactionlist, "tabledata": tabledata})
 
 @app.get("/budget/list", response_class=HTMLResponse)
 async def budget_list(request: Request, db: Session = Depends(get_db)):
@@ -279,6 +287,23 @@ async def transaction_list(request: Request, db: Session = Depends(get_db)):
 async def transaction_list_sorted(request: Request, field: str, db: Session = Depends(get_db)):
   message()
   transactionlist = get_transactions_sorted(db, field)
+  categories = config.get_weblist(db, "Category")
+  return templates.TemplateResponse("transaction_list.html", {"request": request, "messages": messages, "g": g, "transactionlist": transactionlist, "categories": categories})
+
+@app.post("/transaction/list/filtered/date", response_class=HTMLResponse)
+async def transaction_list_datefilter(request: Request, startdate: str = Form(...), enddate: str = Form(...), db: Session = Depends(get_db)):
+  message()
+  transactionlist = get_transactions_dates(db, startdate, enddate)
+  categories = config.get_weblist(db, "Category")
+  return templates.TemplateResponse("transaction_list.html", {"request": request, "messages": messages, "g": g, "transactionlist": transactionlist, "categories": categories})
+
+@app.post("/transaction/list/filtered/month", response_class=HTMLResponse)
+async def transaction_list_monthfilter(request: Request, month: str = Form(...), db: Session = Depends(get_db)):
+  message()
+  currentdate = datetime.now()
+  startdate = str(currentdate.year) + "-" + month + "-01"
+  enddate = str(currentdate.year) + "-" + month + "-32"
+  transactionlist = get_transactions_dates(db, startdate, enddate)
   categories = config.get_weblist(db, "Category")
   return templates.TemplateResponse("transaction_list.html", {"request": request, "messages": messages, "g": g, "transactionlist": transactionlist, "categories": categories})
 

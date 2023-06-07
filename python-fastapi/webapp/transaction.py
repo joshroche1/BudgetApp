@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 
 from fastapi import HTTPException
@@ -41,8 +42,8 @@ def get_transactions_filtered(db: Session, field: str):
   return 0
 
 def get_transactions_dates(db: Session, startdate: str, enddate: str):
-  #
-  return 0
+  transactionlist = db.query(models.Transaction).filter(models.Transaction.datetimestamp >= startdate).filter(models.Transaction.datetimestamp <= enddate).order_by(models.Transaction.datetimestamp.desc())
+  return transactionlist
 
 def get_transaction(db: Session, bid):
   transaction = db.query(models.Transaction).filter(models.Transaction.id == bid).first()
@@ -116,6 +117,28 @@ def parse_date(datetimestamp: str, dateformat: str):
       result = str(tmp1[0]) + "-" + str(tmp1[1]) + "-" + str(tmp1[2])
     elif dateformat == "Y/m/d":
       tmp1 = datetimestamp.split("/")
+      if len(tmp1) != 3: return "Wrong length"
+      if not tmp1[0].isdecimal(): return "1 not decimal"
+      if not tmp1[1].isdecimal(): return "2 not decimal"
+      if not tmp1[2].isdecimal(): return "3 not decimal"
+      result = str(tmp1[0]) + "-" + str(tmp1[1]) + "-" + str(tmp1[2])
+    elif dateformat == "Y.m.d":
+      tmp1 = datetimestamp.split(".")
+      if len(tmp1) != 3: return "Wrong length"
+      if not tmp1[0].isdecimal(): return "1 not decimal"
+      if not tmp1[1].isdecimal(): return "2 not decimal"
+      if not tmp1[2].isdecimal(): return "3 not decimal"
+      result = str(tmp1[0]) + "-" + str(tmp1[1]) + "-" + str(tmp1[2])
+    elif dateformat == "d.m.y":
+      tmp1 = datetimestamp.split(".")
+      if len(tmp1) != 3: return "Wrong length"
+      if not tmp1[0].isdecimal(): return "1 not decimal"
+      if not tmp1[1].isdecimal(): return "2 not decimal"
+      if not tmp1[2].isdecimal(): return "3 not decimal"
+      result = "20" + str(tmp1[2]) + "-" + str(tmp1[1]) + "-" + str(tmp1[0])
+    else:
+      return currentdate
+    print(result)
   except Exception as ex:
     print(str(ex))
     result = currentdate
@@ -136,8 +159,8 @@ def parse_format_csv(db: Session, csvfilecontent, delimiter, header, datetimefie
         csvitems = csvline.split(delimiter)
         tmplist = []
         tmp1 = csvitems[int(datetimefield)-1].replace('"','')
-        timestamp = datetime.strptime(tmp1, dateformat)
-        tmplist.append(timestamp.strftime('%Y-%m-%d'))
+        timestamp = parse_date(tmp1, dateformat)
+        tmplist.append(timestamp)
         tmp2 = csvitems[int(amountfield)-1].replace('"','').replace(',','.')
         tmplist.append(tmp2)
         tmp3 = csvitems[int(categoryfield)-1].replace('"','')
@@ -148,7 +171,7 @@ def parse_format_csv(db: Session, csvfilecontent, delimiter, header, datetimefie
         tmplist.append(tmp5)
         resultarr.append(tmplist)
         newtransaction = {
-          "datetimestamp": tmp1,
+          "datetimestamp": timestamp,
           "amount": float(tmp2),
           "category": tmp3,
           "name": tmp4,
@@ -160,5 +183,16 @@ def parse_format_csv(db: Session, csvfilecontent, delimiter, header, datetimefie
   except Exception as ex:
     resultarr.append(str(ex))
   return resultarr
+
+def get_table_data(transactionlist):
+  result = ""
+  try:
+    result = "[['name','amount']"
+    for transaction in transactionlist:
+      result = result + ",['" + transaction.name + "'," + str(transaction.amount) + "]"
+    result = result + "]"
+  except Exception as ex:
+    result = str(ex)
+  return result
 
 #
