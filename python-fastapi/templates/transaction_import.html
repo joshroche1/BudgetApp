@@ -43,7 +43,7 @@ Transaction Import
 <div class="m-1 p-1">
   
   <div class="border bg-light m-1 p-1">
-    <h3>Import CSV/TEXT File</h3>
+    <h3 class="text-center">Import CSV/TEXT File</h3>
     <form action="/transaction/import" method="post" enctype="multipart/form-data">
       <div class="row">
         <div class="col">
@@ -82,14 +82,19 @@ Transaction Import
   <div>
     <div class="row">
       <div class="col border m-1 p-1">
-        <h3>Upload Directory Contents:</h3>
+        <h3 class="text-center">Upload Directory Contents:</h3>
         {% for file in uploadedfilelist %}
-        <p>{{ file }}</p>
+        <div class="btn-group">
+          <a href="" class="btn btn-sm">{{ file }}</a>
+          <form action="/uploads/{{ file }}" method="post">
+            <input type="submit" value="X" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-danger">
+          </form>
+        </div>
         {% endfor %}
       </div>
 
       <div class="col border m-1 p-1">
-        <h3>View Uploaded File</h3>
+        <h3 class="text-center">View Uploaded File</h3>
         <form action="/transaction/uploadedfileview" method="post">
           <div class="input-group">
             <select id="uploadedfile" name="uploadedfile" class="form-select">
@@ -104,7 +109,7 @@ Transaction Import
       </div>
 
       <div class="col border m-1 p-1">
-        <h3>Format & Import Uploaded File</h3>
+        <h3 class="text-center">Format & Import Uploaded File</h3>
         <form action="/transaction/uploadedformatview" method="post">
           <select id="uploadedfile" name="uploadedfile" class="form-select">
             <option value="" selected disabled>Select Uploaded File</option>
@@ -134,12 +139,12 @@ Transaction Import
     
     <div class="col">
       <div class="table-responsive">
-        <table class="table">
+        <table class="table table-hover table-bordered">
           {% for linearr in importdict %}
           <tr>
             {% if loop.first %}
             <form action="/transaction/importformatted" method="post" enctype="multipart/form-data">
-              <th colspan="3">
+              <th colspan="2">
                 <div class="row">
                   <div class="col">
                     <label for="datetimefield" class="form-label">Date/Time</label>
@@ -206,12 +211,24 @@ Transaction Import
                   </div>
                 </div>
               </th>
-              <th colspan="3">
+              <th colspan="2">
                 <select id="uploadedfile" name="uploadedfile" class="form-select">
                   <option value="" selected disabled>Select Uploaded File</option>
                   {% for file in uploadedfilelist %}
                   <option value="{{ file }}">{{ file }}</option>
                   {% endfor %}
+                </select>
+                <select id="dateformat" name="dateformat" class="form-select">
+                  <option value="Y-m-d" selected>Date Format</option>
+                  <option value="Y-m-d">YYYY-MM-DD</option>
+                  <option value="Y/m/d">YYYY/MM/DD</option>
+                  <option value="Y.m.d">YYYY.MM.DD</option>
+                  <option value="m-d-Y">MM-DD-YYYY (USA)</option>
+                  <option value="m/d/Y">MM/DD/YYYY (USA)</option>
+                  <option value="m-d-y">MM-DD-YY (USA)</option>
+                  <option value="m/d/y">MM/DD/YY (USA)</option>
+                  <option value="d.m.y">DD.MM.YY (DE)</option>
+                  <option value="d/m/y">DD/MM/YY (DE)</option>
                 </select>
                 <select id="delimiter" name="delimiter" class="form-select">
                   <option value="," selected>Delimiter</option>
@@ -241,6 +258,10 @@ Transaction Import
                 </div>
               </th>
             </form>
+            {% elif loop.index == 2 %}
+            {% for item in linearr %}
+            <td><p>{{ loop.index }}</p>{{ item }}</td>
+            {% endfor %}
             {% else %}
             {% for item in linearr %}
             <td>{{ item }}</td>

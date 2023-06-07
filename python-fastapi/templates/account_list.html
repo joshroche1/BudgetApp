@@ -87,13 +87,13 @@ Account List
   
   <button type="button" data-bs-toggle="collapse" data-bs-target="#createpanel" aria-expanded="false" aria-controls="createpanel" class="btn btn-sm btn-success">NEW</button>
   <div id="createpanel" class="collapse">
-    <form action="#" method="">
+    <form action="/account/create" method="post">
       <div class="row">
         <div class="col-12 col-sm-6 col-md-4 col-lg-3">
           <input type="text" id="name" name="name" placeholder="Name" class="form-control" required />
         </div>
         <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-          <select id="filtervalue" name="filtervalue" class="form-select">
+          <select id="accounttype" name="accounttype" class="form-select">
             <option value="" selected disabled>Type</option>
             {% for accounttype in accounttypelist %}
             <option value="{{ accounttype.value }}">{{ accounttype.value }}</option>
@@ -101,7 +101,7 @@ Account List
           </select>
         </div>
         <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-          <select id="filtervalue" name="filtervalue" class="form-select">
+          <select id="currency" name="currency" class="form-select">
             <option value="" selected disabled>Currency</option>
             {% for currency in currencylist %}
             <option value="{{ currency.value }}">{{ currency.value }}</option>
@@ -111,6 +111,13 @@ Account List
         <div class="col-12 col-sm-6 col-md-4 col-lg-3">
           <input type="text" id="iban" name="iban" placeholder="IBAN" class="form-control" />
           <input type="text" id="bic" name="bic" placeholder="BIC" class="form-control" />
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <select id="country" name="country" class="form-select">
+            <option value="" selected disabled>Country</option>
+            <option value="USA">USA</option>
+            <option value="DE">DE</option>
+          </select>
         </div>
       </div>
       <div class="btn-group" role="group" aria-label="Submit Reset group">

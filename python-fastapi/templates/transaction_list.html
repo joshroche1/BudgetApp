@@ -117,16 +117,16 @@ Transaction List
     </form>
   </div>
   
-  <table class="table">
+  <table class="table table-hover table-bordered">
     
     <tr>
-      <th><a href="" class="btn btn-sm">ID</a></th>
-      <th><a href="" class="btn btn-sm">Date</a></th>
-      <th><a href="" class="btn btn-sm">Amount</a></th>
-      <th><a href="" class="btn btn-sm">Category</a></th>
-      <th><a href="" class="btn btn-sm">Name</a></th>
+      <th><a href="/transaction/list/sorted/id" class="btn btn-sm">ID</a></th>
+      <th><a href="/transaction/list/sorted/datetimestamp" class="btn btn-sm">Date</a></th>
+      <th><a href="/transaction/list/sorted/amount" class="btn btn-sm">Amount</a></th>
+      <th><a href="/transaction/list/sorted/category" class="btn btn-sm">Category</a></th>
+      <th><a href="/transaction/list/sorted/name" class="btn btn-sm">Name</a></th>
       <th><a href="" class="btn btn-sm">Description</a></th>
-      <th><a href="" class="btn btn-sm">Account ID</a></th>
+      <th><a href="/transaction/list/sorted/accountid" class="btn btn-sm">Account ID</a></th>
     </tr>
     
     {% for transaction in transactionlist %}

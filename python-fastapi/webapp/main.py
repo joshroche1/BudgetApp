@@ -15,11 +15,11 @@ from sqlalchemy.orm import Session
 from .database import SessionLocal, engine
 from . import models, schema, config
 from .auth import authenticate_user, create_user, get_current_user, oauth2_scheme, get_users, get_user_by_username, update_user_email, update_user_password
-from .filesystem import read_file, write_file, append_line, insert_line, delete_line, upload_file, get_uploaded_files
+from .filesystem import read_file, write_file, append_line, insert_line, delete_line, upload_file, get_uploaded_files, delete_file
 from .budget import get_budgets, get_budget, add_budget, delete_budget, update_budget_field
 from .budgetitem import get_budgetitems, get_budgetitem, add_budgetitem, delete_budgetitem, update_budgetitem_field, get_budgetitems_for_budget
 from .account import get_accounts, get_account, add_account, delete_account, update_account_field
-from .transaction import get_transactions, get_transaction, add_transaction, delete_transaction, update_transaction_field, parse_csv_info, parse_format_csv
+from .transaction import get_transactions, get_transactions_sorted, get_transaction, add_transaction, delete_transaction, update_transaction_field, parse_csv_info, parse_format_csv
 
 ### Initialization
 
@@ -223,7 +223,7 @@ async def account_detail(request: Request, id: int, db: Session = Depends(get_db
   return templates.TemplateResponse("account_detail.html", {"request": request, "messages": messages, "g": g, "account": account, "categories": categories, "currencylist": currencylist, "countrylist": countrylist, "accounttypelist": accounttypelist})
 
 @app.post("/account/create", response_class=HTMLResponse)
-async def account_create(request: Request, name: str = Form(...), db: Session = Depends(get_db)):
+async def account_create(request: Request, name: str = Form(...), accounttype: str = Form(...), currency: str = Form(...), iban: str = Form(...), bic: str = Form(...), country: str = Form(...), db: Session = Depends(get_db)):
   message()
   newaccount = {
     "name": name,
@@ -234,7 +234,7 @@ async def account_create(request: Request, name: str = Form(...), db: Session = 
     "country": country
   }
   account = add_account(db, newaccount)
-  message(result)
+  message(account)
   categories = config.get_weblist(db, "Category")
   currencylist = config.get_weblist(db, "Currency")
   countrylist = config.get_weblist(db, "Country")
@@ -272,6 +272,13 @@ async def account_delete(request: Request, id: int, db: Session = Depends(get_db
 async def transaction_list(request: Request, db: Session = Depends(get_db)):
   message()
   transactionlist = get_transactions(db)
+  categories = config.get_weblist(db, "Category")
+  return templates.TemplateResponse("transaction_list.html", {"request": request, "messages": messages, "g": g, "transactionlist": transactionlist, "categories": categories})
+
+@app.get("/transaction/list/sorted/{field}", response_class=HTMLResponse)
+async def transaction_list_sorted(request: Request, field: str, db: Session = Depends(get_db)):
+  message()
+  transactionlist = get_transactions_sorted(db, field)
   categories = config.get_weblist(db, "Category")
   return templates.TemplateResponse("transaction_list.html", {"request": request, "messages": messages, "g": g, "transactionlist": transactionlist, "categories": categories})
 
@@ -321,6 +328,19 @@ async def transaction_delete(request: Request, id: int, db: Session = Depends(ge
 async def transaction_importview(request: Request, db: Session = Depends(get_db)):
   message()
   importdict = {}
+  uploadedfilelist = get_uploaded_files()
+  accountlist = get_accounts(db)
+  categories = config.get_weblist(db, "Category")
+  currencylist = config.get_weblist(db, "Currency")
+  accounttypelist = config.get_weblist(db, "AccountType")
+  return templates.TemplateResponse("transaction_import.html", {"request": request, "messages": messages, "g": g, "categories": categories, "currencylist": currencylist, "accountlist": accountlist, "importdict": importdict, "uploadedfilelist": uploadedfilelist})
+
+
+@app.post("/uploads/{file}", response_class=HTMLResponse)
+async def uploads_deletefile(request: Request, file: str, db: Session = Depends(get_db)):
+  result = delete_file("uploads/" + file)
+  importdict = {}
+  message(result)
   uploadedfilelist = get_uploaded_files()
   accountlist = get_accounts(db)
   categories = config.get_weblist(db, "Category")
@@ -393,14 +413,14 @@ async def transaction_uploadedformatview(request: Request, uploadedfile: str = F
   return templates.TemplateResponse("transaction_import.html", {"request": request, "messages": messages, "g": g, "categories": categories, "currencylist": currencylist, "accountlist": accountlist, "importdict": importdict, "uploadedfilelist": uploadedfilelist})
 
 @app.post("/transaction/importformatted", response_class=HTMLResponse)
-async def transaction_importformatted(request: Request, uploadedfile: str = Form(...), delimiter: str = Form(...), currency: str = Form(...), header: str = Form(...), accountid: str = Form(...), datetimefield: str = Form(...), amountfield: str = Form(...), categoryfield: str = Form(...), namefield: str = Form(...), descriptionfield: str = Form(...), db: Session = Depends(get_db)):
+async def transaction_importformatted(request: Request, uploadedfile: str = Form(...), delimiter: str = Form(...), currency: str = Form(...), header: str = Form(...), accountid: str = Form(...), datetimefield: str = Form(...), amountfield: str = Form(...), categoryfield: str = Form(...), namefield: str = Form(...), descriptionfield: str = Form(...), dateformat: str = Form(...), db: Session = Depends(get_db)):
   print("transaction_importformatted")
   result = ""
   importdict = {}
   try:
     filepath = "/upload/" + uploadedfile
     filecontents = read_file(filepath)
-    result = parse_format_csv(db, filecontents, delimiter, header, datetimefield, amountfield, categoryfield, namefield, descriptionfield, currency, accountid)
+    result = parse_format_csv(db, filecontents, delimiter, header, datetimefield, amountfield, categoryfield, namefield, descriptionfield, currency, accountid, dateformat)
   except Exception as ex:
     result = str(ex)
   message(result)

@@ -78,4 +78,18 @@ def get_uploaded_files():
   except Exception as ex:
     resultlist.append(str(ex))
   return resultlist
+
+def delete_file(filename):
+  result = ""
+  try:
+    filepath = workingdir + "/" + filename
+    if os.path.exists(filepath):
+      os.remove(filepath)
+      result = "File removed: " + filename
+    else:
+      result = "File not found"
+  except Exception as ex:
+    result = str(ex)
+  return result
+
 #
