@@ -44,16 +44,27 @@ Overview
 <div class="m-1 p-1">
   
   <h2>Overview</h2>
+  <p>Chart data is based on the Transaction category and amount. Adjust transaction categories to fit the budget model.</p>
   
   <div id="test"></div>
   
   <div class="row">
     
-    <div class="col-12 col-sm-06 col-md-4 col-sm-3">
-      <div id="barChart" style="max-width:640px; height:480px"></div>
+    <div class="col-12 col-sm-06">
+      <!--<canvas id="myChart" style="width:100%;max-width:600px"></canvas>-->
     </div>
-    <div class="col-12 col-sm-06 col-md-4 col-sm-3">
-      <div id="pieChart" style="max-width:640px; height:480px"></div>
+    <div class="col-12 col-sm-06">
+      <canvas id="pieChart" style="width:100%;max-width:1600px;height:400px;max-height:1600px;"></canvas>
+    </div>
+    
+  </div>
+  
+  <div class="row">
+    
+    <div class="col-12 col-sm-06">
+      <canvas id="barChart" style="width:100%;max-width:1600px;height:400px;max-height:1600px;"></canvas>
+    </div>
+    <div class="col-12 col-sm-06">
     </div>
     
   </div>
@@ -87,8 +98,6 @@ Overview
     </div>
   </div>
   
-  <p id="tabledata">{{ tabledata }}</p>
-  
   <table class="table table-hover table-bordered">
 
     <tr>
@@ -117,54 +126,100 @@ Overview
   
 </div>
 <script>
-google.charts.load('current',{packages:['corechart']});
-google.charts.setOnLoadCallback(drawChart);
-//
-function drawChart() {
-// Set Data
-var data = google.visualization.arrayToDataTable([
-  ['Price', 'Size'],
-  [50,7],[60,8],[70,8],[80,9],[90,9],
-  [100,9],[110,10],[120,11],
-  [130,14],[140,14],[150,15]
-]);
-var data2 = google.visualization.arrayToDataTable([
-  ['Contry', 'Mhl'],
-  ['Italy', 55],
-  ['France', 49],
-  ['Spain', 44],
-  ['USA', 24],
-  ['Argentina', 15]
-]);
-var data3 = google.visualization.arrayToDataTable([
-  ['Contry', 'Mhl'],
-  ['Italy',54.8],
-  ['France',48.6],
-  ['Spain',44.4],
-  ['USA',23.9],
-  ['Argentina',14.5]
-]);
-// Set Options
-var options = {
-  title: 'Example Graph: House Prices vs. Size',
-  hAxis: {title: 'Square Meters'},
-  vAxis: {title: 'Price in Millions'},
-  legend: 'none'
-};
-var options2 = {
-  title: 'World Wide Wine Production'
-};
-var options3 = {
-  title:'World Wide Wine Production'
-};
-// Draw
-var chart3 = new google.visualization.BarChart(document.getElementById('barChart'));
-chart3.draw(data2, options2);
-var chart4 = new google.visualization.PieChart(document.getElementById('pieChart'));
-chart4.draw(data3, options3);
-}
-var tdata = document.getElementById("tabledata").innerHTML;
-document.getElementById("test").innerHTML = tdata;
+var xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
+var yValues = [55, 49, 44, 24, 15];
+var barColors = [
+  "#b91d47",
+  "#00aba9",
+  "#2b5797",
+  "#e8c3b9",
+  "#1e7145",
+  "#00FFFF",
+  "#7FFFD4",
+  "#FFE4C4",
+  "#0000FF"
+];
+var chartColors = [
+  "Navy",
+  "MediumBlue",
+  "DarkCyan",
+  "Cyan",
+  "Turquoise",
+  "Green",
+  "GreenYellow",
+  "Yellow",
+  "Gold",
+  "Orange",
+  "DarkOrange",
+  "Tomato",
+  "GoldenRod",
+  "Red",
+  "DarkRed",
+  "Brown",
+  "Maroon",
+  "Indigo",
+  "Purple",
+  "Violet",
+  "Pink"
+];
+
+new Chart("myChart", {
+  type: "pie",
+  data: {
+    labels: xValues,
+    datasets: [{
+      backgroundColor: barColors,
+      data: yValues
+    }]
+  },
+  options: {
+    title: {
+      display: true,
+      text: "World Wide Wine Production 2018"
+    }
+  }
+});
+var tdata = "{{ tabledata }}";
+const tmparr1 = tdata.split("|");
+const tmparrlabels = tmparr1[0].split(",");
+const tmparramounts = tmparr1[1].split(",");
+
+new Chart("pieChart", {
+  type: "pie",
+  data: {
+    labels: tmparrlabels,
+    datasets: [{
+      backgroundColor: chartColors,
+      data: tmparramounts
+    }]
+  },
+  options: {
+    title: {
+      display: true,
+      text: "TEST"
+    }
+  }
+});
+
+new Chart("barChart", {
+  type: "bar",
+  data: {
+    labels: tmparrlabels,
+    datasets: [{
+      backgroundColor: chartColors,
+      data: tmparramounts
+    }]
+  },
+  options: {
+    legend: {
+      display: true
+    },
+    title: {
+      display: true,
+      text: "TEST BAR"
+    }
+  }
+});
 </script>
 {% else %}
 <div class="container">

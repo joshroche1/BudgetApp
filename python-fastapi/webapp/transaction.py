@@ -186,11 +186,25 @@ def parse_format_csv(db: Session, csvfilecontent, delimiter, header, datetimefie
 
 def get_table_data(transactionlist):
   result = ""
+  labels = ""
+  amounts = ""
   try:
-    result = "[['name','amount']"
-    for transaction in transactionlist:
-      result = result + ",['" + transaction.name + "'," + str(transaction.amount) + "]"
-    result = result + "]"
+    resultdict = {}
+    for transx in transactionlist:
+      resultkeys = resultdict.keys()
+      if transx.amount > 0: pass
+      elif resultdict.get(transx.category, "None") != "None":
+        resultdict[transx.category] = resultdict[transx.category] + transx.amount
+      elif resultdict.get(transx.category, "None") == "None":
+        resultdict[transx.category] = transx.amount
+    for newlabel in resultdict.keys():
+      labels = labels + newlabel + ","
+    for newvalue in resultdict.values():
+      amounts = amounts + str(newvalue) + ","
+#    for transaction in transactionlist:
+#      labels = labels + "'" + transaction.name + "',"
+#      amounts = amounts + str(transaction.amount) + ","
+    result = labels + "|" + amounts
   except Exception as ex:
     result = str(ex)
   return result
