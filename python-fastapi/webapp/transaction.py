@@ -145,7 +145,7 @@ def parse_date(datetimestamp: str, dateformat: str):
     result = currentdate
   return result
 
-def parse_format_csv(db: Session, csvfilecontent, delimiter, header, datetimefield, amountfield, categoryfield, namefield, descriptionfield, currency, accountid, dateformat):
+def parse_format_csv(db: Session, csvfilecontent, delimiter, header, datetimefield, amountfield, categoryfield, namefield, descriptionfield, currency, accountid, dateformat, country):
   print(currency)
   resultarr = []
   try:
