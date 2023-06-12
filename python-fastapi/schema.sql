@@ -23,15 +23,19 @@ INSERT INTO exchangerate (currency_from, currency_to, rate) VALUES ('USD','EUR',
 
 INSERT INTO weblist (name,value) VALUES ('Category','Other');
 INSERT INTO weblist (name,value) VALUES ('Category','Housing');
+INSERT INTO weblist (name,value) VALUES ('Category','Electric');
+INSERT INTO weblist (name,value) VALUES ('Category','Water');
 INSERT INTO weblist (name,value) VALUES ('Category','Utilities');
-INSERT INTO weblist (name,value) VALUES ('Category','Communication');
+INSERT INTO weblist (name,value) VALUES ('Category','Phone');
+INSERT INTO weblist (name,value) VALUES ('Category','Internet');
 INSERT INTO weblist (name,value) VALUES ('Category','Insurance');
 INSERT INTO weblist (name,value) VALUES ('Category','Debt');
+INSERT INTO weblist (name,value) VALUES ('Category','Credit');
+INSERT INTO weblist (name,value) VALUES ('Category','Food');
 INSERT INTO weblist (name,value) VALUES ('Category','Mobility');
 INSERT INTO weblist (name,value) VALUES ('Category','Entertainment');
 INSERT INTO weblist (name,value) VALUES ('Category','Income');
 INSERT INTO weblist (name,value) VALUES ('Category','Expense');
-INSERT INTO weblist (name,value) VALUES ('Category','Other');
 INSERT INTO weblist (name,value) VALUES ('AccountType','Checking');
 INSERT INTO weblist (name,value) VALUES ('AccountType','Savings');
 INSERT INTO weblist (name,value) VALUES ('Currency','USD');

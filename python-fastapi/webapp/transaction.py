@@ -5,6 +5,7 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from .database import SessionLocal, engine
+from .exchangerate import find_exchangerate
 from . import models, schema, config
 
 
@@ -50,7 +51,7 @@ def get_transaction(db: Session, bid):
   return transaction
 
 def add_transaction(db: Session, newtransaction):
-  transaction = models.Transaction(name=newtransaction['name'], description=newtransaction['description'], amount=newtransaction['amount'], accountid=newtransaction['accountid'], category=newtransaction['category'], datetimestamp=newtransaction['datetimestamp'])
+  transaction = models.Transaction(name=newtransaction['name'], description=newtransaction['description'], amount=newtransaction['amount'], accountid=newtransaction['accountid'], category=newtransaction['category'], currency=newtransaction['currency'], datetimestamp=newtransaction['datetimestamp'])
   db.add(transaction)
   db.commit()
   return transaction
@@ -145,7 +146,7 @@ def parse_date(datetimestamp: str, dateformat: str):
   return result
 
 def parse_format_csv(db: Session, csvfilecontent, delimiter, header, datetimefield, amountfield, categoryfield, namefield, descriptionfield, currency, accountid, dateformat):
-  print(dateformat)
+  print(currency)
   resultarr = []
   try:
     csvlines = csvfilecontent.splitlines()
@@ -176,7 +177,7 @@ def parse_format_csv(db: Session, csvfilecontent, delimiter, header, datetimefie
           "category": tmp3,
           "name": tmp4,
           "description": tmp5,
-          "currency": currency,
+          "currency": str(currency),
           "accountid": int(accountid)
         }
         add_transaction(db, newtransaction)
@@ -184,7 +185,17 @@ def parse_format_csv(db: Session, csvfilecontent, delimiter, header, datetimefie
     resultarr.append(str(ex))
   return resultarr
 
-def get_table_data(transactionlist):
+def convert_value(db: Session, original, currency_from, currency_to):
+  result = 0.0
+  try:
+    exrate = find_exchangerate(db, currency_from, currency_to)
+    result = original * exrate
+  except Exception as ex:
+    print(str(ex))
+    result = original
+  return result
+
+def get_table_data(db: Session, transactionlist, budgetcurrency):
   result = ""
   labels = ""
   amounts = ""
@@ -194,16 +205,25 @@ def get_table_data(transactionlist):
       resultkeys = resultdict.keys()
       if transx.amount > 0: pass
       elif resultdict.get(transx.category, "None") != "None":
-        resultdict[transx.category] = resultdict[transx.category] + transx.amount
+        if transx.currency is None:
+          resultdict[transx.category] = resultdict[transx.category] + (transx.amount*(-1.0))
+        elif transx.currency != budgetcurrency:
+          tmpamt = convert_value(db, (transx.amount*(-1.0)), transx.currency, budgetcurrency)
+          resultdict[transx.category] = resultdict[transx.category] + tmpamt
+        else:
+          resultdict[transx.category] = resultdict[transx.category] + (transx.amount*(-1.0))
       elif resultdict.get(transx.category, "None") == "None":
-        resultdict[transx.category] = transx.amount
+        if transx.currency is None:
+          resultdict[transx.category] = resultdict[transx.category] + (transx.amount*(-1.0))
+        elif transx.currency != budgetcurrency:
+          tmpamt = convert_value(db, (transx.amount*(-1.0)), transx.currency, budgetcurrency)
+          resultdict[transx.category] = tmpamt
+        else:
+          resultdict[transx.category] = (transx.amount*(-1.0))
     for newlabel in resultdict.keys():
       labels = labels + newlabel + ","
     for newvalue in resultdict.values():
       amounts = amounts + str(newvalue) + ","
-#    for transaction in transactionlist:
-#      labels = labels + "'" + transaction.name + "',"
-#      amounts = amounts + str(transaction.amount) + ","
     result = labels + "|" + amounts
   except Exception as ex:
     result = str(ex)

@@ -21,6 +21,17 @@ def get_exchangerate(db: Session, bid):
   exchangerate = db.query(models.ExchangeRate).filter(models.ExchangeRate.id == bid).first()
   return exchangerate
 
+def find_exchangerate(db: Session, cur_from, cur_to):
+  print(cur_from)
+  print(cur_to)
+  result = 1.0
+  try:
+    exchangerate = db.query(models.ExchangeRate).filter(models.ExchangeRate.currency_from == cur_from, models.ExchangeRate.currency_to == cur_to).first()
+    result = exchangerate.rate
+  except Exception as ex:
+    print(str(ex))
+  return result
+
 def add_exchangerate(db: Session, newexchangerate):
   exchangerate = models.ExchangeRate(currency_from=newexchangerate['currency_from'], currency_to=newexchangerate['currency_to'], rate=newexchangerate['rate'])
   db.add(exchangerate)

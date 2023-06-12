@@ -18,7 +18,7 @@ from . import models, schema, config
 from .auth import authenticate_user, create_user, get_current_user, oauth2_scheme, get_users, get_user_by_username, update_user_email, update_user_password
 from .filesystem import read_file, write_file, append_line, insert_line, delete_line, upload_file, get_uploaded_files, delete_file
 from .budget import get_budgets, get_budget, add_budget, delete_budget, update_budget_field
-from .budgetitem import get_budgetitems, get_budgetitem, add_budgetitem, delete_budgetitem, update_budgetitem_field, get_budgetitems_for_budget
+from .budgetitem import get_budgetitems, get_budgetitem, add_budgetitem, delete_budgetitem, update_budgetitem_field, get_budgetitems_for_budget, get_budget_data
 from .account import get_accounts, get_account, add_account, delete_account, update_account_field
 from .transaction import get_transactions, get_transactions_sorted, get_transaction, add_transaction, delete_transaction, update_transaction_field, parse_csv_info, parse_format_csv,get_transactions_dates, get_table_data
 from .exchangerate import get_exchangerates, get_exchangerate, add_exchangerate, delete_exchangerate, update_exchangerate_field
@@ -207,9 +207,26 @@ async def budget_overview(request: Request, db: Session = Depends(get_db)):
   startdate = str(currentdate.year) + "-" + month + "-01"
   enddate = str(currentdate.year) + "-" + month + "-32"
   transactionlist = get_transactions_dates(db, startdate, enddate)
-  tabledata = get_table_data(transactionlist)
+  budget = get_budget(db, 1)
+  budgetlist = get_budgets(db)
+  budgetidlist = []
+  for budget in budgetlist:
+    budgetidlist.append(budget.id)
+  budgetitemlist = get_budgetitems_for_budget(db, 1)
+  budgetsum = 0.00
+  budgetremain = 0.00
+  for budgetitem in budgetitemlist:
+    if budgetitem.category == "Income":
+      budgetremain = budgetremain + budgetitem.amount
+    else:
+      budgetremain = budgetremain - budgetitem.amount
+      budgetsum = budgetsum + budgetitem.amount
+  tabledata = get_table_data(db, transactionlist, budget.currency)
+  budgettabledata = get_budget_data(budgetitemlist)
   categories = config.get_weblist(db, "Category")
-  return templates.TemplateResponse("overview.html", {"request": request, "messages": messages, "g": g, "categories": categories, "transactionlist": transactionlist, "tabledata": tabledata})
+  return templates.TemplateResponse("overview.html", {"request": request, "messages": messages, "g": g, "categories": categories, "transactionlist": transactionlist, "tabledata": tabledata, "budgetidlist": budgetidlist,"budget": budget, "budgetitemlist": budgetitemlist, "budgetsum": budgetsum, "budgetremain": budgetremain, "budgettabledata": budgettabledata})
+
+# @app.post("/budget/overview/{id}", response_class=HTMLResponse)
 
 @app.get("/budget/list", response_class=HTMLResponse)
 async def budget_list(request: Request, db: Session = Depends(get_db)):
@@ -224,9 +241,15 @@ async def budget_detail(request: Request, id: int, db: Session = Depends(get_db)
   message()
   budget = get_budget(db, id)
   budgetitemlist = get_budgetitems_for_budget(db, id)
+  budgetsum = 0.00
+  for budgetitem in budgetitemlist:
+    if budgetitem.category == "Income":
+      budgetsum = budgetsum + budgetitem.amount
+    else:
+      budgetsum = budgetsum - budgetitem.amount
   currencylist = config.get_weblist(db, "Currency")
   categories = config.get_weblist(db, "Category")
-  return templates.TemplateResponse("budget_detail.html", {"request": request, "messages": messages, "g": g, "budget": budget, "budgetitemlist": budgetitemlist, "categories": categories})
+  return templates.TemplateResponse("budget_detail.html", {"request": request, "messages": messages, "g": g, "budget": budget, "budgetitemlist": budgetitemlist, "categories": categories, "budgetsum": budgetsum})
 
 @app.post("/budget/{id}/item/create", response_class=HTMLResponse)
 async def budgetitem_create(request: Request, id: int, name: str = Form(...), description: str = Form(...), amount: str = Form(...), category: str = Form(...), recurrence: str = Form(...), recurrenceday: str = Form(...), db: Session = Depends(get_db)):
@@ -489,7 +512,7 @@ async def transaction_uploadedformatview(request: Request, uploadedfile: str = F
 
 @app.post("/transaction/importformatted", response_class=HTMLResponse)
 async def transaction_importformatted(request: Request, uploadedfile: str = Form(...), delimiter: str = Form(...), currency: str = Form(...), header: str = Form(...), accountid: str = Form(...), datetimefield: str = Form(...), amountfield: str = Form(...), categoryfield: str = Form(...), namefield: str = Form(...), descriptionfield: str = Form(...), dateformat: str = Form(...), db: Session = Depends(get_db)):
-  print("transaction_importformatted")
+  print(currency)
   result = ""
   importdict = {}
   try:

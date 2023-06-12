@@ -43,17 +43,31 @@ Overview
 
 <div class="m-1 p-1">
   
-  <h2>Overview</h2>
+  <div class="btn-group">
+    <a href="/budget/overview" class="btn"><h3>Overview</h3></a>
+    <form action="/budget/overview" method="get">
+      <div class="input-group">
+        <select id="budgetid" name="budgetid" class="form-select">
+          <option value="1" selected>Select a Budget</option>
+          {% for budgetid in budgetidlist %}
+          <option value="{{ budgetid }}">{{ budgetid }}</option>
+          {% endfor %}
+        </select>
+        <input type="submit" value="View" class="btn btn-success">
+      </div>
+    </form>
+  </div>
   <p>Chart data is based on the Transaction category and amount. Adjust transaction categories to fit the budget model.</p>
   
   <div id="test"></div>
   
   <div class="row">
     
-    <div class="col-12 col-sm-06">
+    <div class="col-12 col-sm-6">
       <!--<canvas id="myChart" style="width:100%;max-width:600px"></canvas>-->
+      <canvas id="pieChartBudget" style="width:100%;max-width:1600px;height:400px;max-height:1600px;"></canvas>
     </div>
-    <div class="col-12 col-sm-06">
+    <div class="col-12 col-sm-6">
       <canvas id="pieChart" style="width:100%;max-width:1600px;height:400px;max-height:1600px;"></canvas>
     </div>
     
@@ -61,13 +75,70 @@ Overview
   
   <div class="row">
     
-    <div class="col-12 col-sm-06">
-      <canvas id="barChart" style="width:100%;max-width:1600px;height:400px;max-height:1600px;"></canvas>
+    <div class="col-12 col-sm-6">
+      <canvas id="barChartBudget" style="width:100%;max-width:1600px;height:400px;max-height:1600px;"></canvas>
     </div>
-    <div class="col-12 col-sm-06">
+    <div class="col-12 col-sm-6">
+      <canvas id="barChart" style="width:100%;max-width:1600px;height:400px;max-height:1600px;"></canvas>
     </div>
     
   </div>
+  
+</div>
+
+<div class="m-3 p-3">
+  
+  <table class="table table-hover table-bordered">
+    <tr>
+      <th><a href="" class="btn btn-sm">ID</a></th>
+      <th><a href="" class="btn btn-sm">Name</a></th>
+      <th><a href="" class="btn btn-sm">Description</a></th>
+      <th><a href="" class="btn btn-sm">Amount</a></th>
+      <th><a href="" class="btn btn-sm">Category</a></th>
+      <th><a href="" class="btn btn-sm">Recurrence</a></th>
+      <th><a href="" class="btn btn-sm">Recur Day</a></th>
+      <th></th>
+    </tr>
+
+    <tr>
+      <th></th>
+      <th></th>
+      <th>Remainder</th>
+      <th>{{ budgetremain }}</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+
+    {% for budgetitem in budgetitemlist %}
+    <tr>
+      <td>{{ budgetitem.id }}</td>
+      <td>{{ budgetitem.name }}</td>
+      <td>{{ budgetitem.description }}</td>
+      <td>{{ budgetitem.amount }}</td>
+      <td>{{ budgetitem.category }}</td>
+      <td>{{ budgetitem.recurrence }}</td>
+      <td>{{ budgetitem.recurrenceday }}</td>
+      <td>
+        {% if loop.first %}{% else %}
+        {{ ((budgetitem.amount / budgetsum)*100)|round(2,'common') }} %
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+    
+    <tr>
+      <th></th>
+      <th></th>
+      <th>Bill Sum</th>
+      <th>{{ budgetsum }}</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </table>
   
 </div>
 
@@ -141,23 +212,23 @@ var barColors = [
 ];
 var chartColors = [
   "Navy",
+  "Yellow",
+  "Red",
   "MediumBlue",
+  "Gold",
+  "DarkRed",
   "DarkCyan",
   "Cyan",
-  "Turquoise",
-  "Green",
-  "GreenYellow",
-  "Yellow",
-  "Gold",
   "Orange",
-  "DarkOrange",
-  "Tomato",
-  "GoldenRod",
-  "Red",
-  "DarkRed",
   "Brown",
+  "Turquoise",
+  "DarkOrange",
+  "Green",
   "Maroon",
+  "GreenYellow",
+  "Tomato",
   "Indigo",
+  "GoldenRod",
   "Purple",
   "Violet",
   "Pink"
@@ -196,7 +267,7 @@ new Chart("pieChart", {
   options: {
     title: {
       display: true,
-      text: "TEST"
+      text: "Transactions"
     }
   }
 });
@@ -216,7 +287,47 @@ new Chart("barChart", {
     },
     title: {
       display: true,
-      text: "TEST BAR"
+      text: "Transactions"
+    }
+  }
+});
+
+var btdata = "{{ budgettabledata }}";
+const tmparr2 = btdata.split("|");
+const tmparrlabels2 = tmparr2[0].split(",");
+const tmparramounts2 = tmparr2[1].split(",");
+new Chart("pieChartBudget", {
+  type: "pie",
+  data: {
+    labels: tmparrlabels2,
+    datasets: [{
+      backgroundColor: chartColors,
+      data: tmparramounts2
+    }]
+  },
+  options: {
+    title: {
+      display: true,
+      text: "Budget"
+    }
+  }
+});
+new Chart("barChartBudget", {
+  type: "bar",
+  data: {
+    labels: tmparrlabels2,
+    datasets: [{
+      backgroundColor: chartColors,
+      data: tmparramounts2
+    }]
+  },
+  options: {
+    legend: {
+      display: true
+    },
+    title: {
+      display: true,
+      text: "Budget"
     }
   }
 });

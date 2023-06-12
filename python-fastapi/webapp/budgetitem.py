@@ -66,4 +66,26 @@ def update_budgetitem_field(db: Session, bid, field, newvalue):
     return False
   return True
 
+def get_budget_data(budgetitemlist):
+  result = ""
+  labels = ""
+  amounts = ""
+  try:
+    resultdict = {}
+    for budgetitem in budgetitemlist:
+      resultkeys = resultdict.keys()
+      if budgetitem.category == "Income": pass
+      elif resultdict.get(budgetitem.category, "None") != "None":
+        resultdict[budgetitem.category] = resultdict[budgetitem.category] + budgetitem.amount
+      elif resultdict.get(budgetitem.category, "None") == "None":
+        resultdict[budgetitem.category] = budgetitem.amount
+    for newlabel in resultdict.keys():
+      labels = labels + newlabel + ","
+    for newvalue in resultdict.values():
+      amounts = amounts + str(newvalue) + ","
+    result = labels + "|" + amounts
+  except Exception as ex:
+    result = str(ex)
+  return result
+
 #

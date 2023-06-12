@@ -134,6 +134,7 @@ Transaction List
       <th><a href="/transaction/list/sorted/id" class="btn btn-sm">ID</a></th>
       <th><a href="/transaction/list/sorted/datetimestamp" class="btn btn-sm">Date</a></th>
       <th><a href="/transaction/list/sorted/amount" class="btn btn-sm">Amount</a></th>
+      <th><a href="/transaction/list/sorted/currency" class="btn btn-sm">Currency</a></th>
       <th><a href="/transaction/list/sorted/category" class="btn btn-sm">Category</a></th>
       <th><a href="/transaction/list/sorted/name" class="btn btn-sm">Name</a></th>
       <th><a href="" class="btn btn-sm">Description</a></th>
@@ -145,6 +146,7 @@ Transaction List
       <td>{{ transaction.id }}</td>
       <td>{{ transaction.datetimestamp }}</td>
       <td>{{ transaction.amount }}</td>
+      <td>{{ transaction.currency }}</td>
       <td>{{ transaction.category }}</td>
       <td><a href="/transaction/detail/{{ transaction.id }}" class="btn btn-sm btn-light"><b>{{ transaction.name }}</b></a></td>
       <td>{{ transaction.description }}</td>
