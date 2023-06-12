@@ -69,6 +69,23 @@ Budget: {{ budget.id }}
       </div>
     </div>
     <div class="row m-1 p-1">
+      <div class="text-bg-light col-12 col-sm-3">Currency</div>
+      <div class="col-12 col-sm-9">
+        <form action="/budget/update/{{ budget.id }}/currency" method="post">
+          <div class="input-group">
+            <span class="input-group-text">{{ budget.currency }}</span>
+            <select id="currency" name="currency" class="form-select">
+              <option value="Default" selected>Select a Currency</option>
+              {% for currency in currencylist %}
+              <option value="{{ currency.value }}">{{ currency.value }}</option>
+              {% endfor %}
+            </select>
+            <input type="submit" value="Update" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-success">
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="row m-1 p-1">
       <div class="text-bg-light col-12 col-sm-3">Description</div>
       <div class="col-12 col-sm-9">
         <form action="/budget/update/{{ budget.id }}/description" method="post">

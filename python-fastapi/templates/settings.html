@@ -57,35 +57,9 @@ Settings
   <div id="collapseB" class="collapse" data-bs-parent="#accordionB">
     <div class="row">
       
-      <div class="col-12 col-sm-6 col-md-6 col-lg-6 p-1">
-        <div class="card p-1">
+      <div class="col-12 col-sm-6">
+        <div class="card m-1 p-1">
           <div class="card-header">
-            <h5 class="card-title">Categories</h5>
-          </div>
-          <div class="card-body">
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item">
-                <form action="/category/create" method="post">
-                  <div class="input-group">
-                    <input type="text" id="category" name="category" placeholder="Enter a new Category" class="form-control" required />
-                    <input type="submit" value="Add" class="btn btn-sm btn-success">
-                    <input type="reset" class="btn btn-sm btn-secondary">
-                  </div>
-                </form>
-              </li>
-              {% for category in categories %}
-              <li class="list-group-item">
-                <form action="/category/delete/{{ category.id }}" method="post">
-                  <div class="input-group">
-                    <a href="" class="btn btn-sm">{{ category.value }}</a>
-                    <input type="submit" value="X" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-danger">
-                  </div>
-                </form>
-              </li>
-              {% endfor %}
-            </ul>
-          </div>
-          <div class="card-footer">
             <select class="form-select">
               <option value="Default" selected>Select a Category</option>
               {% for category in categories %}
@@ -93,36 +67,207 @@ Settings
               {% endfor %}
             </select>
           </div>
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              {% for category in categories %}
+              <li class="list-group-item">
+                <form action="/category/delete/{{ category.id }}" method="post">
+                  <a href="" class="btn btn-sm">{{ category.value }}</a>
+                  <input type="submit" value="X" class="btn btn-sm btn-danger">
+                </form>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+          <div class="card-footer">
+            <form action="/category/create" method="post">
+              <div class="input-group">
+                <input type="text" id="category" name="category" placeholder="Enter a new category" class="form-control">
+                <input type="submit" value="Add" class="btn btn-sm btn-success">
+              </div>
+            </form>
+          </div>
         </div>
       </div>
       
-      <div class="col-12 col-sm-6 col-md-6 col-lg-6 p-1">
-        <select class="form-select">
-          <option value="Default" selected>Select a Type</option>
-          {% for accounttype in accounttypelist %}
-          <option value="{{ accounttype.value }}">{{ accounttype.value }}</option>
-          {% endfor %}
-        </select>
+      <div class="col-12 col-sm-6">
+        <div class="card m-1 p-1">
+          <div class="card-header">
+            <select class="form-select">
+              <option value="Default" selected>Select an Account Type</option>
+              {% for accounttype in accounttypelist %}
+              <option value="{{ accounttype.value }}">{{ accounttype.value }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              {% for accounttype in accounttypelist %}
+              <li class="list-group-item">
+                <form action="/accounttype/delete/{{ accounttype.id }}" method="post">
+                  <a href="" class="btn btn-sm">{{ accounttype.value }}</a>
+                  <input type="submit" value="X" class="btn btn-sm btn-danger">
+                </form>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+          <div class="card-footer">
+            <form action="/accounttype/create" method="post">
+              <div class="input-group">
+                <input type="text" id="accounttype" name="accounttype" placeholder="Enter a new type" class="form-control">
+                <input type="submit" value="Add" class="btn btn-sm btn-success">
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
       
-      <div class="col-12 col-sm-6 col-md-6 col-lg-6 p-1">
-        <select class="form-select">
-          <option value="Default" selected>Select a Currency</option>
-          {% for currency in currencylist %}
-          <option value="{{ currency.value }}">{{ currency.value }}</option>
-          {% endfor %}
-        </select>
+      <div class="col-12 col-sm-6">
+        <div class="card m-1 p-1">
+          <div class="card-header">
+            <select class="form-select">
+              <option value="Default" selected>Select a Currency</option>
+              {% for currency in currencylist %}
+              <option value="{{ currency.value }}">{{ currency.value }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              {% for currency in currencylist %}
+              <li class="list-group-item">
+                <form action="/currency/delete/{{ currency.id }}" method="post">
+                  <a href="" class="btn btn-sm">{{ currency.value }}</a>
+                  <input type="submit" value="X" class="btn btn-sm btn-danger">
+                </form>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+          <div class="card-footer">
+            <form action="/currency/create" method="post">
+              <div class="input-group">
+                <input type="text" id="currency" name="currency" placeholder="Enter a new currency" class="form-control">
+                <input type="submit" value="Add" class="btn btn-sm btn-success">
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
       
-      <div class="col-12 col-sm-6 col-md-6 col-lg-6 p-1">
-        <select class="form-select">
-          <option value="Default" selected>Select a Country</option>
-          {% for country in countrylist %}
-          <option value="{{ country.value }}">{{ country.value }}</option>
-          {% endfor %}
-        </select>
+      <div class="col-12 col-sm-6">
+        <div class="card m-1 p-1">
+          <div class="card-header">
+            <select class="form-select">
+              <option value="Default" selected>Select a Country</option>
+              {% for country in countrylist %}
+              <option value="{{ country.value }}">{{ country.value }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              {% for country in countrylist %}
+              <li class="list-group-item">
+                <form action="/country/delete/{{ country.id }}" method="post">
+                  <a href="" class="btn btn-sm">{{ country.value }}</a>
+                  <input type="submit" value="X" class="btn btn-sm btn-danger">
+                </form>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+          <div class="card-footer">
+            <form action="/country/create" method="post">
+              <div class="input-group">
+                <input type="text" id="country" name="country" placeholder="Enter a new country" class="form-control">
+                <input type="submit" value="Add" class="btn btn-sm btn-success">
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
-    
+      
+    </div>
+  </div>
+</div>
+
+<div id="accordionC" class="card m-3 p-3">
+  <div>
+    <a class="btn" data-bs-toggle="collapse" href="#collapseC">
+      <h3>Exchange Rates</h3>
+    </a>
+  </div>
+  
+  <div id="collapseC" class="collapse" data-bs-parent="#accordionC">
+    <div class="row">
+      
+      <div class="col">
+      
+        <table class="table table-bordered table-hover">
+          <tr>
+            <th>ID</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Rate</th>
+            <th></th>
+          </tr>
+          <tr>
+            <form action="" method="">
+              <th></th>
+              <th>
+                <select id="currency_from" name="currency_to" class="form-select">
+                  <option value="" selected disabled>From</option>
+                  {% for currency in currencylist %}
+                  <option value="{{ currency.value }}">{{ currency.value }}</option>
+                  {% endfor %}
+                </select>
+              </th>
+              <th>
+                <select id="currency_from" name="currency_to" class="form-select">
+                  <option value="" selected disabled>To</option>
+                  {% for currency in currencylist %}
+                  <option value="{{ currency.value }}">{{ currency.value }}</option>
+                  {% endfor %}
+                </select>
+              </th>
+              <th>
+                <input type="text" id="rate" name="rate" placeholder="Enter a decimal value, eg. 1.02" pattern="[0-9].[0-9]" class="form-control">
+              </th>
+              <th>
+                <input type="submit" value="Add" class="btn btn-sm btn-success">
+                <input type="reset" class="btn btn-sm btn-secondary">
+              </th>
+            </form>
+          </tr>
+
+          {% for exchangerate in exhangeratelist %}
+          <tr>
+            <td>{{ exchangerate.id }}</td>
+            <td>{{ exchangerate.currency_from }}</td>
+            <td>{{ exchangerate.currency_to }}</td>
+            <td>
+              <form action="" method="">
+                <div class="input-group">
+                  <input type="text" id="rate" name="rate" placeholder="{{ exchangerate.rate }}" pattern="[0-9].[0-9]" class="form-control">
+                  <input type="submit" value="Update" class="btn btn-sm btn-success">
+                </div>
+              </form>
+            </td>
+            <td>
+              <form action="" method="">
+                <input type="submit" value="X" class="btn btn-sm btn-danger">
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+
+        </table>
+        
+      </div>
+      
+    </div>
   </div>
 </div>
 

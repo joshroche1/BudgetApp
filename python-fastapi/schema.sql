@@ -4,6 +4,7 @@
 
 DELETE FROM users;
 DELETE FROM weblist;
+DELETE FROM exchangerate;
 DELETE FROM transactions;
 DELETE FROM accounts;
 DELETE FROM budgets;
@@ -13,11 +14,21 @@ INSERT INTO users (email,username,password) VALUES (
 'admin@admin.adm','admin','$2b$12$25WY1X33QIGgm8UrjH.yHeOSRPAZOnZy60UDxf8PHnaQ2y.lpBJGe'
 );
 
-INSERT INTO budgets (name,description) VALUES (
-  'Default Budget','Default'
+INSERT INTO budgets (name,currency,description) VALUES (
+  'Default Budget','EUR','Default'
 );
 
-INSERT INTO weblist (name,value) VALUES ('Category','Default');
+INSERT INTO exchangerate (currency_from, currency_to, rate) VALUES ('EUR','USD',1.08);
+INSERT INTO exchangerate (currency_from, currency_to, rate) VALUES ('USD','EUR',0.93);
+
+INSERT INTO weblist (name,value) VALUES ('Category','Other');
+INSERT INTO weblist (name,value) VALUES ('Category','Housing');
+INSERT INTO weblist (name,value) VALUES ('Category','Utilities');
+INSERT INTO weblist (name,value) VALUES ('Category','Communication');
+INSERT INTO weblist (name,value) VALUES ('Category','Insurance');
+INSERT INTO weblist (name,value) VALUES ('Category','Debt');
+INSERT INTO weblist (name,value) VALUES ('Category','Mobility');
+INSERT INTO weblist (name,value) VALUES ('Category','Entertainment');
 INSERT INTO weblist (name,value) VALUES ('Category','Income');
 INSERT INTO weblist (name,value) VALUES ('Category','Expense');
 INSERT INTO weblist (name,value) VALUES ('Category','Other');
@@ -33,7 +44,7 @@ INSERT INTO weblist (name,value) VALUES ('Country','DE');
 ---
 
 INSERT INTO transactions (datetimestamp,amount,category,currency,name,description,accountid) VALUES (
-  '2023-01-01',1234.56,'Income','USD','Paycheck','Work Income',1
+  '2023-01-01',5000.00,'Income','EUR','Paycheck','Work Income',1
 );
 
 INSERT INTO accounts (name,accounttype,currency,iban,bic,country) VALUES (
@@ -41,5 +52,5 @@ INSERT INTO accounts (name,accounttype,currency,iban,bic,country) VALUES (
 );
 
 INSERT INTO budgetitems (name,amount,description,category,budgetid,recurrence,recurrenceday) VALUES (
-  'Income',123.45,'Work income','Income',1,'Monthly',1
+  'Income',5000.00,'Work income','Income',1,'Monthly',1
 );

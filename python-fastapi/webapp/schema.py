@@ -22,6 +22,7 @@ class BudgetBase(BaseModel):
 
 class BudgetCreate(BudgetBase):
   description: str
+  currency: str
 
 class Budget(BudgetBase):
   id: int
@@ -59,10 +60,23 @@ class TransactionCreate(TransactionBase):
   category: str
   accountid: int
 
-
 class Transaction(TransactionBase):
   id: int
   currency: str
+
+  class Config:
+    orm_mode = True
+
+
+class ExchangeRateBase(BaseModel):
+  currency_from: str
+  currency_ro: str
+
+class ExchangeRateCreate(ExchangeRateBase):
+  rate: float
+
+class ExchangeRate(ExchangeRateBase):
+  id: int
 
   class Config:
     orm_mode = True

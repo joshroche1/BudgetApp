@@ -21,6 +21,7 @@ from .budget import get_budgets, get_budget, add_budget, delete_budget, update_b
 from .budgetitem import get_budgetitems, get_budgetitem, add_budgetitem, delete_budgetitem, update_budgetitem_field, get_budgetitems_for_budget
 from .account import get_accounts, get_account, add_account, delete_account, update_account_field
 from .transaction import get_transactions, get_transactions_sorted, get_transaction, add_transaction, delete_transaction, update_transaction_field, parse_csv_info, parse_format_csv,get_transactions_dates, get_table_data
+from .exchangerate import get_exchangerates, get_exchangerate, add_exchangerate, delete_exchangerate, update_exchangerate_field
 
 ### Initialization
 
@@ -92,7 +93,9 @@ async def logout(request: Request):
   g.clear()
   return templates.TemplateResponse("index.html", {"request": request, "messages": messages, "g": g})
 
+##
 ## User Views
+##
 
 @app.get("/user", response_class=HTMLResponse)
 async def userprofile(request: Request, db: Session = Depends(get_db)):
@@ -117,6 +120,8 @@ async def user_update_email(request: Request, password: str = Form(...), passwor
   return templates.TemplateResponse("userprofile.html", {"request": request, "messages": messages, "g": g, "user": user})
 
 ##
+##
+##
 
 @app.get("/settings", response_class=HTMLResponse)
 async def settings(request: Request, db: Session = Depends(get_db)):
@@ -126,8 +131,9 @@ async def settings(request: Request, db: Session = Depends(get_db)):
   currencylist = config.get_weblist(db, "Currency")
   accounttypelist = config.get_weblist(db, "AccountType")
   countrylist = config.get_weblist(db, "Country")
+  exhangeratelist = get_exchangerates(db)
   settings = get_settings()
-  return templates.TemplateResponse("settings.html", {"request": request, "messages": messages, "g": g, "categories": categories, "accounttypelist": accounttypelist, "countrylist": countrylist, "currencylist": currencylist, "userlist": userlist, "settings": settings, "workingdir": workingdir})
+  return templates.TemplateResponse("settings.html", {"request": request, "messages": messages, "g": g, "categories": categories, "accounttypelist": accounttypelist, "countrylist": countrylist, "currencylist": currencylist, "userlist": userlist, "settings": settings, "workingdir": workingdir, "exhangeratelist": exhangeratelist})
 
 @app.post("/category/create", response_class=HTMLResponse)
 async def category_create(request: Request, category: str = Form(...), db: Session = Depends(get_db)):
@@ -136,9 +142,11 @@ async def category_create(request: Request, category: str = Form(...), db: Sessi
   currencylist = config.get_weblist(db, "Currency")
   accounttypelist = config.get_weblist(db, "AccountType")
   countrylist = config.get_weblist(db, "Country")
+  exhangeratelist = get_exchangerates(db)
+  settings = get_settings()
   userlist = get_users(db)
   categories = config.get_weblist(db, "Category")
-  return templates.TemplateResponse("settings.html", {"request": request, "messages": messages, "g": g, "categories": categories, "accounttypelist": accounttypelist, "countrylist": countrylist, "currencylist": currencylist, "userlist": userlist, "settings": settings, "workingdir": workingdir})
+  return templates.TemplateResponse("settings.html", {"request": request, "messages": messages, "g": g, "categories": categories, "accounttypelist": accounttypelist, "countrylist": countrylist, "currencylist": currencylist, "userlist": userlist, "settings": settings, "workingdir": workingdir, "exhangeratelist": exhangeratelist})
 
 @app.post("/category/delete/{id}", response_class=HTMLResponse)
 async def category_delete(request: Request, id: int, db: Session = Depends(get_db)):
@@ -150,9 +158,45 @@ async def category_delete(request: Request, id: int, db: Session = Depends(get_d
   currencylist = config.get_weblist(db, "Currency")
   accounttypelist = config.get_weblist(db, "AccountType")
   countrylist = config.get_weblist(db, "Country")
-  return templates.TemplateResponse("settings.html", {"request": request, "messages": messages, "g": g, "categories": categories, "accounttypelist": accounttypelist, "countrylist": countrylist, "currencylist": currencylist, "userlist": userlist, "settings": settings, "workingdir": workingdir})
+  exhangeratelist = get_exchangerates(db)
+  settings = get_settings()
+  return templates.TemplateResponse("settings.html", {"request": request, "messages": messages, "g": g, "categories": categories, "accounttypelist": accounttypelist, "countrylist": countrylist, "currencylist": currencylist, "userlist": userlist, "settings": settings, "workingdir": workingdir, "exhangeratelist": exhangeratelist})
 
+@app.post("/exchangerate/create", response_class=HTMLResponse)
+async def exchangerate_create(request: Request, currency_from: str = Form(...), currency_to: str = Form(...), rate: str = Form(...), db: Session = Depends(get_db)):
+  message()
+  newexchangerate = {
+    "currency_from": currency_from,
+    "currency_to": currency_to,
+    "rate": rate
+  }
+  exchangerate = add_exchangerate(db, newexchangerate)
+  currencylist = config.get_weblist(db, "Currency")
+  accounttypelist = config.get_weblist(db, "AccountType")
+  countrylist = config.get_weblist(db, "Country")
+  exhangeratelist = get_exchangerates(db)
+  settings = get_settings()
+  userlist = get_users(db)
+  categories = config.get_weblist(db, "Category")
+  return templates.TemplateResponse("settings.html", {"request": request, "messages": messages, "g": g, "categories": categories, "accounttypelist": accounttypelist, "countrylist": countrylist, "currencylist": currencylist, "userlist": userlist, "settings": settings, "workingdir": workingdir, "exhangeratelist": exhangeratelist})
+
+@app.post("/exchangerate/delete/{id}", response_class=HTMLResponse)
+async def exchangerate_delete(request: Request, id: int, db: Session = Depends(get_db)):
+  message()
+  if not delete_exchangerate(db, id):
+    message("Error deleting ExhangeRate")
+  userlist = get_users(db)
+  categories = config.get_weblist(db, "Category")
+  currencylist = config.get_weblist(db, "Currency")
+  accounttypelist = config.get_weblist(db, "AccountType")
+  countrylist = config.get_weblist(db, "Country")
+  exhangeratelist = get_exchangerates(db)
+  settings = get_settings()
+  return templates.TemplateResponse("settings.html", {"request": request, "messages": messages, "g": g, "categories": categories, "accounttypelist": accounttypelist, "countrylist": countrylist, "currencylist": currencylist, "userlist": userlist, "settings": settings, "workingdir": workingdir, "exhangeratelist": exhangeratelist})
+
+##
 ## Budget Views
+##
 
 @app.get("/budget/overview", response_class=HTMLResponse)
 async def budget_overview(request: Request, db: Session = Depends(get_db)):
@@ -171,6 +215,7 @@ async def budget_overview(request: Request, db: Session = Depends(get_db)):
 async def budget_list(request: Request, db: Session = Depends(get_db)):
   message()
   budgetlist = get_budgets(db)
+  currencylist = config.get_weblist(db, "Currency")
   categories = config.get_weblist(db, "Category")
   return templates.TemplateResponse("budget_list.html", {"request": request, "messages": messages, "g": g, "budgetlist": budgetlist, "categories": categories})
 
@@ -179,6 +224,7 @@ async def budget_detail(request: Request, id: int, db: Session = Depends(get_db)
   message()
   budget = get_budget(db, id)
   budgetitemlist = get_budgetitems_for_budget(db, id)
+  currencylist = config.get_weblist(db, "Currency")
   categories = config.get_weblist(db, "Category")
   return templates.TemplateResponse("budget_detail.html", {"request": request, "messages": messages, "g": g, "budget": budget, "budgetitemlist": budgetitemlist, "categories": categories})
 
@@ -195,8 +241,8 @@ async def budgetitem_create(request: Request, id: int, name: str = Form(...), de
     "recurrenceday": recurrenceday
   }
   budget = get_budget(db, id)
-  budgetitem = add_transaction(db, newbudgetitem)
-  message(result)
+  budgetitem = add_budgetitem(db, newbudgetitem)
+  currencylist = config.get_weblist(db, "Currency")
   return templates.TemplateResponse("budget_detail.html", {"request": request, "messages": messages, "g": g, "budget": budget, "budgetitem": budgetitem})
 
 @app.post("/budget/{bid}/item/delete/{id}", response_class=HTMLResponse)
@@ -207,9 +253,12 @@ async def budgetitem_delete(request: Request, bid: int, id: int, db: Session = D
   message()
   budget = get_budget(db, id)
   budgetitemlist = get_budgetitems_for_budget(db, bid)
+  currencylist = config.get_weblist(db, "Currency")
   return templates.TemplateResponse("budget_detail.html", {"request": request, "messages": messages, "g": g, "budgetitemlist": budgetitemlist})
 
+##
 ## Account Views
+##
 
 @app.get("/account/list", response_class=HTMLResponse)
 async def account_list(request: Request, db: Session = Depends(get_db)):
@@ -274,7 +323,9 @@ async def account_delete(request: Request, id: int, db: Session = Depends(get_db
   accounttypelist = config.get_weblist(db, "AccountType")
   return templates.TemplateResponse("account_list.html", {"request": request, "messages": messages, "g": g, "accountlist": accountlist, "categories": categories, "accounttypelist": accounttypelist})
 
+##
 ## Transaction Views
+##
 
 @app.get("/transaction/list", response_class=HTMLResponse)
 async def transaction_list(request: Request, db: Session = Depends(get_db)):
@@ -359,7 +410,6 @@ async def transaction_importview(request: Request, db: Session = Depends(get_db)
   currencylist = config.get_weblist(db, "Currency")
   accounttypelist = config.get_weblist(db, "AccountType")
   return templates.TemplateResponse("transaction_import.html", {"request": request, "messages": messages, "g": g, "categories": categories, "currencylist": currencylist, "accountlist": accountlist, "importdict": importdict, "uploadedfilelist": uploadedfilelist})
-
 
 @app.post("/uploads/{file}", response_class=HTMLResponse)
 async def uploads_deletefile(request: Request, file: str, db: Session = Depends(get_db)):

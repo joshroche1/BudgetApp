@@ -28,6 +28,7 @@ class Budget(Base):
   
   id = Column(Integer, primary_key=True, index=True)
   name = Column(String)
+  currency = Column(String)
   description = Column(String, default="")
 
 class BudgetItem(Base):
@@ -53,6 +54,14 @@ class Transaction(Base):
   name = Column(String, default="")
   description = Column(String, default="")
   accountid = Column(Integer)
+
+class ExchangeRate(Base):
+  __tablename__ = "exchangerate"
+  
+  id = Column(Integer, primary_key=True, index=True)
+  currency_from = Column(String, default="")
+  currency_to = Column(String, default="")
+  rate = Column(Float)
 
 class Weblist(Base):
   __tablename__ = "weblist"

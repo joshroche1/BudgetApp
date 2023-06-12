@@ -112,6 +112,7 @@ Budget List
     <tr>
       <th><a href="" class="btn btn-sm">ID</a></th>
       <th><a href="" class="btn btn-sm">Name</a></th>
+      <th><a href="" class="btn btn-sm">Currency</a></th>
       <th><a href="" class="btn btn-sm">Description</a></th>
     </tr>
     
@@ -119,6 +120,7 @@ Budget List
     <tr>
       <td>{{ budget.id }}</td>
       <td><a href="/budget/detail/{{ budget.id }}" class="btn btn-sm btn-light"><b>{{ budget.name }}</b></a></td>
+      <td>{{ budget.currency }}</td>
       <td>{{ budget.description }}</td>
     </tr>
     {% endfor %}
