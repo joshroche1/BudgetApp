@@ -6,7 +6,7 @@ from functools import lru_cache
 from datetime import datetime
 
 from fastapi import Depends, FastAPI, HTTPException, File, Form, Request, UploadFile
-from fastapi.responses import RedirectResponse, HTMLResponse
+from fastapi.responses import RedirectResponse, HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -16,7 +16,7 @@ from sqlalchemy.orm import Session
 from .database import SessionLocal, engine
 from . import models, schema, config
 from .auth import authenticate_user, create_user, get_current_user, oauth2_scheme, get_users, get_user_by_username, update_user_email, update_user_password
-from .filesystem import read_file, write_file, append_line, insert_line, delete_line, upload_file, get_uploaded_files, delete_file
+from .filesystem import read_file, write_file, append_line, insert_line, delete_line, upload_file, get_uploaded_files, delete_file, get_ical_file
 from .budget import get_budgets, get_budget, add_budget, delete_budget, update_budget_field
 from .budgetitem import get_budgetitems, get_budgetitem, add_budgetitem, delete_budgetitem, update_budgetitem_field, get_budgetitems_for_budget, get_budget_data
 from .account import get_accounts, get_account, add_account, delete_account, update_account_field
@@ -274,10 +274,27 @@ async def budgetitem_delete(request: Request, bid: int, id: int, db: Session = D
   if not delete_budgetitem(db, id):
     message("Error deleting transaction")
   message()
-  budget = get_budget(db, id)
+  budget = get_budget(db, bid)
   budgetitemlist = get_budgetitems_for_budget(db, bid)
   currencylist = config.get_weblist(db, "Currency")
   return templates.TemplateResponse("budget_detail.html", {"request": request, "messages": messages, "g": g, "budgetitemlist": budgetitemlist})
+
+@app.get("/budget/{bid}/item/{id}/ical", response_class=HTMLResponse)
+async def budgetitem_get_ical(request: Request, bid: int, id: int, db: Session = Depends(get_db)):
+  budgetitem = get_budgetitem(db, id)
+  icalfile = get_ical_file(budgetitem.recurrenceday, budgetitem.amount, budgetitem.name)
+  budget = get_budget(db, bid)
+  budgetitemlist = get_budgetitems_for_budget(db, bid)
+  budgetsum = 0.00
+  for budgetitem in budgetitemlist:
+    if budgetitem.category == "Income":
+      budgetsum = budgetsum + budgetitem.amount
+    else:
+      budgetsum = budgetsum - budgetitem.amount
+  currencylist = config.get_weblist(db, "Currency")
+  categories = config.get_weblist(db, "Category")
+  file_name = str(budgetitem.name).lower() + ".ical"
+  return FileResponse(icalfile, media_type='application/octet-stream', filename=file_name)
 
 ##
 ## Account Views

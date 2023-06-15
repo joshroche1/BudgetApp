@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 
 from .config import Settings, workingdir
 
@@ -91,5 +92,33 @@ def delete_file(filename):
   except Exception as ex:
     result = str(ex)
   return result
+
+def get_ical_file(recurrenceday, amount, description):
+  try:
+    currentdate = datetime.now()
+    dayrecurrence = str(recurrenceday)
+    if len(dayrecurrence) < 2: dayrecurrence  = "0" + dayrecurrence
+    uidstamp = currentdate.strftime('%Y%m%d%H%M%S') + "@BUDGETAPP"
+    datetimestamp = currentdate.strftime('%Y%m') + dayrecurrence + "T120000L"
+    icalfile = open("/tmp/calfile.ical", "w")
+    icalfile.write("BEGIN:VCALENDAR")
+    icalfile.write("\nVERSION:2.0")
+    icalfile.write("\nPRODID:-//budgetapp")
+    icalfile.write("\nBEGIN:VEVENT")
+    icalfile.write("\nUID:" + uidstamp)
+    icalfile.write("\nTRANSP:TRANSPARENT")
+    icalfile.write("\nDTSTART:" + datetimestamp)
+    icalfile.write("\nDTEND:" + datetimestamp)
+    icalfile.write("\nDTSTAMP:" + datetimestamp)
+    icalfile.write("\nORGANIZER;CN=BudgetApp:mailto:budgetapp@app.org")
+    icalfile.write("\nSUMMARY:" + str(amount))
+    icalfile.write("\nDESCRIPTION:<p>" + description + "</p>")
+    icalfile.write("\nLOCATION:https://www.paypal.com/")
+    icalfile.write("\nEND:VEVENT")
+    icalfile.write("\nEND:VCALENDAR")
+    return "/tmp/calfile.ical"
+  except Exception as ex:
+    print(str(ex))
+    return str(ex)
 
 #
