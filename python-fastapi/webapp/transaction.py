@@ -139,14 +139,12 @@ def parse_date(datetimestamp: str, dateformat: str):
       result = "20" + str(tmp1[2]) + "-" + str(tmp1[1]) + "-" + str(tmp1[0])
     else:
       return currentdate
-    print(result)
   except Exception as ex:
     print(str(ex))
     result = currentdate
   return result
 
 def parse_format_csv(db: Session, csvfilecontent, delimiter, header, datetimefield, amountfield, categoryfield, namefield, descriptionfield, currency, accountid, dateformat, country):
-  print(currency)
   resultarr = []
   try:
     csvlines = csvfilecontent.splitlines()

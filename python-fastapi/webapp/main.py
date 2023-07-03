@@ -226,7 +226,31 @@ async def budget_overview(request: Request, db: Session = Depends(get_db)):
   categories = config.get_weblist(db, "Category")
   return templates.TemplateResponse("overview.html", {"request": request, "messages": messages, "g": g, "categories": categories, "transactionlist": transactionlist, "tabledata": tabledata, "budgetidlist": budgetidlist,"budget": budget, "budgetitemlist": budgetitemlist, "budgetsum": budgetsum, "budgetremain": budgetremain, "budgettabledata": budgettabledata})
 
-# @app.post("/budget/overview/{id}", response_class=HTMLResponse)
+@app.post("/budget/overview/filtered/month", response_class=HTMLResponse)
+async def budget_overview_month(request: Request, month: str = Form(...), db: Session = Depends(get_db)):
+  message()
+  currentdate = datetime.now()
+  startdate = str(currentdate.year) + "-" + month + "-01"
+  enddate = str(currentdate.year) + "-" + month + "-32"
+  transactionlist = get_transactions_dates(db, startdate, enddate)
+  budget = get_budget(db, 1)
+  budgetlist = get_budgets(db)
+  budgetidlist = []
+  for budget in budgetlist:
+    budgetidlist.append(budget.id)
+  budgetitemlist = get_budgetitems_for_budget(db, 1)
+  budgetsum = 0.00
+  budgetremain = 0.00
+  for budgetitem in budgetitemlist:
+    if budgetitem.category == "Income":
+      budgetremain = budgetremain + budgetitem.amount
+    else:
+      budgetremain = budgetremain - budgetitem.amount
+      budgetsum = budgetsum + budgetitem.amount
+  tabledata = get_table_data(db, transactionlist, budget.currency)
+  budgettabledata = get_budget_data(budgetitemlist)
+  categories = config.get_weblist(db, "Category")
+  return templates.TemplateResponse("overview.html", {"request": request, "messages": messages, "g": g, "categories": categories, "transactionlist": transactionlist, "tabledata": tabledata, "budgetidlist": budgetidlist,"budget": budget, "budgetitemlist": budgetitemlist, "budgetsum": budgetsum, "budgetremain": budgetremain, "budgettabledata": budgettabledata})
 
 @app.get("/budget/list", response_class=HTMLResponse)
 async def budget_list(request: Request, db: Session = Depends(get_db)):
