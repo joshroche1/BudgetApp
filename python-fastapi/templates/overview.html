@@ -1,46 +1,34 @@
 {% extends 'base.html' %}
 
-
 {% block title %}
-
 {% if g.user %}
 Overview
 {% else %}
 {% endif %}
-
 {% endblock %}
-
 
 {% block header %}
-
 {% if g.user %}
 Overview
 {% else %}
 {% endif %}
-
 {% endblock %}
 
+{% block navbar %}
+<li class="nav-item"><a href="" class="nav-link btn btn-sm">|</a></li>
+<li class="nav-item">
+  <a href="/budget/list" class="nav-link btn btn-sm btn-secondary">Budgets</a>
+</li>
+<li class="nav-item">
+  <a href="/account/list" class="nav-link btn btn-sm btn-secondary">Accounts</a>
+</li>
+<li class="nav-item">
+  <a href="/transaction/list" class="nav-link btn btn-sm btn-secondary">Transactions</a>
+</li>
+{% endblock %}
 
 {% block content %}
-
 {% if g.user %}
-<div class="card m-1 p-1">
-  <div class="row">
-    <div class="col">
-      <a href="/budget/list" class="btn btn-sm btn-secondary">Budgets</a>
-    </div>
-    <div class="col">
-      <a href="/account/list" class="btn btn-sm btn-secondary">Accounts</a>
-    </div>
-    <div class="col">
-      <a href="/transaction/list" class="btn btn-sm btn-secondary">Transactions</a>
-    </div>
-    <div class="col">
-      <a href="#" class="btn btn-sm btn-secondary">#</a>
-    </div>
-  </div>
-</div>
-
 <div class="m-1 p-1">
   
   <div class="btn-group">
@@ -336,5 +324,4 @@ new Chart("barChartBudget", {
 <div class="container">
 </div>
 {% endif %}
-
 {% endblock %}

@@ -1,48 +1,37 @@
 {% extends 'base.html' %}
 
-
 {% block title %}
-
 {% if g.user %}
 Transaction Detail - {{ transaction.id }}
 {% else %}
 {% endif %}
-
 {% endblock %}
 
-
 {% block header %}
-
 {% if g.user %}
 Transaction: {{ transaction.id }}
 {% else %}
 {% endif %}
-
 {% endblock %}
 
+{% block navbar %}
+<li class="nav-item"><a href="" class="nav-link btn btn-sm">|</a></li>
+<li class="nav-item">
+  <a href="/transaction/list" class="nav-link btn btn-sm btn-secondary">LIST</a>
+</li>
+<li class="nav-item">
+  <a href="/transaction/importview" class="nav-link btn btn-sm btn-secondary">IMPORT</a>
+</li>
+<li class="nav-item"><a href="" class="nav-link btn btn-sm">|</a></li>
+<li class="nav-item">
+  <form action="/transaction/delete/{{ transaction.id }}" method="post">
+    <input type="submit" value="DELETE" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-danger">
+  </form>
+</li>
+{% endblock %}
 
 {% block content %}
-
 {% if g.user %}
-<div class="card m-1 p-1">
-  <div class="row">
-    <div class="col">
-      <a href="/transaction/list" class="btn btn-sm btn-secondary">LIST</a>
-    </div>
-    <div class="col">
-      <a href="/transaction/importview" class="btn btn-sm btn-secondary">IMPORT</a>
-    </div>
-    <div class="col">
-      <a href="#" class="btn btn-sm btn-secondary">#</a>
-    </div>
-    <div class="col">
-      <form action="/transaction/delete/{{ transaction.id }}" method="post">
-        <input type="submit" value="DELETE" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-danger">
-      </form>
-    </div>
-  </div>
-</div>
-
 <div class="container">
   
   <div class="m-3 p-3">
