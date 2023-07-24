@@ -1,40 +1,31 @@
 package net.jar.quarkus.budgetapp;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Iterator;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.hibernate.Query;
 import org.jboss.logging.Logger;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.qute.CheckedTemplate;
-import io.quarkus.qute.TemplateExtension;
 import io.quarkus.qute.TemplateInstance;
 import io.smallrye.common.annotation.Blocking;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -44,11 +35,39 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class BudgetResource {
 
   private static final Logger LOGGER = Logger.getLogger(BudgetResource.class.getName());
-
-
+  
   @CheckedTemplate
   static class Templates {
-    static native TemplateInstance overview(List<IncomeEntity> incomelist, List<BillEntity> billlist, String incometotal, String billtotal, String remainder, List<ConfigEntity> systemcurrencies);
+    static native TemplateInstance list(List<BudgetEntity> budgetlist, List<ConfigEntity> currencylist);
+    static native TemplateInstance detail(BudgetEntity budget, List<BudgetItemEntity> budgetitemlist, List<ConfigEntity> categorylist, List<ConfigEntity> currencylist);
+    static native TemplateInstance overview(BudgetEntity budget, List<BudgetEntity> budgetlist, List<BudgetItemEntity> budgetitemlist, List<TransactionEntity> transactionlist, String tabledata, String budgettabledata);
+  }
+  
+  @GET
+  @Path("list")
+  @RolesAllowed("user")
+  @Produces(MediaType.TEXT_HTML)
+  @Blocking
+  public TemplateInstance list() {
+    List<BudgetEntity> budgetlist = BudgetEntity.listAll(Sort.by("id"));
+    List<ConfigEntity> currencylist = ConfigEntity.findByName("Currency");
+    return Templates.list(budgetlist, currencylist);
+  }
+  
+  @GET
+  @Path("detail/{id}")
+  @RolesAllowed("user")
+  @Produces(MediaType.TEXT_HTML)
+  @Blocking
+  public TemplateInstance detail(@PathParam("id") Long id) {
+    BudgetEntity budget = BudgetEntity.findById(id);
+    if (budget == null) {
+      throw new WebApplicationException("budget with id: " + id + " not found", 404);
+    }
+    List<BudgetItemEntity> budgetitemlist = BudgetItemEntity.findByBudget(id);
+    List<ConfigEntity> categorylist = ConfigEntity.findByName("Category");
+    List<ConfigEntity> currencylist = ConfigEntity.findByName("Currency");
+    return Templates.detail(budget, budgetitemlist, categorylist, currencylist);
   }
   
   @GET
@@ -57,121 +76,210 @@ public class BudgetResource {
   @Produces(MediaType.TEXT_HTML)
   @Blocking
   public TemplateInstance overview() {
-    DateFormat dateformatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm");
-    Date currentdate = new Date();
-    List<IncomeEntity> incomelist = IncomeEntity.listAll(Sort.by("id"));
-    List<BillEntity> billlist = BillEntity.listAll(Sort.by("id"));
-    double income = 0.0;
-    double bills = 0.0;
-    for (IncomeEntity entity: incomelist) {
-      String tmp1 = entity.amount;
-      double tmp2 = Double.parseDouble(tmp1);
-      income += tmp2;
+    BudgetEntity budget = BudgetEntity.findByName("Default");
+    if (budget == null) {
+      throw new WebApplicationException("budget not found", 404);
     }
-    String incometotal = String.valueOf(income);
-    for (BillEntity entity1: billlist) {
-      String tmp3 = entity1.amount;
-      double tmp4 = Double.parseDouble(tmp3);
-      bills += tmp4;
-    }
-    String billtotal = String.valueOf(bills);
-    double remain = income - bills;
-    String remainder = String.valueOf(remain);
-    List<ConfigEntity> systemcurrencies = ConfigEntity.findByName("systemcurrency");
-    return Templates.overview(incomelist, billlist, incometotal, billtotal, remainder, systemcurrencies);
+    List<BudgetEntity> budgetlist = BudgetEntity.listAll(Sort.by("id"));
+    List<TransactionEntity> transactionlist = TransactionEntity.listAll(Sort.by("id"));
+    List<BudgetItemEntity> budgetitemlist = BudgetItemEntity.findByBudget(budget.id);
+    String tabledata = "";
+    String budgettabledata = "";
+    return Templates.overview(budget, budgetlist, budgetitemlist, transactionlist, tabledata, budgettabledata);
   }
-  /*
+  
   @GET
-  @Path("overview")
+  @Path("overview/id")
   @RolesAllowed("user")
   @Produces(MediaType.TEXT_HTML)
   @Blocking
-  public TemplateInstance overview() {
-    List<ConfigEntity> categorylist = ConfigEntity.findByName("category");
-    List<ConfigEntity> accounttypelist = ConfigEntity.findByName("accounttype");
-    List<ConfigEntity> currencylist = ConfigEntity.findByName("currency");
-    List<ConfigEntity> countrylist = ConfigEntity.findByName("country");
-    return Templates.overview(categorylist, accounttypelist, currencylist, countrylist);
+  public TemplateInstance overview_by_id(@FormParam("budgetid") String budgetid) {
+    BudgetEntity budget = BudgetEntity.findById(Long.parseLong(budgetid));
+    if (budget == null) {
+      throw new WebApplicationException("budget with id: " + budgetid + " not found", 404);
+    }
+    List<BudgetEntity> budgetlist = BudgetEntity.listAll(Sort.by("id"));
+    List<TransactionEntity> transactionlist = TransactionEntity.listAll(Sort.by("id"));
+    List<BudgetItemEntity> budgetitemlist = BudgetItemEntity.findByBudget(Long.parseLong(budgetid));
+    String tabledata = "";
+    String budgettabledata = "";
+    return Templates.overview(budget, budgetlist, budgetitemlist, transactionlist, tabledata, budgettabledata);
   }
   
   @POST
-  @Path("category/create")
+  @Path("create")
   @RolesAllowed("user")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   @Produces(MediaType.TEXT_HTML)
   @Transactional
-  public TemplateInstance category_create(@FormParam("category") String category) {
-    ConfigEntity entity = new ConfigEntity();
-    entity.name = "category";
-    entity.value = category;
+  public TemplateInstance create(@FormParam("name") String name, @FormParam("currency") String currency, @FormParam("description") String description) {
+    BudgetEntity entity = new BudgetEntity();
+    entity.name = name;
+    entity.currency = currency;
+    entity.description = description;
     entity.persist();
-    List<ConfigEntity> categorylist = ConfigEntity.findByName("category");
-    List<ConfigEntity> accounttypelist = ConfigEntity.findByName("accounttype");
-    List<ConfigEntity> currencylist = ConfigEntity.findByName("currency");
-    List<ConfigEntity> countrylist = ConfigEntity.findByName("country");
-    return Templates.settingsview(categorylist, accounttypelist, currencylist, countrylist);
+    LOGGER.info("Saved Budget: " + name);
+    List<BudgetEntity> budgetlist = BudgetEntity.listAll(Sort.by("id"));
+    List<ConfigEntity> currencylist = ConfigEntity.findByName("Currency");
+    return Templates.list(budgetlist, currencylist);
   }
   
   @POST
-  @Path("category/delete/{id}")
+  @Path("update/{id}/{field}")
   @RolesAllowed("user")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   @Produces(MediaType.TEXT_HTML)
   @Transactional
-  public TemplateInstance delete_view(Long id) {
-    ConfigEntity entity = ConfigEntity.findById(id);
+  public TemplateInstance update(@PathParam("id") Long id, @PathParam("field") String field, @FormParam("fieldval") String fieldval) {
+    BudgetEntity entity = BudgetEntity.findById(id);
     if (entity == null) {
-      throw new WebApplicationException("Config Entity with id: " + id + " not found", 404);
+      throw new WebApplicationException("Budget with id: " + id + " not found", 404);
+    }
+    switch(fieldval) {
+      case "name":
+        entity.name = fieldval;
+        entity.persist();
+        break;
+      case "currency":
+        entity.currency = fieldval;
+        entity.persist();
+        break;
+      case "description":
+        entity.description = fieldval;
+        entity.persist();
+        break;
+      default:
+        break;
+    }
+    LOGGER.info("Update Budget [" + id + "]: " + field);
+    List<BudgetEntity> budgetlist = BudgetEntity.listAll(Sort.by("id"));
+    List<ConfigEntity> currencylist = ConfigEntity.findByName("Currency");
+    return Templates.list(budgetlist, currencylist);
+  }
+  
+  @POST
+  @Path("delete/{id}")
+  @RolesAllowed("user")
+  @Produces(MediaType.TEXT_HTML)
+  @Transactional
+  public TemplateInstance remove(@PathParam("id") Long id) {
+    BudgetEntity entity = BudgetEntity.findById(id);
+    if (entity == null) {
+      throw new WebApplicationException("Budget with id: " + id + " not found", 404);
     }
     entity.delete();
-    List<ConfigEntity> categorylist = ConfigEntity.findByName("category");
-    List<ConfigEntity> accounttypelist = ConfigEntity.findByName("accounttype");
-    List<ConfigEntity> currencylist = ConfigEntity.findByName("currency");
-    List<ConfigEntity> countrylist = ConfigEntity.findByName("country");
-    return Templates.settingsview(categorylist, accounttypelist, currencylist, countrylist);
+    LOGGER.info("Deleted Budget [" + id + "]");
+    List<BudgetEntity> budgetlist = BudgetEntity.listAll(Sort.by("id"));
+    List<ConfigEntity> currencylist = ConfigEntity.findByName("Currency");
+    return Templates.list(budgetlist, currencylist);
+  }
+    
+  @GET
+  @Path("list/sorted/{col}")
+  @RolesAllowed("user")
+  @Produces(MediaType.TEXT_HTML)
+  @Blocking
+  public TemplateInstance list_sorted(@PathParam("col") String col) {
+    List<BudgetEntity> budgetlist = BudgetEntity.listAll(Sort.by(col));
+    List<ConfigEntity> currencylist = ConfigEntity.findByName("Currency");
+    return Templates.list(budgetlist, currencylist);
   }
   
-  public static List<ConfigEntity> getList(String name) {
-    List<ConfigEntity> entitylist = ConfigEntity.findByName(name);
-    return entitylist;
-  }
-  
-  public static ConfigEntity get(String value) {
-    ConfigEntity entity = ConfigEntity.findByValue(value);
-    if (entity == null) {
-      throw new WebApplicationException("Config Resource with value: " + value + " not found", 404);
+  @POST
+  @Path("{bid}/budgetitem/create")
+  @RolesAllowed("user")
+  @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+  @Produces(MediaType.TEXT_HTML)
+  @Transactional
+  public TemplateInstance budgetitem_create(@PathParam("bid") Long bid, @FormParam("name") String name, @FormParam("amount") String amount, @FormParam("category") String category, @FormParam("recurrence") String recurrence, @FormParam("recurrenceday") String recurrenceday, @FormParam("description") String description) {
+    BudgetEntity budget = BudgetEntity.findById(bid);
+    if (budget == null) {
+      throw new WebApplicationException("budget with id: " + bid + " not found", 404);
     }
+    BudgetItemEntity entity = new BudgetItemEntity();
+    entity.name = name;
+    entity.amount = Double.parseDouble(amount);
+    entity.budgetid = bid;
+    entity.category = category;
+    entity.recurrence = recurrence;
+    entity.recurrenceday = Integer.parseInt(recurrenceday);
+    entity.description = description;
+    entity.persist();
+    LOGGER.info("Saved BudgetItem: " + name);
+    List<BudgetItemEntity> budgetitemlist = BudgetItemEntity.findByBudget(bid);
+    List<ConfigEntity> categorylist = ConfigEntity.findByName("Category");
+    List<ConfigEntity> currencylist = ConfigEntity.findByName("Currency");
+    return Templates.detail(budget, budgetitemlist, categorylist, currencylist);
+  }
+    
+  @POST
+  @Path("{bid}/budgetitem/delete/{itemid}")
+  @RolesAllowed("user")
+  @Produces(MediaType.TEXT_HTML)
+  @Transactional
+  public TemplateInstance remove(@PathParam("bid") Long bid, @PathParam("itemid") Long itemid) {
+    BudgetEntity budget = BudgetEntity.findById(bid);
+    if (budget == null) {
+      throw new WebApplicationException("budget with id: " + bid + " not found", 404);
+    }
+    BudgetItemEntity entity = BudgetItemEntity.findById(itemid);
+    if (entity == null) {
+      throw new WebApplicationException("BudgetItem with id: " + itemid + " not found", 404);
+    }
+    entity.delete();
+    LOGGER.info("Deleted BudgetItem [" + bid + "]");
+    List<BudgetItemEntity> budgetitemlist = BudgetItemEntity.findByBudget(bid);
+    List<ConfigEntity> categorylist = ConfigEntity.findByName("Category");
+    List<ConfigEntity> currencylist = ConfigEntity.findByName("Currency");
+    return Templates.detail(budget, budgetitemlist, categorylist, currencylist);
+  }
+  
+  /* REST Interface */
+  
+  @GET
+  @Path("all")
+  @RolesAllowed("user")
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<BudgetEntity> all() {
+    return BudgetEntity.listAll(Sort.by("name"));
+  }
+  
+  @GET
+  @Path("{id}")
+  @RolesAllowed("user")
+  @Produces(MediaType.APPLICATION_JSON)
+  public BudgetEntity get(@PathParam("id") Long id) {
+    BudgetEntity budget = BudgetEntity.findById(id);
+    if (budget == null) {
+      throw new WebApplicationException("Budget with id: " + id + " not found", 404);
+    }
+    return budget;
+  }
+  
+  @POST
+  @Path("add")
+  @RolesAllowed("user")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Transactional
+  public BudgetEntity add(BudgetEntity entity) {
+    entity.persist();
     return entity;
   }
   
-  public static void create(String name, String value) {
-    ConfigEntity entity = new ConfigEntity();
-    entity.name = name;
-    entity.value = value;
-    entity.persist();
-  }
-  
-  public static ConfigEntity update(Long id, String name, String value) {
-    ConfigEntity entity = ConfigEntity.findById(id);
+  @POST
+  @Path("{id}")
+  @RolesAllowed("user")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Transactional
+  public void delete(@PathParam("id") Long id) {
+    BudgetEntity entity = BudgetEntity.findById(id);
     if (entity == null) {
-      throw new WebApplicationException("Config Resource with id: " + id + " not found", 404);
-    }
-    entity.name = name;
-    entity.value = value;
-    entity.persist();
-    return entity;
-  }
-  
-  public static void delete(Long id) {
-    ConfigEntity entity = ConfigEntity.findById(id);
-    if (entity == null) {
-      throw new WebApplicationException("Config Resource with id: " + id + " not found", 404);
+      throw new WebApplicationException("budget with id: " + id + " not found", 404);
     }
     entity.delete();
   }
-  */
-
-
+  
   @Provider
   public static class ErrorMapper implements ExceptionMapper<Exception> {
 
@@ -199,6 +307,6 @@ public class BudgetResource {
         .entity(exceptionJson)
         .build();
     }
-
   }
+
 }

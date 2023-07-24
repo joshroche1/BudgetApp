@@ -1,146 +1,269 @@
 {#include base-user}
-  {#title}BudgetApp - Budget Overview{/title}
-
+{#title}BudgetApp - Overview{/title}
+{#header}Overview{/header}
 {#content}
-<div class="container">
-  <h1>Budget Overview</h1>
+<div class="m-1 p-1">
   
-  <div class="accordion" id="accordionSection">
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingA">
-        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseA" aria-expanded="true" aria-controls="collapseA">
-          <div class="m-3">Income</div>
-          <div class="m-3">{systemcurrencies[0].value} {incometotal}</div>
-        </button>
-      </h2>
-      <div id="collapseA" class="accordion-collapse collapse show" aria-labelledby="headingA" data-bs-parent="#accordionSection">
-        <div class="accordion-body">
-          <table class="table">
-            {#for income in incomelist}
-            <tr>
-              <td><input type="checkbox" id="{income.name}" name="{income.name}" value="{income.active}" class="form-check-input"></td>
-              <td>{income.name} - {income.incometype}</td>
-              <td>{systemcurrencies[0].value} {income.amount}</td>
-            </tr>
-            {/for}
-          </table>
-        </div>
+  <div class="btn-group">
+    <a href="/budget/overview" class="btn"><h3>Overview</h3></a>
+    <form action="/budget/overview/id" method="get">
+      <div class="input-group">
+        <select id="budgetid" name="budgetid" class="form-select">
+          <option value="1" selected>Select a Budget</option>
+          {#for budget in budgetlist}
+          <option value="{budget.id}">{budget.id}</option>
+          {/for}
+        </select>
+        <input type="submit" value="View" class="btn btn-success">
       </div>
+    </form>
+  </div>
+  <p>Chart data is based on the Transaction category and amount. Adjust transaction categories to fit the budget model.</p>
+  
+  <div id="test"></div>
+  
+  <div class="row">
+    
+    <div class="col-12 col-sm-6">
+      <!--<canvas id="myChart" style="width:100%;max-width:600px"></canvas>-->
+      <canvas id="pieChartBudget" style="width:100%;max-width:1600px;height:400px;max-height:1600px;"></canvas>
+    </div>
+    <div class="col-12 col-sm-6">
+      <canvas id="pieChart" style="width:100%;max-width:1600px;height:400px;max-height:1600px;"></canvas>
     </div>
     
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingB">
-        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseB" aria-expanded="true" aria-controls="collapseB">
-          <div class="m-3">Expenses</div>
-          <div class="m-3">{systemcurrencies[0].value} {billtotal}</div>
-        </button>
-      </h2>
-      <div id="collapseB" class="accordion-collapse collapse show" aria-labelledby="headingB" data-bs-parent="#accordionSection">
-        <div class="accordion-body">
-          <table class="table">
-            {#for bill in billlist}
-            <tr>
-              <td><input type="checkbox" id="{bill.name}" name="{bill.name}" value="{bill.active}"></td>
-              <td>{bill.name}</td>
-              <td>{systemcurrencies[0].value} {bill.amount}</td>
-            </tr>
-            {/for}
-          </table>
-        </div>
-      </div>
-    </div>
-    
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingC">
-        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseC" aria-expanded="true" aria-controls="collapseC">
-          <div class="m-3">Results</div>
-          <div class="m-3">{systemcurrencies[0].value} {remainder}</div>
-        </button>
-      </h2>
-      <div id="collapseC" class="accordion-collapse collapse show" aria-labelledby="headingC" data-bs-parent="#accordionSection">
-        <div class="accordion-body">
-          <table class="table">
-            <tr>
-              <td>Total Income</td>
-              <td>{systemcurrencies[0].value} {incometotal}</td>
-            </tr>
-            <tr>
-              <td>Total Expenses</td>
-              <td>{systemcurrencies[0].value} {billtotal}</td>
-            </tr>
-            <tr>
-              <td>Currently Paid</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>Remainder</td>
-              <td><b>{systemcurrencies[0].value} {remainder}</b></td>
-            </tr>
-          </table>
-        </div>
-      </div>
-    </div>
   </div>
   
   <div class="row">
-    <h3>January 2023</h3>
-    <div class="col">
-      <fieldset><legend>Income</legend>
-        <table class="table">
-          {#for income in incomelist}
-          <tr>
-            <td><input type="checkbox" id="{income.name}" name="{income.name}" value="{income.active}" class="form-check-input"></td>
-            <td>{income.name} - {income.incometype}</td>
-            <td>{income.amount}</td>
-          </tr>
-          {/for}
-        </table>
-      </fieldset>
+    
+    <div class="col-12 col-sm-6">
+      <canvas id="barChartBudget" style="width:100%;max-width:1600px;height:400px;max-height:1600px;"></canvas>
     </div>
-
-    <div class="col">
-      <fieldset><legend>Expenses</legend>
-        <table class="table">
-          {#for bill in billlist}
-          <tr>
-            <td><input type="checkbox" id="{bill.name}" name="{bill.name}" value="{bill.active}"></td>
-            <td>{bill.name}</td>
-            <td>{bill.amount}</td>
-          </tr>
-          {/for}
-          
-        </table>
-      </fieldset>
+    <div class="col-12 col-sm-6">
+      <canvas id="barChart" style="width:100%;max-width:1600px;height:400px;max-height:1600px;"></canvas>
     </div>
-
-    <div class="col">
-      <fieldset><legend>Remainder</legend>
-        <p>
-          Income and expenses will be autocalculated either as an injected EJB value or via JavaScript in page. Currently paid will dynamically change depending on what Bills are flagged as paid (toggles here or somewhere else).
-        </p>
-        <table class="table">
-          <tr>
-            <td>Total Income</td>
-            <td>{incometotal}</td>
-          </tr>
-          <tr>
-            <td>Total Expenses</td>
-            <td>{billtotal}</td>
-          </tr>
-          <tr>
-            <td>Currently Paid</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>Remainder</td>
-            <td><b>{remainder}</b></td>
-          </tr>
-        </table>
-      </fieldset>
-    </div>
+    
   </div>
   
 </div>
+
+<div class="m-3 p-3">
+  
+  <table class="table table-hover table-bordered">
+    <tr>
+      <th><a href="" class="btn btn-sm">ID</a></th>
+      <th><a href="" class="btn btn-sm">Name</a></th>
+      <th><a href="" class="btn btn-sm">Description</a></th>
+      <th><a href="" class="btn btn-sm">Amount</a></th>
+      <th><a href="" class="btn btn-sm">Category</a></th>
+      <th><a href="" class="btn btn-sm">Recurrence</a></th>
+    </tr>
+    
+    {#for budgetitem in budgetitemlist}
+    <tr>
+      <td>{budgetitem.id}</td>
+      <td>{budgetitem.name}</td>
+      <td>{budgetitem.description}</td>
+      <td>{budgetitem.amount}</td>
+      <td>{budgetitem.category}</td>
+      <td>{budgetitem.recurrence}-{budgetitem.recurrenceday}</td>
+    </tr>
+    {/for}
+
+  </table>
+  
+</div>
+
+<div class="m-3 p-3">
+  
+  <div class="row">
+    <div class="col">
+      <form action="/budget/overview/filtered/month" method="post">
+        <div class="input-group">
+          <select id="month" name="month" class="form-select">
+            <option value="" selected disabled>Month</option>
+            <option value="01">JAN</option>
+            <option value="02">FEB</option>
+            <option value="03">MAR</option>
+            <option value="04">APR</option>
+            <option value="05">MAY</option>
+            <option value="06">JUN</option>
+            <option value="07">JUL</option>
+            <option value="08">AUG</option>
+            <option value="09">SEP</option>
+            <option value="10">OCT</option>
+            <option value="11">NOV</option>
+            <option value="12">DEC</option>
+          </select>
+          <input type="submit" value="Filter" class="btn btn-sm btn-success">
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <table class="table table-hover table-bordered">
+
+    <tr>
+      <th><a href="/transaction/list/sorted/id" class="btn btn-sm">ID</a></th>
+      <th><a href="/transaction/list/sorted/datetimestamp" class="btn btn-sm">Date</a></th>
+      <th><a href="/transaction/list/sorted/amount" class="btn btn-sm">Amount</a></th>
+      <th><a href="/transaction/list/sorted/category" class="btn btn-sm">Category</a></th>
+      <th><a href="/transaction/list/sorted/name" class="btn btn-sm">Name</a></th>
+      <th><a href="" class="btn btn-sm">Description</a></th>
+      <th><a href="/transaction/list/sorted/accountid" class="btn btn-sm">Account ID</a></th>
+    </tr>
+
+    {#for transaction in transactionlist}
+    <tr>
+      <td>{transaction.id}</td>
+      <td>{transaction.datetimestamp}</td>
+      <td>{transaction.amount}</td>
+      <td>{transaction.category}</td>
+      <td>{transaction.name}</td>
+      <td>{transaction.description}</td>
+      <td>{transaction.accountid}</td>
+    </tr>
+    {/for}
+
+  </table>
+  
+</div>
+<script>
+var xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
+var yValues = [55, 49, 44, 24, 15];
+var barColors = [
+  "#b91d47",
+  "#00aba9",
+  "#2b5797",
+  "#e8c3b9",
+  "#1e7145",
+  "#00FFFF",
+  "#7FFFD4",
+  "#FFE4C4",
+  "#0000FF"
+];
+var chartColors = [
+  "Navy",
+  "Yellow",
+  "Red",
+  "MediumBlue",
+  "Gold",
+  "DarkRed",
+  "DarkCyan",
+  "Cyan",
+  "Orange",
+  "Brown",
+  "Turquoise",
+  "DarkOrange",
+  "Green",
+  "Maroon",
+  "GreenYellow",
+  "Tomato",
+  "Indigo",
+  "GoldenRod",
+  "Purple",
+  "Violet",
+  "Pink"
+];
+
+new Chart("myChart", {
+  type: "pie",
+  data: {
+    labels: xValues,
+    datasets: [{
+      backgroundColor: barColors,
+      data: yValues
+    }]
+  },
+  options: {
+    title: {
+      display: true,
+      text: "World Wide Wine Production 2018"
+    }
+  }
+});
+var tdata = "{tabledata}";
+const tmparr1 = tdata.split("|");
+const tmparrlabels = tmparr1[0].split(",");
+const tmparramounts = tmparr1[1].split(",");
+
+new Chart("pieChart", {
+  type: "pie",
+  data: {
+    labels: tmparrlabels,
+    datasets: [{
+      backgroundColor: chartColors,
+      data: tmparramounts
+    }]
+  },
+  options: {
+    title: {
+      display: true,
+      text: "Transactions"
+    }
+  }
+});
+
+new Chart("barChart", {
+  type: "bar",
+  data: {
+    labels: tmparrlabels,
+    datasets: [{
+      backgroundColor: chartColors,
+      data: tmparramounts
+    }]
+  },
+  options: {
+    legend: {
+      display: true
+    },
+    title: {
+      display: true,
+      text: "Transactions"
+    }
+  }
+});
+
+var btdata = "{budgettabledata}";
+const tmparr2 = btdata.split("|");
+const tmparrlabels2 = tmparr2[0].split(",");
+const tmparramounts2 = tmparr2[1].split(",");
+new Chart("pieChartBudget", {
+  type: "pie",
+  data: {
+    labels: tmparrlabels2,
+    datasets: [{
+      backgroundColor: chartColors,
+      data: tmparramounts2
+    }]
+  },
+  options: {
+    title: {
+      display: true,
+      text: "Budget"
+    }
+  }
+});
+new Chart("barChartBudget", {
+  type: "bar",
+  data: {
+    labels: tmparrlabels2,
+    datasets: [{
+      backgroundColor: chartColors,
+      data: tmparramounts2
+    }]
+  },
+  options: {
+    legend: {
+      display: true
+    },
+    title: {
+      display: true,
+      text: "Budget"
+    }
+  }
+});
+</script>
 {/content}
 
 {/include}

@@ -1,6 +1,8 @@
 package net.jar.quarkus.budgetapp;
 
+
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
@@ -9,24 +11,24 @@ import io.quarkus.hibernate.orm.panache.PanacheEntity;
 public class AccountEntity extends PanacheEntity {
 
   public String name;
-  public String number;
-  public String iban;
-  public String bic;
-  public String type;
-  public String address;
-  public String city;
-  public String state;
-  public String country;
-  public String api_credential;
+  public String accounttype;
   public String currency;
-  public String telephone;
+  public String country;
   
   public static AccountEntity findByName(String name) {
     return find("name", name).firstResult();
   }
   
-  public static List<AccountEntity> findByType(String type) {
-    return list("type", type);
+  public static List<AccountEntity> findByType(String accounttype) {
+    return list("accounttype", accounttype);
   }
-
+  
+  public static List<AccountEntity> findByCurrency(String currency) {
+    return list("currency", currency);
+  }
+  
+  public static List<AccountEntity> findByCountry(String country) {
+    return list("country", country);
+  }
+  
 }

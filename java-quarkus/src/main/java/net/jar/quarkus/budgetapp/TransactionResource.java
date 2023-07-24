@@ -1,26 +1,18 @@
 package net.jar.quarkus.budgetapp;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.BufferedReader;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.Iterator;
+import java.util.ArrayList;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -31,241 +23,211 @@ import javax.ws.rs.ext.Provider;
 import org.jboss.logging.Logger;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.qute.CheckedTemplate;
-import io.quarkus.qute.TemplateExtension;
 import io.quarkus.qute.TemplateInstance;
 import io.smallrye.common.annotation.Blocking;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import org.jboss.resteasy.plugins.providers.multipart.InputPart;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
-
-@Path("transactions")
+@Path("transaction")
 @ApplicationScoped
 public class TransactionResource {
 
   private static final Logger LOGGER = Logger.getLogger(TransactionResource.class.getName());
-
-
+  
   @CheckedTemplate
   static class Templates {
-    static native TemplateInstance listview(List<TransactionEntity> transactionlist);
-    static native TemplateInstance createview(List<ConfigEntity> categorylist);
-    static native TemplateInstance detailview(TransactionEntity transaction, List<ConfigEntity> categorylist);
+    static native TemplateInstance list(List<TransactionEntity> transactionlist, List<AccountEntity> accountlist, List<ConfigEntity> categorylist, List<ConfigEntity> currencylist);
+    //static native TemplateInstance detail(TransactionEntity transaction, List<AccountEntity> accountlist, List<ConfigEntity> categorylist, List<ConfigEntity> currencylist);
   }
   
-  @GET
-  @Path("view/list")
-  @RolesAllowed("user")
-  @Produces(MediaType.TEXT_HTML)
-  @Blocking
-  public TemplateInstance list_view() {
-    List<TransactionEntity> transactionlist = TransactionEntity.listAll(Sort.by("id"));
-    return Templates.listview(transactionlist);
-  }
-  
-  @GET
-  @Path("view/create")
-  @RolesAllowed("user")
-  @Produces(MediaType.TEXT_HTML)
-  @Blocking
-  public TemplateInstance create_view() {
-    List<ConfigEntity> categorylist = ConfigResource.getList("category");
-    return Templates.createview(categorylist);
-  }
-  
-  @POST
-  @Path("view/create")
-  @RolesAllowed("user")
-  @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-  @Produces(MediaType.TEXT_HTML)
-  @Transactional
-  public TemplateInstance create_form(@FormParam("name") String name, @FormParam("amount") String amount, @FormParam("datetimestamp") String datetimestamp, @FormParam("description") String description, @FormParam("category") String category, @FormParam("reference") String reference) {
-    String msg = " " + name + " " + amount + " " + datetimestamp + " " + description + " " + category + " " + reference;
-    LOGGER.info(msg);
-    TransactionEntity entity = new TransactionEntity();
-    entity.name = name;
-    Double amt = new Double(amount);
-    entity.amount = amt;
-    try {
-      DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm");
-      Date dts = (Date)formatter.parse(datetimestamp);
-      entity.datetimestamp = dts;
-    } catch (Exception ex) {
-      LOGGER.error(ex.getMessage());
-    }
-    entity.description = description;
-    entity.category = category;
-    entity.reference = reference;
-    entity.persist();
-    List<TransactionEntity> transactionlist = TransactionEntity.listAll(Sort.by("id"));
-    return Templates.listview(transactionlist);
-  }
-  
-  @GET
-  @Path("view/detail/{id}")
-  @RolesAllowed("user")
-  @Produces(MediaType.TEXT_HTML)
-  @Blocking
-  public TemplateInstance detail_view(Long id) {
-    TransactionEntity transaction = TransactionEntity.findById(id);
-    if (transaction == null) {
-      throw new WebApplicationException("Transaction with id: " + id + " not found", 404);
-    }
-    List<ConfigEntity> categorylist = ConfigResource.getList("category");
-    return Templates.detailview(transaction, categorylist);
-  }
-  
-  @POST
-  @Path("view/update/{id}")
-  @RolesAllowed("user")
-  @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-  @Produces(MediaType.TEXT_HTML)
-  @Transactional
-  public TemplateInstance update_view(Long id, @FormParam("name") String name, @FormParam("amount") Double amount, @FormParam("datetimestamp") Date datetimestamp, @FormParam("description") String description, @FormParam("category") String category, @FormParam("reference") String reference) {
-    TransactionEntity entity = TransactionEntity.findById(id);
-    if (entity == null) {
-      throw new WebApplicationException("Transaction with id: " + id + " not found", 404);
-    }
-    if (name != "") { entity.name = name; }
-    if (amount != null) { entity.amount = amount; }
-    if (datetimestamp != null) { entity.datetimestamp = datetimestamp; }
-    if (description != "") { entity.description = description; }
-    if (category != "") { entity.category = category; }
-    if (reference != "") { entity.reference = reference; }
-    entity.persist();
-    List<ConfigEntity> categorylist = ConfigResource.getList("category");
-    return Templates.detailview(entity, categorylist);
-  }
-  
-  @POST
-  @Path("view/delete/{id}")
-  @RolesAllowed("user")
-  @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-  @Produces(MediaType.TEXT_HTML)
-  @Transactional
-  public TemplateInstance delete_view(Long id) {
-    TransactionEntity transaction = TransactionEntity.findById(id);
-    if (transaction == null) {
-      throw new WebApplicationException("Transaction with id: " + id + " not found", 404);
-    }
-    transaction.delete();
-    List<TransactionEntity> transactionlist = TransactionEntity.listAll(Sort.by("id"));
-    return Templates.listview(transactionlist);
-  }
-  
-  @POST
-  @Path("view/importcsv")
-  @RolesAllowed("user")
-  @Consumes(MediaType.MULTIPART_FORM_DATA)
-  @Produces(MediaType.TEXT_HTML)
-  @Transactional
-  public TemplateInstance import_csv_view(MultipartFormDataInput csvdatainput) {
-    try {
-    Map<String, List<InputPart>> map = csvdatainput.getFormDataMap();
-    for (Iterator<String> it = map.keySet().iterator(); it.hasNext();) {
-      String key = it.next();
-      InputPart inputPart = map.get(key).iterator().next();
-      LOGGER.info(key);
-      LOGGER.info(inputPart.getBodyAsString());
-    }
-    /*
-    InputStream inputStream = csvfile.getInputStream();
-    BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-    String result = "";
-    while (br.readLine() != null) {
-      result += br.readLine();
-    }
-    */
-    LOGGER.info(csvdatainput.toString());
-    //LOGGER.info(result);
-    } catch (Exception ex) {
-      LOGGER.error(ex.getMessage());
-    }
-    List<TransactionEntity> transactionlist = TransactionEntity.listAll(Sort.by("id"));
-    return Templates.listview(transactionlist);
-  }
-
-  /* REST INTERFACE */
-
   @GET
   @Path("list")
   @RolesAllowed("user")
-  @Produces(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.TEXT_HTML)
   @Blocking
-  public List<TransactionEntity> list() {
+  public TemplateInstance list() {
     List<TransactionEntity> transactionlist = TransactionEntity.listAll(Sort.by("id"));
-    return transactionlist;
+    List<AccountEntity> accountlist = AccountEntity.listAll(Sort.by("id"));
+    List<ConfigEntity> categorylist = ConfigEntity.findByName("Category");
+    List<ConfigEntity> currencylist = ConfigEntity.findByName("Currency");
+    return Templates.list(transactionlist, accountlist, categorylist, currencylist);
   }
-
+  
+  /*
   @GET
-  @Path("{id}")
+  @Path("detail/{id}")
   @RolesAllowed("user")
-  @Produces(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.TEXT_HTML)
   @Blocking
-  public TransactionEntity get(long id) {
+  public TemplateInstance detail(Long id) {
     TransactionEntity transaction = TransactionEntity.findById(id);
-    return transaction;
+    if (transaction == null) {
+      throw new WebApplicationException("transaction with id: " + id + " not found", 404);
+    }
+    List<AccountEntity> accountlist = AccountEntity.listAll(Sort.by("id"));
+    List<ConfigEntity> categorylist = ConfigEntity.findByName("Category");
+    List<ConfigEntity> currencylist = ConfigEntity.findByName("Currency");
+    return Templates.detail(transaction, accountlist, categorylist, currencylist);
   }
-
+  */
+  
   @POST
   @Path("create")
   @RolesAllowed("user")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+  @Produces(MediaType.TEXT_HTML)
   @Transactional
-  public TransactionEntity create(TransactionEntity entity) {
+  public TemplateInstance create(@FormParam("name") String name, @FormParam("amount") String amount, @FormParam("accountid") String accountid, @FormParam("category") String category, @FormParam("currency") String currency, @FormParam("datetimestamp") String datetimestamp, @FormParam("description") String description) {
+    TransactionEntity entity = new TransactionEntity();
+    entity.name = name;
+    entity.amount = Double.parseDouble(amount);
+    entity.accountid = Long.parseLong(accountid);
+    entity.category = category;
+    entity.currency = currency;
+    entity.datetimestamp = datetimestamp;
+    entity.description = description;
     entity.persist();
-    return entity;
+    LOGGER.info("Saved Transaction: " + name);
+    List<TransactionEntity> transactionlist = TransactionEntity.listAll(Sort.by("id"));
+    List<AccountEntity> accountlist = AccountEntity.listAll(Sort.by("id"));
+    List<ConfigEntity> categorylist = ConfigEntity.findByName("Category");
+    List<ConfigEntity> currencylist = ConfigEntity.findByName("Currency");
+    return Templates.list(transactionlist, accountlist, categorylist, currencylist);
   }
-
-  @PUT
-  @Path("{id}")
+  
+  /*
+  @POST
+  @Path("update/{id}/{field}")
   @RolesAllowed("user")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+  @Produces(MediaType.TEXT_HTML)
   @Transactional
-  public TransactionEntity update(Long id, TransactionEntity transaction) {
+  public TemplateInstance update(@PathParam("id") Long id, @PathParam("field") String field, @FormParam("fieldval") String fieldval) {
     TransactionEntity entity = TransactionEntity.findById(id);
     if (entity == null) {
       throw new WebApplicationException("Transaction with id: " + id + " not found", 404);
     }
-    entity.name = transaction.name;
-    entity.amount = transaction.amount;
-    entity.datetimestamp = transaction.datetimestamp;
-    entity.description = transaction.description;
-    entity.category = transaction.category;
-    entity.reference = transaction.reference;
-    return entity;
+    switch(fieldval) {
+      case "name":
+        entity.name = fieldval;
+        entity.persist();
+        break;
+      case "amount":
+        entity.amount = Double.parseDouble(fieldval);
+        entity.persist();
+        break;
+      case "accountid":
+        entity.accountid = Integer.parseInt(fieldval);
+        entity.persist();
+        break;
+      case "category":
+        entity.category = fieldval;
+        entity.persist();
+        break;
+      case "currency":
+        entity.currency = fieldval;
+        entity.persist();
+        break;
+      case "datetimestamp":
+        entity.datetimestamp = fieldval;
+        entity.persist();
+        break;
+      case "description":
+        entity.description = fieldval;
+        entity.persist();
+        break;
+      default:
+        break;
+    }
+    LOGGER.info("Update Transaction [" + id + "]: " + field);
+    List<TransactionEntity> transactionlist = TransactionEntity.listAll(Sort.by("id"));
+    List<AccountEntity> accountlist = AccountEntity.listAll(Sort.by("id"));
+    List<ConfigEntity> categorylist = ConfigEntity.findByName("Category");
+    List<ConfigEntity> currencylist = ConfigEntity.findByName("Currency");
+    return Templates.list(transactionlist, accountlist, categorylist, currencylist);
   }
-
+  */
+  
   @POST
-  @Path("{id}")
+  @Path("delete/{id}")
   @RolesAllowed("user")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.TEXT_HTML)
   @Transactional
-  public void delete(Long id) {
+  public TemplateInstance remove(@PathParam("id") Long id) {
     TransactionEntity entity = TransactionEntity.findById(id);
     if (entity == null) {
       throw new WebApplicationException("Transaction with id: " + id + " not found", 404);
     }
     entity.delete();
+    LOGGER.info("Deleted Transaction [" + id + "]");
+    List<TransactionEntity> transactionlist = TransactionEntity.listAll(Sort.by("id"));
+    List<AccountEntity> accountlist = AccountEntity.listAll(Sort.by("id"));
+    List<ConfigEntity> categorylist = ConfigEntity.findByName("Category");
+    List<ConfigEntity> currencylist = ConfigEntity.findByName("Currency");
+    return Templates.list(transactionlist, accountlist, categorylist, currencylist);
   }
-  /*
+    
   @GET
-  @Path("search/name/{name}")
+  @Path("list/sorted/{col}")
+  @RolesAllowed("user")
+  @Produces(MediaType.TEXT_HTML)
+  @Blocking
+  public TemplateInstance list_sorted(@PathParam("col") String col) {
+    List<TransactionEntity> transactionlist = TransactionEntity.listAll(Sort.by(col));
+    List<AccountEntity> accountlist = AccountEntity.listAll(Sort.by("id"));
+    List<ConfigEntity> categorylist = ConfigEntity.findByName("Category");
+    List<ConfigEntity> currencylist = ConfigEntity.findByName("Currency");
+    return Templates.list(transactionlist, accountlist, categorylist, currencylist);
+  }
+  
+  /* REST Interface */
+  
+  @GET
+  @Path("all")
   @RolesAllowed("user")
   @Produces(MediaType.APPLICATION_JSON)
-  @Blocking
-  public TransactionEntity search_name(String name) {
-    TransactionEntity transaction = TransactionEntity.findByName(name);
+  public List<TransactionEntity> all() {
+    return TransactionEntity.listAll(Sort.by("name"));
+  }
+  
+  @GET
+  @Path("{id}")
+  @RolesAllowed("user")
+  @Produces(MediaType.APPLICATION_JSON)
+  public TransactionEntity get(@PathParam("id") Long id) {
+    TransactionEntity transaction = TransactionEntity.findById(id);
+    if (transaction == null) {
+      throw new WebApplicationException("Transaction with id: " + id + " not found", 404);
+    }
     return transaction;
   }
-  */
-
-
+  
+  @POST
+  @Path("add")
+  @RolesAllowed("user")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Transactional
+  public TransactionEntity add(TransactionEntity entity) {
+    entity.persist();
+    return entity;
+  }
+  
+  @POST
+  @Path("{id}")
+  @RolesAllowed("user")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Transactional
+  public void delete(@PathParam("id") Long id) {
+    TransactionEntity entity = TransactionEntity.findById(id);
+    if (entity == null) {
+      throw new WebApplicationException("transaction with id: " + id + " not found", 404);
+    }
+    entity.delete();
+  }
+  
   @Provider
   public static class ErrorMapper implements ExceptionMapper<Exception> {
 
@@ -293,6 +255,6 @@ public class TransactionResource {
         .entity(exceptionJson)
         .build();
     }
-
   }
+
 }

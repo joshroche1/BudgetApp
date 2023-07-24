@@ -1,0 +1,95 @@
+{#include base-user}
+{#title}AccountApp - Account Detail - {account.id}{/title}
+{#header}Account - {account.id}{/header}
+{#navbar}
+<li class="nav-item">
+  <form action="/account/delete/{account.id}" method="post">
+    <input type="submit" value="DELETE" onclick="return confirm('Are you sure?');" class="nav-link btn btn-sm btn-danger">
+  </form>
+</li>
+{/navbar}
+{#content}
+<div class="container">
+  <h3>{account.id}</h3>
+  
+  <div class="row">
+    <div class="col-12 col-sm-2">
+      Name
+    </div>
+    <div class="col-12 col-sm-5">
+      {account.name}
+    </div>
+    <div class="col-12 col-sm-5">
+      <form action="/account/update/{account.id}/name" method="post">
+        <div class="input-group">
+          <input type="text" id="name" name="name" Placeholder="{account.name}" class="form-control">
+          <input type="submit" value="Update" class="btn btn-sm btn-success">
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-12 col-sm-2">
+      Account Type
+    </div>
+    <div class="col-12 col-sm-5">
+      {account.accounttype}
+    </div>
+    <div class="col-12 col-sm-5">
+      <form action="/account/update/{account.id}/accounttype" method="post">
+        <select id="accounttype" name="accounttype" class="form-select">
+          <option value="" disabled selected>Select a Type</option>
+          {#for accounttype in accounttypelist}
+          <option value="{accounttype.value}">{accounttype.value}</option>
+          {/for}
+        </select>
+        <input type="submit" value="Update" class="btn btn-sm btn-success">
+      </form>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-12 col-sm-2">
+      Currency
+    </div>
+    <div class="col-12 col-sm-5">
+      {account.currency}
+    </div>
+    <div class="col-12 col-sm-5">
+      <form action="/account/update/{account.id}/currency" method="post">
+        <select id="currency" name="currency" class="form-select">
+          <option value="" disabled selected>Select a Currency</option>
+          {#for currency in currencylist}
+          <option value="{currency.value}">{currency.value}</option>
+          {/for}
+        </select>
+        <input type="submit" value="Update" class="btn btn-sm btn-success">
+      </form>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-12 col-sm-2">
+      Country
+    </div>
+    <div class="col-12 col-sm-5">
+      {account.country}
+    </div>
+    <div class="col-12 col-sm-5">
+      <form action="/account/update/{account.id}/country" method="post">
+        <select id="country" name="country" class="form-select">
+          <option value="" disabled selected>Select a Country</option>
+          {#for country in countrylist}
+          <option value="{country.value}">{country.value}</option>
+          {/for}
+        </select>
+        <input type="submit" value="Update" class="btn btn-sm btn-success">
+      </form>
+    </div>
+  </div>
+  
+</div>
+{/content}
+
+{/include}

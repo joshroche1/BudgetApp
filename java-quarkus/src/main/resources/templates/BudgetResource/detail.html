@@ -1,0 +1,113 @@
+{#include base-user}
+{#title}BudgetApp - Budget Detail - {budget.id}{/title}
+{#header}Budget - {budget.id}{/header}
+{#navbar}
+<li class="nav-item">
+  <form action="/budget/delete/{budget.id}" method="post">
+    <input type="submit" value="DELETE" onclick="return confirm('Are you sure?');" class="nav-link btn btn-sm btn-danger">
+  </form>
+</li>
+{/navbar}
+{#content}
+<div class="container">
+  <h3>{budget.id}</h3>
+  <div class="row">
+    <div class="col-12 col-sm-2">
+      Name
+    </div>
+    <div class="col-12 col-sm-5">
+      {budget.name}
+    </div>
+    <div class="col-12 col-sm-5">
+      <form action="/budget/update/{budget.id}/name" method="post">
+        <div class="input-group">
+          <input type="text" id="name" name="name" Placeholder="{budget.name}" class="form-control">
+          <input type="submit" value="Update" class="btn btn-sm btn-success">
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 col-sm-2">
+      Description
+    </div>
+    <div class="col-12 col-sm-5">
+      {budget.description}
+    </div>
+    <div class="col-12 col-sm-5">
+      <form action="/budget/update/{budget.id}/description" method="post">
+        <textarea id="description" name="description" Placeholder="{budget.description}"  rows="3" class="form-control"></textarea>
+        <input type="submit" value="Update" class="btn btn-sm btn-success">
+      </form>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="table-responsive">
+      <table class="table table-hover table-sm">
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Amount</th>
+          <th>Category</th>
+          <th>Recurrence</th>
+          <th>Description</th>
+        </tr>
+        
+        <form action="{budget.id}/budgetitem/create" method="post">
+          <tr>
+            <td><input type="submit" value="Add" class="btn btn-sm btn-success"></td>
+            <td>
+              <input type="text" id="name" name="name" placeholder="Name" class="form-control">
+            </td>
+            <td>
+              <input type="text" id="amount" name="amount" placeholder="Amount" class="form-control">
+            </td>
+            <td>
+              <select id="category" name="category" class="form-select">
+                <option value="" disabled selected>Select a Category</option>
+                {#for category in categorylist}
+                <option value="{category.value}">{category.value}</option>
+                {/for}
+              </select>
+            </td>
+            <td>
+              <div class="input-group">
+                <select id="recurrence" name="recurrence" class="form-select">
+                  <option value="monthly" selected>Monthly</option>
+                  <option value="biweekly">Bi-weekly</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="biannually">Bi-annually</option>
+                  <option value="annually">Annually</option>
+                </select>
+                <input type="number" id="recurrenceday" name="recurrenceday" placeholder="1" min="1" max="31" class="form-control">
+              </div>
+            </td>
+            <td>
+              <textarea id="description" name="desciption" placeholder="Description" class="form-control"></textarea>
+            </td>
+          </tr>
+        </form>
+        
+        {#for budgetitem in budgetitemlist}
+        <tr>
+          <td>
+            <form action="{budget.id}/budgetitem/delete/{budgetitem.id}" method="post">
+              <input type="submit" value="{budgetitem.id}" onclick="return confirm('Are you sure you want to delete?');" class="nav-link btn btn-sm btn-danger">
+            </form>
+          </td>
+          <td>{budgetitem.name}</td>
+          <td>{budgetitem.amount}</td>
+          <td>{budgetitem.category}</td>
+          <td>{budgetitem.recurrence} - {budgetitem.recurrenceday}</td>
+          <td>{budgetitem.description}</td>
+        </tr>
+        {/for}
+      </table>
+    </div>    
+  </div>
+  
+</div>
+{/content}
+
+{/include}

@@ -1,0 +1,72 @@
+{#include base-user}
+{#title}BudgetApp - Account List{/title}
+{#header}Accounts{/header}
+{#navbar}
+<li class="nav-item">
+  <button type="button" data-bs-toggle="collapse" data-bs-target="#createpanel" aria-expanded="false" aria-controls="createpanel" class="nav-link btn btn-sm btn-success">NEW</button>
+</li>
+{/navbar}
+{#content}
+<div class="m-1 p-1">
+  <div id="createpanel" class="collapse">
+    <form action="/account/create" method="post">
+      <div class="row bg-success-subtle p-1">
+        <div class="col-12 col-sm-6">
+          <input type="text" id="name" name="name" placeholder="Name" class="form-control" required />
+          <div class="input-group m-1 p-1">
+            <input type="submit" value="Add" onclick="return confirm('Add this system?');" class="btn btn-sm btn-success">
+            <input type="reset" value="Reset" class="btn btn-sm btn-secondary">
+          </div>
+          <select id="accounttype" name="accounttype" class="form-select">
+            <option value="" disabled selected>Select a Type</option>
+            {#for accounttype in accounttypelist}
+            <option value="{accounttype.value}">{accounttype.value}</option>
+            {/for}
+          </select>
+        </div>
+        <div class="col-12 col-sm-6">
+          <select id="currency" name="currency" class="form-select">
+            <option value="" disabled selected>Select a Currency</option>
+            {#for currency in currencylist}
+            <option value="{currency.value}">{currency.value}</option>
+            {/for}
+          </select>
+          <select id="country" name="country" class="form-select">
+            <option value="" disabled selected>Select a Country</option>
+            {#for country in countrylist}
+            <option value="{country.value}">{country.value}</option>
+            {/for}
+          </select>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="m-3 p-3">
+  <div class="table-responsive">
+    <table class="table table-hover table-sm">
+      <tr class="table-light">
+        <th><a href="/account/list/sorted/id" class="btn btn-sm">ID</a></th>
+        <th><a href="/account/list/sorted/name" class="btn btn-sm">Name</a></th>
+        <th><a href="/account/list/sorted/accounttype" class="btn btn-sm">Account Type</a></th>
+        <th><a href="/account/list/sorted/currency" class="btn btn-sm">Currency</a></th>
+        <th><a href="/account/list/sorted/country" class="btn btn-sm">Country</a></th>
+      </tr>
+      
+      {#for account in accountlist}
+      <tr>
+        <td><a href="/account/detail/{account.id}" class="btn btn-sm">{account.id}</a></td>
+        <td><a href="/account/detail/{account.id}" class="btn btn-sm">{account.name}</a></td>
+        <td>{account.accounttype}</td>
+        <td>{account.currency}</td>
+        <td>{account.country}</td>
+      </tr>
+      {/for}
+      
+    </table>
+  </div>
+</div>
+{/content}
+
+{/include}

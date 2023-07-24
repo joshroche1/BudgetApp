@@ -13,58 +13,60 @@
 <header>
   <nav class="navbar navbar-expand-sm bg-light">
     <div class="container-fluid">
-      <h3 class="navbar-brand dropdown">
-        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">BudgetApp</a>
-        <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="/admin/view/settings">Settings</a></li>
-          <li><a class="dropdown-item" href="/users/list">User List</a></li>
-          <li><a class="dropdown-item" href="/users/create">Create User</a></li>
+      <a class="navbar-brand dropdown" href="/">BudgetApp</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        <ul class="navbar-nav">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">{#insert header}{/}</a>
+            <ul class="dropdown-menu">
+              <li><a class="btn btn-sm dropdown-item" href="/admin/settings">Settings</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <div class="btn-group" role="group" aria-label="Overview Button group">
+                  <a class="btn btn-sm dropdown-item" href="/overview">Overview</a>
+                </div>
+              </li>
+              <li>
+                <div class="btn-group" role="group" aria-label="Analysis Button group">
+                  <a class="btn btn-sm dropdown-item" href="/">Analysis</a>
+                </div>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <div class="btn-group" role="group" aria-label="Budget Button group">
+                  <a class="btn btn-sm dropdown-item" href="/budget/list">Budgets</a>
+                </div>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <div class="btn-group" role="group" aria-label="Account Button group">
+                  <a class="btn btn-sm dropdown-item" href="/account/list">Accounts</a>
+                </div>
+              </li>
+              <li>
+                <div class="btn-group" role="group" aria-label="Transaction Button group">
+                  <a class="btn btn-sm dropdown-item" href="/transaction/list">Transactions</a>
+                </div>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="/q/dev/">Dev UI</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">User</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/admin/userprofile">Profile</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item btn btn-sm btn-danger" href="/logout">Logout</a></li>
+            </ul>
+          </li>
+          {#insert navbar}{/}
         </ul>
-      </h3>
-      <ul class="navbar-nav">
-        {#insert navbar}{/}
-        
-        <li class="nav-item"><a class="nav-link" href="/budget/overview">Overview</a></li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Accounts</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="/accounts/view/list">List</a></li>
-            <li><a class="dropdown-item" href="/accounts/view/create">Create</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="/accounts/list">REST</a></li>
-          </ul>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Income</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="/incomes/view/list">List</a></li>
-            <li><a class="dropdown-item" href="/incomes/view/create">Create</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="/incomes/list">REST</a></li>
-          </ul>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Bills</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="/bills/view/list">List</a></li>
-            <li><a class="dropdown-item" href="/bills/view/create">Create</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="/bills/list">REST</a></li>
-          </ul>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Transactions</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="/transactions/view/list">List</a></li>
-            <li><a class="dropdown-item" href="/transactions/view/create">Create</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="/transactions/list">REST</a></li>
-          </ul>
-        </li>
-        
-        <li class="nav-item"><a class="nav-link" href="/admin/view/test">TEST</a></li>
-        <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
-      </ul>
+      </div>
+
     </div>
   </nav>
 </header>

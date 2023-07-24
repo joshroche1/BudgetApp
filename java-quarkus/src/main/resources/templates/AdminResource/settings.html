@@ -1,0 +1,157 @@
+{#include base-user}
+{#title}BudgetApp - Settings{/title}
+{#header}Settings{/header}
+{#content}
+<div class="container">
+  
+  <div class="row">
+
+    <div class="col">
+      
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Budget App</h3>
+        </div>
+        <div class="card-body">
+          <ul class="list-group">
+            <li class="list-group-item"><a href="https://quarkus.io/guides" target="_blank" class="btn btn-sm">Java Quarkus Platform</a></li>
+          </ul>
+        </div>
+      </div>
+      
+    </div>
+    
+  </div>
+  
+  <div class="row">
+
+    <div class="col">
+      <div id="accordionA" class="bg-body-tertiary m-1 p-1">
+        <div>
+          <a href="#collapseA" data-bs-toggle="collapse" class="btn"><h3>Application Configuration</h3></a>
+        </div>
+        <div id="collapseA" class="collapse">
+          <table class="table table-hover">
+            <tr>
+              <td>Base Directory</td>
+              <td>{configmap["basedir"]}</td>
+            </tr>
+            <tr>
+              <td>Upload Directory</td>
+              <td>{configmap["uploaddir"]}</td>
+            </tr>
+            <tr>
+              <td>Database</td>
+              <td>
+                <b>{configmap["db_kind"]}</b>
+                <p>{configmap["db_jdbc_url"]}</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row">
+    
+    <div class="col">
+      <div id="accordionC" class="bg-body-tertiary m-1 p-1">
+        <div>
+          <a href="#collapseC" data-bs-toggle="collapse" class="btn"><h3>Website Configuration</h3></a>
+        </div>
+        <div id="collapseC" class="collapse">
+          <div class="m-1 p-1">
+            <b>Categories</b>
+            <select class="form-select">
+              <option value="Default" selected>Select a Category</option>
+              {#for category in categorylist}
+              <option value="{category.value}">{category.value}</option>
+              {/for}
+            </select>
+            <div class="m-1 p-1">
+              <ul class="list-group">
+                {#for category in categorylist}
+                <li class="list-group-item">{category.value}</li>
+                {/for}
+              </ul>
+            </div>
+            <form action="/category/create" method="post">
+              <div class="input-group">
+                <input type="text" id="category" name="category" placeholder="Enter a new Category" class="form-control" required />
+                <input type="submit" value="Add" class="btn btn-sm btn-success">
+              </div>
+            </form>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+  <div class="row">
+    
+    <div class="col">
+      <div id="accordionD" class="bg-body-tertiary m-1 p-1">
+        <div>
+          <a href="#collapseD" data-bs-toggle="collapse" class="btn"><h3>Users</h3></a>
+        </div>
+        <div id="collapseD" class="collapse">
+          <div class="m-1 p-1">
+            <form action="/admin/user/create" method="post">
+              <div class="input-group">
+                <input type="text" id="username" name="username" placeholder="Username" pattern="[a-zA-Z0-9_]" class="form-control" autocomplete="off" required />
+                <input type="email" id="email" name="email" placeholder="Email Address" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]$" class="form-control" autocomplete="off" />
+              </div>
+              <div class="input-group">
+                <input type="password" id="password" name="password" placeholder="Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])" class="form-control" autocomplete="off" required />
+              <input type="password" id="passwordcheck" name="passwordcheck" placeholder="Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])" class="form-control" autocomplete="off" required />
+                <input type="submit" value="Add" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-success">
+              </div>
+            </form>
+          </div>
+          <table class="table table-hover">
+            <tr>
+              <th>ID</th>
+              <th>Username</th>
+              <th>Email Address</th>
+            </tr>
+            {#for user in userlist}
+            <tr>
+              <td>{user.id}</td>
+              <td>{user.username}</td>
+              <td><a href="mailto:{user.email}" class="btn btn-sm">{user.email}</a></td>
+            </tr>
+            {/for}
+          </table>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+  
+  <div class="row">
+    
+    <div class="col">
+      <div id="accordionE" class="bg-body-tertiary m-1 p-1">
+        <div>
+          <a href="#collapseE" data-bs-toggle="collapse" class="btn"><h3>Application Logs</h3></a>
+        </div>
+        <div id="collapseE" class="collapse">
+          <div class="m-1 p-1">{configmap["logfile_path"]}</div>
+          <div class="col text-bg-dark m-1 p-1" style="height:800px;word-wrap:break-word;overflow:auto;">
+            <code>
+              <pre>{configmap["logfile"]}</pre>
+            </code>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  
+</div>
+{/content}
+
+{/include}
