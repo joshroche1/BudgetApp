@@ -239,6 +239,11 @@ Transaction Import
                   <option value="{{ currency.value }}">{{ currency.value }}</option>
                   {% endfor %}
                 </select>
+                <select id="country" name="country" class="form-select">
+                  <option value="" selected disabled>Country</option>
+                  <option value="USA">USA</option>
+                  <option value="DE">DE</option>
+                </select>
                 <div class="input-group">
                   <input type="submit" value="Add" class="btn btn-sm btn-success">
                   <input type="reset" class="btn btn-sm btn-secondary">
