@@ -227,4 +227,17 @@ def get_table_data(db: Session, transactionlist, budgetcurrency):
     result = str(ex)
   return result
 
+def get_category_data(db: Session, filtercategory, startdate, enddate):
+  transactionlist = db.query(models.Transaction).filter(models.Transaction.datetimestamp >= startdate).filter(models.Transaction.datetimestamp <= enddate).filter(models.Transaction.category == filtercategory).order_by(models.Transaction.datetimestamp.asc())
+  labels = ""
+  amounts = ""
+  result = ""
+  for txaction in transactionlist:
+    labels += txaction.datetimestamp + ","
+    if filtercategory == 'Income':
+      amounts += str(txaction.amount*(1.0)) + ","
+    else:
+      amounts += str(txaction.amount*(-1.0)) + ","
+  result = labels + "|" + amounts
+  return result
 #

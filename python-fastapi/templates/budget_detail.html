@@ -155,7 +155,9 @@ Budget: {{ budget.id }}
       {% for budgetitem in budgetitemlist %}
       <tr>
         <td>{{ budgetitem.id }}</td>
-        <td>{{ budgetitem.name }}</td>
+        <td>
+          <a href="/budgetitem/detail/{{ budgetitem.id }}" class="btn">{{ budgetitem.name }}</a>
+        </td>
         <td>{{ budgetitem.description }}</td>
         <td>{{ budgetitem.amount }}</td>
         <td>{{ budgetitem.category }}</td>

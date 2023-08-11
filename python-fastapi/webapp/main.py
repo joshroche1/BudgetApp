@@ -20,7 +20,7 @@ from .filesystem import read_file, write_file, append_line, insert_line, delete_
 from .budget import get_budgets, get_budget, add_budget, delete_budget, update_budget_field
 from .budgetitem import get_budgetitems, get_budgetitem, add_budgetitem, delete_budgetitem, update_budgetitem_field, get_budgetitems_for_budget, get_budget_data
 from .account import get_accounts, get_account, add_account, delete_account, update_account_field
-from .transaction import get_transactions, get_transactions_sorted, get_transaction, add_transaction, delete_transaction, update_transaction_field, parse_csv_info, parse_format_csv,get_transactions_dates, get_table_data
+from .transaction import get_transactions, get_transactions_sorted, get_transaction, add_transaction, delete_transaction, update_transaction_field, parse_csv_info, parse_format_csv,get_transactions_dates, get_table_data, get_category_data
 from .exchangerate import get_exchangerates, get_exchangerate, add_exchangerate, delete_exchangerate, update_exchangerate_field
 
 ### Initialization
@@ -320,6 +320,17 @@ async def budgetitem_get_ical(request: Request, bid: int, id: int, db: Session =
   file_name = str(budgetitem.name).lower() + ".ical"
   return FileResponse(icalfile, media_type='application/octet-stream', filename=file_name)
 
+@app.get("/budgetitem/detail/{id}", response_class=HTMLResponse)
+async def budgetitem_detail(request: Request, id: int, db: Session = Depends(get_db)):
+  message()
+  currentdate = datetime.now()
+  startdate = str(currentdate.year-1) + "-" + str(currentdate.month) + str(currentdate.day)
+  enddate = str(currentdate.year) + "-" + str(currentdate.month) + str(currentdate.day)
+  budgetitem = get_budgetitem(db, id)
+  categories = config.get_weblist(db, "Category")
+  budgetitemdata = get_category_data(db, budgetitem.category, startdate, enddate)
+  return templates.TemplateResponse("budgetitem_detail.html", {"request": request, "messages": messages, "g": g, "budgetitem": budgetitem, "categories": categories, "budgetitemdata": budgetitemdata})
+
 ##
 ## Account Views
 ##
@@ -553,7 +564,6 @@ async def transaction_uploadedformatview(request: Request, uploadedfile: str = F
 
 @app.post("/transaction/importformatted", response_class=HTMLResponse)
 async def transaction_importformatted(request: Request, uploadedfile: str = Form(...), delimiter: str = Form(...), currency: str = Form(...), header: str = Form(...), accountid: str = Form(...), datetimefield: str = Form(...), amountfield: str = Form(...), categoryfield: str = Form(...), namefield: str = Form(...), descriptionfield: str = Form(...), dateformat: str = Form(...), country: str = Form(...), db: Session = Depends(get_db)):
-  print(currency)
   result = ""
   importdict = {}
   try:
