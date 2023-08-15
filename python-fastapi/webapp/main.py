@@ -348,11 +348,12 @@ async def budgetitem_delete(request: Request, id: int, db: Session = Depends(get
   return templates.TemplateResponse("budget_detail.html", {"request": request, "messages": messages, "g": g, "budgetitemlist": budgetitemlist, "budget": budget})
 
 @app.get("/budgetitem/{id}/ical", response_class=HTMLResponse)
-async def budgetitem_get_ical(request: Request, bid: int, id: int, db: Session = Depends(get_db)):
+async def budgetitem_get_ical(request: Request, id: int, db: Session = Depends(get_db)):
   budgetitem = get_budgetitem(db, id)
+  filename = budgetitem.name
   icalfile = get_ical_file(budgetitem.recurrenceday, budgetitem.amount, budgetitem.name)
-  budget = get_budget(db, bid)
-  budgetitemlist = get_budgetitems_for_budget(db, bid)
+  budget = get_budget(db, budgetitem.budgetid)
+  budgetitemlist = get_budgetitems_for_budget(db, budgetitem.budgetid)
   budgetsum = 0.00
   for budgetitem in budgetitemlist:
     if budgetitem.category == "Income":
@@ -361,7 +362,7 @@ async def budgetitem_get_ical(request: Request, bid: int, id: int, db: Session =
       budgetsum = budgetsum - budgetitem.amount
   currencylist = config.get_weblist(db, "Currency")
   categories = config.get_weblist(db, "Category")
-  file_name = str(budgetitem.name).lower() + ".ical"
+  file_name = str(filename).lower() + ".ical"
   return FileResponse(icalfile, media_type='application/octet-stream', filename=file_name)
 
 ##########

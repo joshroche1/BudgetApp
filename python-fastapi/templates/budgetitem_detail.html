@@ -62,7 +62,9 @@ Budget Item: {{ budgetitem.id }}
             <button type="button" class="btn btn-sm btn-light">{{ budgetitem.id }}</button>
           </div>
         </div>
-        <div class="col-12 col-sm-5"></div>
+        <div class="col-12 col-sm-5">
+          <a href="/budgetitem/{{ budgetitem.id }}/ical" class="btn">&#128467; iCal File</a>
+        </div>
       </div>
 
       <div class="row m-1 p-1">
