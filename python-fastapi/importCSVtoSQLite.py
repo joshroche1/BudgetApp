@@ -55,17 +55,18 @@ def parse_date(datetimestamp: str, dateformat: str):
 ### id | datetimestamp | amount | convertedvalue | category | currency |   name   | description | accountid
 def create_txaction(idval, datetimestamp, amount, category, currency, name, description, accountid):
   db = get_db()
-  idval = 0
   error = None
   if error is not None:
     print(error)
   else:
-    timestamp = parse_date(datetimestamp, 'd.m.y')
-    convertval = amount
+    timestamp = parse_date(datetimestamp, 'Y-m-d')
+    convertval = float(amount) * 0.93
+    convertedval = float("{:.2f}".format(convertval))
     try:
-      sqlcmd = "INSERT INTO transactions (id,datetimestamp,amount,convertedvalue,category,currency,name,description,accountid) values ('"
-      sqlvals = str(idval) + "','" + datetimestamp + str(amount) + str(convertval) + category + currency + name + description + str(accountid) + "');"
+      sqlcmd = "INSERT INTO transactions (id,datetimestamp,amount,convertedvalue,category,currency,description,name,accountid) values ('"
+      sqlvals = str(idval) + "','" + timestamp + "','" + str(amount) + "','" + str(convertedval) + "','" + category + "','" + currency + "','" + name + "','" + description + "','" + str(accountid) + "');"
       sqlcmd += sqlvals
+      print(sqlcmd)
       db.execute(sqlcmd)
       db.commit()
       db.close()
@@ -86,15 +87,15 @@ elif filename.find("q") > -1:
   print("\nEXIT")
   sys.exit(0)
 elif len(filename) > 0:
-  intid = 1000
+  intid = 2000
   print("\Import File: " + filename + "\n")
   csvfile = open('upload/'+filename, 'r')
   for csvline in csvfile:
     tmparr = csvline.split(',')
-    if not create_txaction(intid, tmparr[0], tmparr[4], tmparr[1], 'EUR', tmparr[2], tmparr[3], 1):
+    if not create_txaction(intid, tmparr[0], tmparr[4], tmparr[3], 'USD', tmparr[1], tmparr[2], 2):
       print("Could not insert transaction")
     else:
-      print("Insert transaction: " + str(idval))
+      print("Insert transaction: " + str(intid))
     intid += 1
   print("\nDONE")
 else:

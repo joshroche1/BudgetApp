@@ -209,7 +209,8 @@ def convert_value(db: Session, original, currency_from, currency_to):
   result = 0.0
   try:
     exrate = find_exchangerate(db, currency_from, currency_to)
-    result = original * exrate
+    reslt = original * exrate
+    result = float("{:.2f}".format(reslt))
   except Exception as ex:
     print(str(ex))
     result = original
