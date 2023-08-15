@@ -47,8 +47,8 @@ INSERT INTO weblist (name,value) VALUES ('Country','DE');
 --- Sample Data
 ---
 
-INSERT INTO transactions (datetimestamp,amount,category,currency,name,description,accountid) VALUES (
-  '2023-01-01',5000.00,'Income','EUR','Paycheck','Work Income',1
+INSERT INTO transactions (datetimestamp,amount,convertedvalue,category,currency,name,description,accountid) VALUES (
+  '2023-01-01',5000.00,5000.00,'Income','EUR','Paycheck','Work Income',1
 );
 
 INSERT INTO accounts (name,accounttype,currency,iban,bic,country) VALUES (

@@ -90,7 +90,7 @@ Budget: {{ budget.id }}
   
   <div class="m-1 p-1">
         
-    <form action="/budget/{{ budget.id }}/item/create" method="post">
+    <form action="/budgetitem/create" method="post">
       <fieldset><legend>New Budget Item</legend>
       <div class="row">
         <input type="hidden" id="budgetid" name="budgetid" value="{{ budget.id }}" />
@@ -128,7 +128,7 @@ Budget: {{ budget.id }}
       </fieldset>
     </form>
     
-    <table class="table">
+    <table class="table table-bordered table-hover">
 
       <tr>
         <th><a href="" class="btn btn-sm">ID</a></th>
@@ -141,11 +141,31 @@ Budget: {{ budget.id }}
         <th></th>
       </tr>
       
-      <tr>
+      <tr class="table-success">
+        <th></th>
+        <th>Income</th>
+        <th></th>
+        <th>{{ budgetincome|round(2, 'common') }}</th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+      <tr class="table-danger">
+        <th></th>
+        <th>Expense</th>
+        <th></th>
+        <th>{{ budgetexpense|round(2, 'common') }}</th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>      
+      <tr class="table-primary">
         <th></th>
         <th>Remainder</th>
         <th></th>
-        <th>{{ budgetsum }}</th>
+        <th>{{ budgetsum|round(2, 'common') }}</th>
         <th></th>
         <th></th>
         <th></th>
@@ -166,10 +186,10 @@ Budget: {{ budget.id }}
         <td>
           <div class="row">
             <div class="col">
-              <a href="/budget/{{ budgetitem.budgetid }}/item/{{ budgetitem.id }}/ical" class="btn">&#128467;</a>
+              <a href="/budgetitem/{{ budgetitem.id }}/ical" class="btn">&#128467;</a>
             </div>
             <div class="col">
-              <form action="/budget/{{ budgetitem.budgetid }}/item/delete/{{ budgetitem.id }}" method="post">
+              <form action="/budgetitem/delete/{{ budgetitem.id }}" method="post">
                 <input type="submit" value="X" onclick="return confirm('Are you sure you want to delete this item?');" class="btn btn-sm btn-danger">
               </form>
             </div>

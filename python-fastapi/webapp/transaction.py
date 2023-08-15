@@ -38,9 +38,24 @@ def get_transactions_sorted(db: Session, field: str):
     transactionlist = db.query(models.Transaction).all()
   return transactionlist
 
-def get_transactions_filtered(db: Session, field: str):
-  #
-  return 0
+def get_transactions_filtered(db: Session, field: str, value: str):
+  print(field + " " + value)
+  if field == "name":
+    svalue = "%" + value + "%"
+    transactionlist = db.query(models.Transaction).filter(models.Transaction.name.match(svalue)).order_by(models.Transaction.id)
+  elif field == "datetimestamp":
+    svalue = "%" + value + "%"
+    transactionlist = db.query(models.Transaction).filter(models.Transaction.datetimestamp.match(svalue)).order_by(models.Transaction.id)
+  elif field == "category":
+    transactionlist = db.query(models.Transaction).filter(models.Transaction.category == value).order_by(models.Transaction.id)
+  elif field == "accountid":
+    inval = int(value)
+    transactionlist = db.query(models.Transaction).filter(models.Transaction.accountid == intval).order_by(models.Transaction.id)
+  elif field == "currency":
+    transactionlist = db.query(models.Transaction).filter(models.Transaction.currency == value).order_by(models.Transaction.id)
+  else:
+    transactionlist = db.query(models.Transaction).order_by(models.Transaction.id)
+  return transactionlist
 
 def get_transactions_dates(db: Session, startdate: str, enddate: str):
   transactionlist = db.query(models.Transaction).filter(models.Transaction.datetimestamp >= startdate).filter(models.Transaction.datetimestamp <= enddate).order_by(models.Transaction.datetimestamp.desc())
@@ -51,7 +66,14 @@ def get_transaction(db: Session, bid):
   return transaction
 
 def add_transaction(db: Session, newtransaction):
-  transaction = models.Transaction(name=newtransaction['name'], description=newtransaction['description'], amount=newtransaction['amount'], accountid=newtransaction['accountid'], category=newtransaction['category'], currency=newtransaction['currency'], datetimestamp=newtransaction['datetimestamp'])
+  settings = config.Settings()
+  amt = newtransaction['amount']
+  cur=newtransaction['currency']
+  if currency == settings.defaultcurrency:
+    convertval = newtransaction['amount']
+  else:
+    convertval = convert_value(db, amt, cur, settings.defaultcurrency)
+  transaction = models.Transaction(name=newtransaction['name'], description=newtransaction['description'], amount=amt, currency=cur, convertedvalue=convertval, accountid=newtransaction['accountid'], category=newtransaction['category'], datetimestamp=newtransaction['datetimestamp'])
   db.add(transaction)
   db.commit()
   return transaction

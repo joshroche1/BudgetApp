@@ -20,7 +20,7 @@ from .filesystem import read_file, write_file, append_line, insert_line, delete_
 from .budget import get_budgets, get_budget, add_budget, delete_budget, update_budget_field
 from .budgetitem import get_budgetitems, get_budgetitem, add_budgetitem, delete_budgetitem, update_budgetitem_field, get_budgetitems_for_budget, get_budget_data
 from .account import get_accounts, get_account, add_account, delete_account, update_account_field
-from .transaction import get_transactions, get_transactions_sorted, get_transaction, add_transaction, delete_transaction, update_transaction_field, parse_csv_info, parse_format_csv,get_transactions_dates, get_table_data, get_category_data
+from .transaction import get_transactions, get_transactions_sorted, get_transaction, add_transaction, delete_transaction, update_transaction_field, parse_csv_info, parse_format_csv,get_transactions_dates, get_table_data, get_category_data, get_transactions_filtered
 from .exchangerate import get_exchangerates, get_exchangerate, add_exchangerate, delete_exchangerate, update_exchangerate_field
 
 ### Initialization
@@ -53,9 +53,9 @@ def message(message: str = ""):
   messages.clear()
   messages.append(message)
 
-##
-### Routing
-##
+##########
+## Routing
+##########
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
@@ -93,9 +93,9 @@ async def logout(request: Request):
   g.clear()
   return templates.TemplateResponse("index.html", {"request": request, "messages": messages, "g": g})
 
-##
-## User Views
-##
+#######
+## User
+#######
 
 @app.get("/user", response_class=HTMLResponse)
 async def userprofile(request: Request, db: Session = Depends(get_db)):
@@ -119,9 +119,9 @@ async def user_update_email(request: Request, password: str = Form(...), passwor
     user = update_user_password(db, user.username, password)
   return templates.TemplateResponse("userprofile.html", {"request": request, "messages": messages, "g": g, "user": user})
 
-##
-##
-##
+###########
+## Settings
+###########
 
 @app.get("/settings", response_class=HTMLResponse)
 async def settings(request: Request, db: Session = Depends(get_db)):
@@ -194,9 +194,9 @@ async def exchangerate_delete(request: Request, id: int, db: Session = Depends(g
   settings = get_settings()
   return templates.TemplateResponse("settings.html", {"request": request, "messages": messages, "g": g, "categories": categories, "accounttypelist": accounttypelist, "countrylist": countrylist, "currencylist": currencylist, "userlist": userlist, "settings": settings, "workingdir": workingdir, "exhangeratelist": exhangeratelist})
 
-##
-## Budget Views
-##
+#########
+## Budget
+#########
 
 @app.get("/budget/overview", response_class=HTMLResponse)
 async def budget_overview(request: Request, db: Session = Depends(get_db)):
@@ -266,44 +266,88 @@ async def budget_detail(request: Request, id: int, db: Session = Depends(get_db)
   budget = get_budget(db, id)
   budgetitemlist = get_budgetitems_for_budget(db, id)
   budgetsum = 0.00
+  budgetincome = 0.00
+  budgetexpense = 0.00
   for budgetitem in budgetitemlist:
     if budgetitem.category == "Income":
       budgetsum = budgetsum + budgetitem.amount
+      budgetincome += budgetitem.amount
     else:
       budgetsum = budgetsum - budgetitem.amount
+      budgetexpense += budgetitem.amount
   currencylist = config.get_weblist(db, "Currency")
   categories = config.get_weblist(db, "Category")
-  return templates.TemplateResponse("budget_detail.html", {"request": request, "messages": messages, "g": g, "budget": budget, "budgetitemlist": budgetitemlist, "categories": categories, "budgetsum": budgetsum})
+  return templates.TemplateResponse("budget_detail.html", {"request": request, "messages": messages, "g": g, "budget": budget, "budgetitemlist": budgetitemlist, "categories": categories, "budgetsum": budgetsum, "budgetincome": budgetincome, "budgetexpense": budgetexpense})
 
-@app.post("/budget/{id}/item/create", response_class=HTMLResponse)
-async def budgetitem_create(request: Request, id: int, name: str = Form(...), description: str = Form(...), amount: str = Form(...), category: str = Form(...), recurrence: str = Form(...), recurrenceday: str = Form(...), db: Session = Depends(get_db)):
+#############
+## BudgetItem
+#############
+
+@app.get("/budgetitem/detail/{id}", response_class=HTMLResponse)
+async def budgetitem_detail(request: Request, id: int, db: Session = Depends(get_db)):
+  message()
+  currentdate = datetime.now()
+  startdate = str(currentdate.year-1) + "-" + str(currentdate.month) + str(currentdate.day)
+  enddate = str(currentdate.year) + "-" + str(currentdate.month) + str(currentdate.day)
+  budgetitem = get_budgetitem(db, id)
+  categories = config.get_weblist(db, "Category")
+  transactionlist = get_transactions_filtered(db, "category", budgetitem.category)
+  budgetitemdata = get_category_data(db, budgetitem.category, startdate, enddate)
+  return templates.TemplateResponse("budgetitem_detail.html", {"request": request, "messages": messages, "g": g, "budgetitem": budgetitem, "categories": categories, "budgetitemdata": budgetitemdata, "transactionlist": transactionlist})
+
+@app.post("/budgetitem/create", response_class=HTMLResponse)
+async def budgetitem_create(request: Request, budgetid: str = Form(...), name: str = Form(...), description: str = Form(...), amount: str = Form(...), category: str = Form(...), recurrence: str = Form(...), recurrenceday: str = Form(...), db: Session = Depends(get_db)):
   message()
   newbudgetitem = {
     "name": name,
     "description": description,
     "amount": amount,
-    "budgetid": id,
+    "budgetid": budgetid,
     "category": category,
     "recurrence": recurrence,
     "recurrenceday": recurrenceday
   }
-  budget = get_budget(db, id)
   budgetitem = add_budgetitem(db, newbudgetitem)
-  currencylist = config.get_weblist(db, "Currency")
-  return templates.TemplateResponse("budget_detail.html", {"request": request, "messages": messages, "g": g, "budget": budget, "budgetitem": budgetitem})
+  message("Created Budget Item: " + name)
+  currentdate = datetime.now()
+  startdate = str(currentdate.year-1) + "-" + str(currentdate.month) + str(currentdate.day)
+  enddate = str(currentdate.year) + "-" + str(currentdate.month) + str(currentdate.day)
+  budgetitem = get_budgetitem(db, budgetid)
+  categories = config.get_weblist(db, "Category")
+  transactionlist = get_transactions_filtered(db, "category", budgetitem.category)
+  budgetitemdata = get_category_data(db, budgetitem.category, startdate, enddate)
+  return templates.TemplateResponse("budgetitem_detail.html", {"request": request, "messages": messages, "g": g, "budgetitem": budgetitem, "categories": categories, "budgetitemdata": budgetitemdata, "transactionlist": transactionlist})
 
-@app.post("/budget/{bid}/item/delete/{id}", response_class=HTMLResponse)
-async def budgetitem_delete(request: Request, bid: int, id: int, db: Session = Depends(get_db)):
+@app.post("/budgetitem/update/{id}/{field}", response_class=HTMLResponse)
+async def budgetitem_update(request: Request, id: int, field: str, value: str = Form(...), db: Session = Depends(get_db)):
+  message()
+  if not update_budgetitem_field(db, id, field, value):
+    message("Error updating " + field)
+  else:
+    message("Updated " + field + " to " + str(value))
+  currentdate = datetime.now()
+  startdate = str(currentdate.year-1) + "-" + str(currentdate.month) + str(currentdate.day)
+  enddate = str(currentdate.year) + "-" + str(currentdate.month) + str(currentdate.day)
   budgetitem = get_budgetitem(db, id)
+  categories = config.get_weblist(db, "Category")
+  transactionlist = get_transactions_filtered(db, "category", budgetitem.category)
+  budgetitemdata = get_category_data(db, budgetitem.category, startdate, enddate)
+  return templates.TemplateResponse("budgetitem_detail.html", {"request": request, "messages": messages, "g": g, "budgetitem": budgetitem, "categories": categories, "budgetitemdata": budgetitemdata, "transactionlist": transactionlist})
+
+@app.post("/budgetitem/delete/{id}", response_class=HTMLResponse)
+async def budgetitem_delete(request: Request, id: int, db: Session = Depends(get_db)):
+  budgetitem = get_budgetitem(db, id)
+  bid = budgetitem.budgetid
   if not delete_budgetitem(db, id):
     message("Error deleting transaction")
-  message()
+  else:
+    message("Deleted Budget Item: " + str(id))
   budget = get_budget(db, bid)
   budgetitemlist = get_budgetitems_for_budget(db, bid)
   currencylist = config.get_weblist(db, "Currency")
-  return templates.TemplateResponse("budget_detail.html", {"request": request, "messages": messages, "g": g, "budgetitemlist": budgetitemlist})
+  return templates.TemplateResponse("budget_detail.html", {"request": request, "messages": messages, "g": g, "budgetitemlist": budgetitemlist, "budget": budget})
 
-@app.get("/budget/{bid}/item/{id}/ical", response_class=HTMLResponse)
+@app.get("/budgetitem/{id}/ical", response_class=HTMLResponse)
 async def budgetitem_get_ical(request: Request, bid: int, id: int, db: Session = Depends(get_db)):
   budgetitem = get_budgetitem(db, id)
   icalfile = get_ical_file(budgetitem.recurrenceday, budgetitem.amount, budgetitem.name)
@@ -320,20 +364,9 @@ async def budgetitem_get_ical(request: Request, bid: int, id: int, db: Session =
   file_name = str(budgetitem.name).lower() + ".ical"
   return FileResponse(icalfile, media_type='application/octet-stream', filename=file_name)
 
-@app.get("/budgetitem/detail/{id}", response_class=HTMLResponse)
-async def budgetitem_detail(request: Request, id: int, db: Session = Depends(get_db)):
-  message()
-  currentdate = datetime.now()
-  startdate = str(currentdate.year-1) + "-" + str(currentdate.month) + str(currentdate.day)
-  enddate = str(currentdate.year) + "-" + str(currentdate.month) + str(currentdate.day)
-  budgetitem = get_budgetitem(db, id)
-  categories = config.get_weblist(db, "Category")
-  budgetitemdata = get_category_data(db, budgetitem.category, startdate, enddate)
-  return templates.TemplateResponse("budgetitem_detail.html", {"request": request, "messages": messages, "g": g, "budgetitem": budgetitem, "categories": categories, "budgetitemdata": budgetitemdata})
-
-##
-## Account Views
-##
+##########
+## Account
+##########
 
 @app.get("/account/list", response_class=HTMLResponse)
 async def account_list(request: Request, db: Session = Depends(get_db)):
@@ -398,9 +431,9 @@ async def account_delete(request: Request, id: int, db: Session = Depends(get_db
   accounttypelist = config.get_weblist(db, "AccountType")
   return templates.TemplateResponse("account_list.html", {"request": request, "messages": messages, "g": g, "accountlist": accountlist, "categories": categories, "accounttypelist": accounttypelist})
 
-##
-## Transaction Views
-##
+##############
+## Transaction
+##############
 
 @app.get("/transaction/list", response_class=HTMLResponse)
 async def transaction_list(request: Request, db: Session = Depends(get_db)):
@@ -413,6 +446,13 @@ async def transaction_list(request: Request, db: Session = Depends(get_db)):
 async def transaction_list_sorted(request: Request, field: str, db: Session = Depends(get_db)):
   message()
   transactionlist = get_transactions_sorted(db, field)
+  categories = config.get_weblist(db, "Category")
+  return templates.TemplateResponse("transaction_list.html", {"request": request, "messages": messages, "g": g, "transactionlist": transactionlist, "categories": categories})
+
+@app.post("/transaction/list/filtered/category", response_class=HTMLResponse)
+async def transaction_list_categoryfilter(request: Request, filtervalue: str = Form(...), db: Session = Depends(get_db)):
+  message()
+  transactionlist = get_transactions_filtered(db, "Categiry", filtervalue)
   categories = config.get_weblist(db, "Category")
   return templates.TemplateResponse("transaction_list.html", {"request": request, "messages": messages, "g": g, "transactionlist": transactionlist, "categories": categories})
 
@@ -580,6 +620,5 @@ async def transaction_importformatted(request: Request, uploadedfile: str = Form
   importdict = {}
   return templates.TemplateResponse("transaction_import.html", {"request": request, "messages": messages, "g": g, "categories": categories, "currencylist": currencylist, "accountlist": accountlist, "importdict": importdict, "uploadedfilelist": uploadedfilelist})
 
-###
-
-###
+############
+############

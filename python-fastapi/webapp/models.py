@@ -49,6 +49,7 @@ class Transaction(Base):
   id = Column(Integer, primary_key=True, index=True)
   datetimestamp = Column(String)
   amount = Column(Float)
+  convertedvalue = Column(Float)
   category = Column(String, default="")
   currency = Column(String, default="")
   name = Column(String, default="")

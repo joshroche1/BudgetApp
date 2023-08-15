@@ -44,6 +44,23 @@ Settings
       <td>Database</td>
       <td>{{ settings.database_vendor }}</td>
     </tr>
+    <tr>
+      <th>Application Currency</th>
+      <th>
+        <form action="" method="">
+          <div class="input-group">
+            <span class="input-group-text">{{ settings.defaultcurrency }}</span>
+            <select id="updatecurrency" name="updatecurrency" class="form-select">
+              <option value="Default" selected>Select a Currency</option>
+              {% for currency in currencylist %}
+              <option value="{{ currency.value }}">{{ currency.value }}</option>
+              {% endfor %}
+            </select>
+            <input type="submit" value="Update" class="btn btn-sm btn-success">
+          </div>
+        </form>
+      </th>
+    </tr>
   </table>
 </div>
 

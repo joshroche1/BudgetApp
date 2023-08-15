@@ -53,6 +53,7 @@ class BudgetItem(BudgetItemBase):
 class TransactionBase(BaseModel):
   datetimestamp: str
   amount: float
+  convertedvalue: float
   name: str
 
 class TransactionCreate(TransactionBase):

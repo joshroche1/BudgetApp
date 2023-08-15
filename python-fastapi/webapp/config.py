@@ -24,7 +24,8 @@ class Settings(BaseSettings):
   ansible_playbookdir: str = ""
   base_dir: str = ""
   upload_dir: str = ""
-    
+  defaultcurrency: str = ""
+  
   class Config:
     env_file = ".env"
 

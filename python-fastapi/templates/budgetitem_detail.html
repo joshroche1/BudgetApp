@@ -38,6 +38,7 @@ Budget Item: {{ budgetitem.id }}
   
   <div class="m-3 p-3">
     
+    <a href="/budget/detail/{{ budgetitem.budgetid }}" class="btn"><h3>Budget {{ budgetitem.budgetid }} - </h3></a>
     <a href="/budgetitem/detail/{{ budgetitem.id }}" class="btn"><h3>{{ budgetitem.name }}</h3></a>
     
     <div class="row">
@@ -52,101 +53,164 @@ Budget Item: {{ budgetitem.id }}
 
     </div>
     
+    <div class="m-1 p-1">
     
-    <div class="row m-1 p-1">
-      <div class="text-bg-light col-12 col-sm-3">ID</div>
-      <div class="col-12 col-sm-4">
-        <div class="btn-group">
-          <button type="button" class="btn btn-sm btn-light">{{ budgetitem.id }}</button>
-        </div>
-      </div>
-      <div class="col-12 col-sm-5"></div>
-    </div>
-    
-    <div class="row m-1 p-1">
-      <div class="text-bg-light col-12 col-sm-3">Name</div>
-      <div class="col-12 col-sm-4">
-        <div class="btn-group">
-          <button type="button" class="btn btn-sm btn-light">{{ budgetitem.name }}</button>
-        </div>
-      </div>
-      <div class="col-12 col-sm-5"></div>
-    </div>
-    
-    <div class="row m-1 p-1">
-      <div class="text-bg-light col-12 col-sm-3">Description</div>
-      <div class="col-12 col-sm-4">
-        <div class="btn-group">
-          <button type="button" class="btn btn-sm btn-light">{{ budgetitem.description }}</button>
-        </div>
-      </div>
-      <div class="col-12 col-sm-5"></div>
-    </div>
-    
-    <div class="row m-1 p-1">
-      <div class="text-bg-light col-12 col-sm-3">Amount</div>
-      <div class="col-12 col-sm-4">
-        <div class="btn-group">
-          <button type="button" class="btn btn-sm btn-light">{{ budgetitem.amount }}</button>
-        </div>
-      </div>
-      <div class="col-12 col-sm-5"></div>
-    </div>
-    
-    <div class="row m-1 p-1">
-      <div class="text-bg-light col-12 col-sm-3">Category</div>
-      <div class="col-12 col-sm-4">
-        <div class="btn-group">
-          <button type="button" class="btn btn-sm btn-light">{{ budgetitem.category }}</button>
-        </div>
-      </div>
-      <div class="col-12 col-sm-5">
-        <form action="" method="">
-          <div class="input-group">
-            <select id="category" name="category" class="form-select">
-              <option value="" selected disabled>Category</option>
-              {% for category in categories %}
-              <option value="{{ category.value }}">{{ category.value }}</option>
-              {% endfor %}
-            </select>
-            <input type="submit" value="Update" class="btn btn-sm btn-success">
+      <div class="row m-1 p-1">
+        <div class="text-bg-light col-12 col-sm-3">ID</div>
+        <div class="col-12 col-sm-4">
+          <div class="btn-group">
+            <button type="button" class="btn btn-sm btn-light">{{ budgetitem.id }}</button>
           </div>
-        </form>
-      </div>
-    </div>
-    
-    <div class="row m-1 p-1">
-      <div class="text-bg-light col-12 col-sm-3">Recurrence</div>
-      <div class="col-12 col-sm-4">
-        <div class="btn-group">
-          <button type="button" class="btn btn-sm btn-light">{{ budgetitem.recurrence }}</button>
         </div>
+        <div class="col-12 col-sm-5"></div>
       </div>
-      <div class="col-12 col-sm-5">
-        <form action="" method="">
-          <div class="input-group">
-            <select id="recurrence" name="recurrence" class="form-select">
-              <option value="Monthly" selected >Recurrence</option>
-              <option value="Weekly">Weekly</option>
-              <option value="Bi-weekly">Bi-weekly</option>
-              <option value="Monthly">Monthly</option>
-              <option value="Bi-monthly">Bi-monthly</option>
-              <option value="Yearly">Yearly</option>
-            </select>
-            <input type="submit" value="Update" class="btn btn-sm btn-success">
+
+      <div class="row m-1 p-1">
+        <div class="text-bg-light col-12 col-sm-3">Name</div>
+        <div class="col-12 col-sm-4">
+          <div class="btn-group">
+            <button type="button" class="btn btn-sm btn-light">{{ budgetitem.name }}</button>
           </div>
-        </form>
-      </div>
-    </div>
-    
-    <div class="row m-1 p-1">
-      <div class="text-bg-light col-12 col-sm-3">Resurrence Day</div>
-      <div class="col-12 col-sm-4">
-        <div class="btn-group">
-          <button type="button" class="btn btn-sm btn-light">{{ budgetitem.recurrenceday }}</button>
+        </div>
+        <div class="col-12 col-sm-5">
+          <form action="" method="">
+            <div class="input-group">
+              <input type="text" id="name" name="name" placeholder="Name" class="form-control">
+              <input type="submit" value="Update" onclick="return confirm('Update value?');" class="btn btn-sm btn-success">
+            </div>
+          </form>
         </div>
       </div>
-      <div class="col-12 col-sm-5"></div>
+
+      <div class="row m-1 p-1">
+        <div class="text-bg-light col-12 col-sm-3">Description</div>
+        <div class="col-12 col-sm-4">
+          <div class="btn-group">
+            <button type="button" class="btn btn-sm btn-light">{{ budgetitem.description }}</button>
+          </div>
+        </div>
+        <div class="col-12 col-sm-5">
+          <form action="" method="">
+            <div class="input-group">
+              <input type="text" id="description" name="description" placeholder="Description" class="form-control">
+              <input type="submit" value="Update" onclick="return confirm('Update value?');" class="btn btn-sm btn-success">
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="row m-1 p-1">
+        <div class="text-bg-light col-12 col-sm-3">Amount</div>
+        <div class="col-12 col-sm-4">
+          <div class="btn-group">
+            <button type="button" class="btn btn-sm btn-light">{{ budgetitem.amount }}</button>
+          </div>
+        </div>
+        <div class="col-12 col-sm-5">
+          <form action="" method="">
+            <div class="input-group">
+              <input type="text" id="amount" name="amount" placeholder="Amount" class="form-control">
+              <input type="submit" value="Update" onclick="return confirm('Update value?');" class="btn btn-sm btn-success">
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="row m-1 p-1">
+        <div class="text-bg-light col-12 col-sm-3">Category</div>
+        <div class="col-12 col-sm-4">
+          <div class="btn-group">
+            <button type="button" class="btn btn-sm btn-light">{{ budgetitem.category }}</button>
+          </div>
+        </div>
+        <div class="col-12 col-sm-5">
+          <form action="" method="">
+            <div class="input-group">
+              <select id="category" name="category" class="form-select">
+                <option value="" selected disabled>Category</option>
+                {% for category in categories %}
+                <option value="{{ category.value }}">{{ category.value }}</option>
+                {% endfor %}
+              </select>
+              <input type="submit" value="Update" onclick="return confirm('Update value?');" class="btn btn-sm btn-success">
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="row m-1 p-1">
+        <div class="text-bg-light col-12 col-sm-3">Recurrence</div>
+        <div class="col-12 col-sm-4">
+          <div class="btn-group">
+            <button type="button" class="btn btn-sm btn-light">{{ budgetitem.recurrence }}</button>
+          </div>
+        </div>
+        <div class="col-12 col-sm-5">
+          <form action="" method="">
+            <div class="input-group">
+              <select id="recurrence" name="recurrence" class="form-select">
+                <option value="Monthly" selected >Recurrence</option>
+                <option value="Weekly">Weekly</option>
+                <option value="Bi-weekly">Bi-weekly</option>
+                <option value="Monthly">Monthly</option>
+                <option value="Bi-monthly">Bi-monthly</option>
+                <option value="Yearly">Yearly</option>
+              </select>
+              <input type="submit" value="Update" onclick="return confirm('Update value?');" class="btn btn-sm btn-success">
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="row m-1 p-1">
+        <div class="text-bg-light col-12 col-sm-3">Recurrence Day</div>
+        <div class="col-12 col-sm-4">
+          <div class="btn-group">
+            <button type="button" class="btn btn-sm btn-light">{{ budgetitem.recurrenceday }}</button>
+          </div>
+        </div>
+        <div class="col-12 col-sm-5">
+          <form action="" method="">
+            <div class="input-group">
+              <input type="number" id="recurrenceday" name="recurrenceday" placeholder="Day of the Month" min="1" max="31" class="form-control">
+              <input type="submit" value="Update" onclick="return confirm('Update value?');" class="btn btn-sm btn-success">
+            </div>
+          </form>
+        </div>
+      </div>
+      
+    </div>
+    
+    <div class="m-1 p-1">
+      
+      <table class="table table-sm table-bordered table-hover">
+        
+        <tr>
+          <th><a href="" class="btn btn-sm">ID</a></th>
+          <th><a href="" class="btn btn-sm">Date</a></th>
+          <th><a href="" class="btn btn-sm">Amount</a></th>
+          <th><a href="" class="btn btn-sm">Currency</a></th>
+          <th><a href="" class="btn btn-sm">Category</a></th>
+          <th><a href="" class="btn btn-sm">Name</a></th>
+          <th><a href="" class="btn btn-sm">Description</a></th>
+          <th><a href="" class="btn btn-sm">Account ID</a></th>
+        </tr>
+
+        {% for transaction in transactionlist %}
+        <tr>
+          <td>{{ transaction.id }}</td>
+          <td>{{ transaction.datetimestamp }}</td>
+          <td>{{ transaction.amount }}</td>
+          <td>{{ transaction.currency }}</td>
+          <td>{{ transaction.category }}</td>
+          <td><a href="/transaction/detail/{{ transaction.id }}" class="btn btn-sm btn-light"><b>{{ transaction.name }}</b></a></td>
+          <td>{{ transaction.description }}</td>
+          <td>{{ transaction.accountid }}</td>
+        </tr>
+        {% endfor %}
+        
+      </table>
+      
     </div>
     
   </div>
@@ -217,7 +281,7 @@ new Chart("lineChart", {
     labels: tmparrlabels2,
     datasets: [{
       data: tmparramounts2,
-      borderColor: "red",
+      borderColor: "DarkOrange",
       fill: true
     }]
   },
@@ -233,7 +297,7 @@ new Chart("barChart", {
   data: {
     labels: tmparrlabels2,
     datasets: [{
-      backgroundColor: chartColors,
+      backgroundColor: "Green",
       data: tmparramounts2
     }]
   },
