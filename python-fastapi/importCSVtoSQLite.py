@@ -87,12 +87,18 @@ elif filename.find("q") > -1:
   print("\nEXIT")
   sys.exit(0)
 elif len(filename) > 0:
-  intid = 2000
+  intid = 3000
   print("\Import File: " + filename + "\n")
   csvfile = open('upload/'+filename, 'r')
   for csvline in csvfile:
     tmparr = csvline.split(',')
-    if not create_txaction(intid, tmparr[0], tmparr[4], tmparr[3], 'USD', tmparr[1], tmparr[2], 2):
+    txdtime = tmparr[0]
+    txcat = tmparr[3]
+    txname = tmparr[1]
+    txdesc = tmparr[2]
+    txamt = tmparr[4]
+    # idval, datetimestamp, amount, category, currency, name, description, accountid
+    if not create_txaction(intid, txdtime, txamt, txcat, 'USD', txdesc, txname, 2):
       print("Could not insert transaction")
     else:
       print("Insert transaction: " + str(intid))
