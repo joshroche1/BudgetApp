@@ -22,7 +22,7 @@ def get_budgetitem(db: Session, bid):
   return budgetitem
 
 def get_budgetitems_for_budget(db: Session, bid):
-  budgetitem = db.query(models.BudgetItem).filter(models.BudgetItem.budgetid == bid).all()
+  budgetitem = db.query(models.BudgetItem).filter(models.BudgetItem.budgetid == bid).order_by(models.BudgetItem.id).all()
   return budgetitem
 
 def add_budgetitem(db: Session, newbudgetitem):

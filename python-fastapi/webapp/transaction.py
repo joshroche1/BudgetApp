@@ -61,6 +61,10 @@ def get_transactions_dates(db: Session, startdate: str, enddate: str):
   transactionlist = db.query(models.Transaction).filter(models.Transaction.datetimestamp >= startdate).filter(models.Transaction.datetimestamp <= enddate).order_by(models.Transaction.datetimestamp.desc())
   return transactionlist
 
+def get_transactions_dates_category(db: Session, value:str, startdate: str, enddate: str):
+  transactionlist = db.query(models.Transaction).filter(models.Transaction.datetimestamp >= startdate).filter(models.Transaction.datetimestamp <= enddate).filter(models.Transaction.category == value).order_by(models.Transaction.datetimestamp.desc())
+  return transactionlist
+
 def get_transaction(db: Session, bid):
   transaction = db.query(models.Transaction).filter(models.Transaction.id == bid).first()
   return transaction
@@ -216,12 +220,21 @@ def convert_value(db: Session, original, currency_from, currency_to):
     result = original
   return result
 
-def get_table_data(db: Session, transactionlist, budgetcurrency):
+def get_table_data(db: Session, transactionlist, budgetcurrency, budgetitemlist):
   result = ""
   labels = ""
   amounts = ""
+  result2 = ""
   try:
     resultdict = {}
+    labelarr = []
+    valarr = []
+    for bitem in budgetitemlist:
+      if bitem.category == "Income": 
+        pass
+      elif labelarr.count(bitem.category) < 1:
+        labelarr.append(bitem.category)
+        valarr.append(0.0)
     for transx in transactionlist:
       resultkeys = resultdict.keys()
       if transx.amount > 0: pass
@@ -241,14 +254,70 @@ def get_table_data(db: Session, transactionlist, budgetcurrency):
           resultdict[transx.category] = tmpamt
         else:
           resultdict[transx.category] = (transx.amount*(-1.0))
-    for newlabel in resultdict.keys():
-      labels = labels + newlabel + ","
-    for newvalue in resultdict.values():
-      amounts = amounts + str(newvalue) + ","
+    for labl in labelarr:
+      labels = labels + labl + ","
+      amounts = amounts + str(resultdict[labl]) + ","
     result = labels + "|" + amounts
   except Exception as ex:
     result = str(ex)
   return result
+
+def get_line_chart_data(db: Session, xLabels, startdate, enddate):
+  resultdict = {}
+  txdict = {}
+  montharr = []
+  try:
+    stdarr = startdate.split("-")
+    endarr = enddate.split("-")
+    styear = int(stdarr[0])
+    stmonth = int(stdarr[1])
+    endyear = int(endarr[0])
+    endmonth = int(endarr[1])
+    months = 0
+    if styear < endyear:
+      if stmonth >= endmonth:
+        months = (12-endmonth) + stmonth
+      elif stmonth < endmonth:
+        months = endmonth - stmonth + 12
+    elif styear == endyear:
+      if stmonth < endmonth:
+        months = endmonth - stmonth
+      else:
+        print("End month after start month: " + startdate + " " + enddate)
+        return 0
+    else:
+      print("End date after start date: " + startdate + " " + enddate)
+      return 0
+    for i in range(months+1):
+      if (int(stdarr[1])+i) > 12:
+        if stmonth+i < 10:
+          tmpstr = str(styear+1) + "-0" + str((stmonth+i)-12) + "-01"
+          montharr.append(tmpstr)
+        else:
+          tmpstr = str(styear+1) + "-0" + str((stmonth+i)-12) + "-01"
+          montharr.append(tmpstr)
+      else:
+        if stmonth+i < 10:
+          tmpstr = str(styear) + "-0" + str(stmonth+i) + "-01"
+          montharr.append(tmpstr)
+        else:
+          tmpstr = str(styear) + "-" + str(stmonth+i) + "-01"
+          montharr.append(tmpstr)
+    for xlabel in xLabels:
+      tmpvalstr = ""
+      for x in range(len(montharr)-1):
+        tmpamt = 0.0
+        txactions = get_transactions_dates_category(db,xlabel,montharr[x],montharr[x+1])
+        for txaction in txactions:
+          if xlabel == "Income":
+            tmpamt = tmpamt + (txaction.convertedvalue*1.0)
+          else:
+            tmpamt = tmpamt + (txaction.convertedvalue*-1.0)
+        tmpvalstr = tmpvalstr + str(tmpamt) + ","
+      txdict[xlabel] = tmpvalstr
+  except Exception as ex:
+    print(str(ex))
+  return txdict
 
 def get_category_data(db: Session, filtercategory, startdate, enddate):
   transactionlist = db.query(models.Transaction).filter(models.Transaction.datetimestamp >= startdate).filter(models.Transaction.datetimestamp <= enddate).filter(models.Transaction.category == filtercategory).order_by(models.Transaction.datetimestamp.asc())

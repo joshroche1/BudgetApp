@@ -69,42 +69,22 @@ Overview
   </div>
   <p>Chart data is based on the Transaction category and amount. Adjust transaction categories to fit the budget model.</p>
   
+  <div id="test" class="m-1 p-1"></div>
+  
   <div class="m-1 p-1">
-    <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePieCharts" aria-expanded="false" aria-controls="collapsePieCharts">
-      Pie Charts
+    <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLineChart" aria-expanded="false" aria-controls="collapseLineChart">
+      Line Chart
     </button>
   </div>
   
-  <div class="collapse show" id="collapsePieCharts">
+  <div class="collapse show" id="collapseLineChart">
     <div class="row">
 
-      <div class="col-12 col-sm-6">
-        <canvas id="pieChartBudget" style="width:100%;max-width:1600px;height:400px;max-height:1600px;"></canvas>
-      </div>
-      <div class="col-12 col-sm-6">
-        <canvas id="pieChart" style="width:100%;max-width:1600px;height:400px;max-height:1600px;"></canvas>
+      <div class="col">
+        <canvas id="lineChartBudget" style="width:100%;max-width:1600px;height:800px;max-height:1600px;"></canvas>
       </div>
 
     </div>
-  </div>
-  
-  <div class="m-1 p-1">
-    <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBarCharts" aria-expanded="false" aria-controls="collapseBarCharts">
-      Bar Charts
-    </button>
-  </div>
-  
-  <div class="collapse show" id="collapseBarCharts">
-    <div class="row">
-
-      <div class="col-12 col-sm-6">
-        <canvas id="barChartBudget" style="width:100%;max-width:1600px;height:400px;max-height:1600px;"></canvas>
-      </div>
-      <div class="col-12 col-sm-6">
-        <canvas id="barChart" style="width:100%;max-width:1600px;height:400px;max-height:1600px;"></canvas>
-      </div>
-
-    </div>    
   </div>
   
   <div class="m-1 p-1">
@@ -174,30 +154,6 @@ Overview
   </div>
   
   <div class="collapse show" id="collapseTransactions">
-    <div class="row">
-      <div class="col">
-        <form action="/budget/overview/filtered/month" method="post">
-          <div class="input-group">
-            <select id="month" name="month" class="form-select">
-              <option value="" selected disabled>Month</option>
-              <option value="01">JAN</option>
-              <option value="02">FEB</option>
-              <option value="03">MAR</option>
-              <option value="04">APR</option>
-              <option value="05">MAY</option>
-              <option value="06">JUN</option>
-              <option value="07">JUL</option>
-              <option value="08">AUG</option>
-              <option value="09">SEP</option>
-              <option value="10">OCT</option>
-              <option value="11">NOV</option>
-              <option value="12">DEC</option>
-            </select>
-            <input type="submit" value="Filter" class="btn btn-sm btn-success">
-          </div>
-        </form>
-      </div>
-    </div>
 
     <table class="table table-hover table-bordered">
 
@@ -242,15 +198,6 @@ var barColors = [
   "#0000FF"
 ];
 var chartColors = [
-  "Maroon",
-  "Gold",
-  "Crimson",
-  "DarkOrange",
-  "SteelBlue",
-  "MediumOrchid",
-  "Blue",
-  "Cyan",
-  "Teal",
   "Navy",
   "Yellow",
   "Red",
@@ -290,78 +237,82 @@ new Chart("myChart", {
     }
   }
 });
-var tdata = "{{ tabledata }}";
-const tmparr1 = tdata.split("|");
-const tmparrlabels = tmparr1[0].split(",");
-const tmparramounts = tmparr1[1].split(",");
-
-new Chart("pieChart", {
-  type: "pie",
+var xLabels = "{{ xLabels }}";
+const xlabelarr = xLabels.split(",");
+var incomedata = "{{ transactiondict.Income }}";
+const incomearr = incomedata.split(",");
+var housingdata = "{{ transactiondict.Housing }}";
+const housingarr = housingdata.split(",");
+var electricdata = "{{ transactiondict.Electric }}";
+const electricarr = electricdata.split(",");
+var phonedata = "{{ transactiondict.Phone }}";
+const phonearr = phonedata.split(",");
+var internetdata = "{{ transactiondict.Internet }}";
+const internetarr = internetdata.split(",");
+var insurancedata = "{{ transactiondict.Insurance }}";
+const insurancearr = insurancedata.split(",");
+var mobilitydata = "{{ transactiondict.Mobility }}";
+const mobilityarr = mobilitydata.split(",");
+var debtdata = "{{ transactiondict.Debt }}";
+const debtarr = debtdata.split(",");
+var creditdata = "{{ transactiondict.Credit }}";
+const creditarr = creditdata.split(",");
+var fooddata = "{{ transactiondict.Food }}";
+const foodarr = fooddata.split(",");
+new Chart("lineChartBudget", {
+  type: "line",
   data: {
-    labels: tmparrlabels,
+    labels: xlabelarr,
     datasets: [{
-      backgroundColor: chartColors,
-      data: tmparramounts
+      data: incomearr,
+      label: "Income",
+      borderColor: "LimeGreen",
+      backgroundColor: "HoneyDew"
+    },{
+      data: housingarr,
+      label: "Housing",
+      borderColor: "Maroon",
+    },{
+      data: electricarr,
+      label: "Electric",
+      borderColor: "Gold",
+    },{
+      data: phonearr,
+      label: "Phone",
+      borderColor: "Crimson",
+    },{
+      data: internetarr,
+      label: "Internet",
+      borderColor: "DarkOrange",
+    },{
+      data: insurancearr,
+      label: "Insurance",
+      borderColor: "SteelBlue",
+    },{
+      data: mobilityarr,
+      label: "Mobility",
+      borderColor: "MediumOrchid",
+    },{
+      data: debtarr,
+      label: "Debt",
+      borderColor: "Blue",
+    },{
+      data: creditarr,
+      label: "Credit",
+      borderColor: "Cyan",
+    },{
+      data: foodarr,
+      label: "Food",
+      borderColor: "Teal",
     }]
   },
   options: {
-    title: {
-      display: true,
-      text: "Transactions"
-    }
-  }
-});
-
-new Chart("barChart", {
-  type: "bar",
-  data: {
-    labels: tmparrlabels,
-    datasets: [{
-      backgroundColor: chartColors,
-      data: tmparramounts
-    }]
-  },
-  options: {
-    legend: {
-      display: true
+    elements: {
+      line: {
+        borderWidth: 2,
+        tension: 0.2
+      }
     },
-    title: {
-      display: true,
-      text: "Transactions"
-    }
-  }
-});
-
-var btdata = "{{ budgettabledata }}";
-const tmparr2 = btdata.split("|");
-const tmparrlabels2 = tmparr2[0].split(",");
-const tmparramounts2 = tmparr2[1].split(",");
-new Chart("pieChartBudget", {
-  type: "pie",
-  data: {
-    labels: tmparrlabels2,
-    datasets: [{
-      backgroundColor: chartColors,
-      data: tmparramounts2
-    }]
-  },
-  options: {
-    title: {
-      display: true,
-      text: "Budget"
-    }
-  }
-});
-new Chart("barChartBudget", {
-  type: "bar",
-  data: {
-    labels: tmparrlabels2,
-    datasets: [{
-      backgroundColor: chartColors,
-      data: tmparramounts2
-    }]
-  },
-  options: {
     legend: {
       display: true
     },

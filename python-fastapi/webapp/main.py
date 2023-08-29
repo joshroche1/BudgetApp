@@ -20,7 +20,7 @@ from .filesystem import read_file, write_file, append_line, insert_line, delete_
 from .budget import get_budgets, get_budget, add_budget, delete_budget, update_budget_field
 from .budgetitem import get_budgetitems, get_budgetitem, add_budgetitem, delete_budgetitem, update_budgetitem_field, get_budgetitems_for_budget, get_budget_data
 from .account import get_accounts, get_account, add_account, delete_account, update_account_field
-from .transaction import get_transactions, get_transactions_sorted, get_transaction, add_transaction, delete_transaction, update_transaction_field, parse_csv_info, parse_format_csv,get_transactions_dates, get_table_data, get_category_data, get_transactions_filtered
+from .transaction import get_transactions, get_transactions_sorted, get_transaction, add_transaction, delete_transaction, update_transaction_field, parse_csv_info, parse_format_csv,get_transactions_dates, get_table_data, get_category_data, get_transactions_filtered, get_line_chart_data
 from .exchangerate import get_exchangerates, get_exchangerate, add_exchangerate, delete_exchangerate, update_exchangerate_field
 
 ### Initialization
@@ -59,7 +59,7 @@ def message(message: str = ""):
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
-  message()
+  messages.clear()
   return templates.TemplateResponse("index.html", {"request": request, "messages": messages, "g": g})
 
 @app.get("/info")
@@ -74,12 +74,12 @@ async def info(request: Request):
 
 @app.get("/login", response_class=HTMLResponse)
 async def loginpage(request: Request):
-  message()
+  messages.clear()
   return templates.TemplateResponse("login.html", {"request": request, "messages": messages, "g": g})
 
 @app.post("/login")
 async def loginform(request: Request, username: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
-  message()
+  messages.clear()
   db_user = authenticate_user(db, username, password)
   if db_user is None:
     messages.append("User not found")
@@ -89,7 +89,7 @@ async def loginform(request: Request, username: str = Form(...), password: str =
 
 @app.get("/logout", response_class=HTMLResponse)
 async def logout(request: Request):
-  message()
+  messages.clear()
   g.clear()
   return templates.TemplateResponse("index.html", {"request": request, "messages": messages, "g": g})
 
@@ -99,13 +99,13 @@ async def logout(request: Request):
 
 @app.get("/user", response_class=HTMLResponse)
 async def userprofile(request: Request, db: Session = Depends(get_db)):
-  message()
+  messages.clear()
   user = get_user_by_username(db, g["user"]["username"])
   return templates.TemplateResponse("userprofile.html", {"request": request, "messages": messages, "g": g, "user": user})
 
 @app.post("/user/update/email", response_class=HTMLResponse)
 async def user_update_email(request: Request, email: str = Form(...), db: Session = Depends(get_db)):
-  message()
+  messages.clear()
   user = get_user_by_username(db, g["user"]["username"])
   user = update_user_email(db, user.username, email)
   return templates.TemplateResponse("userprofile.html", {"request": request, "messages": messages, "g": g, "user": user})
@@ -125,7 +125,7 @@ async def user_update_email(request: Request, password: str = Form(...), passwor
 
 @app.get("/settings", response_class=HTMLResponse)
 async def settings(request: Request, db: Session = Depends(get_db)):
-  message()
+  messages.clear()
   userlist = get_users(db)
   categories = config.get_weblist(db, "Category")
   currencylist = config.get_weblist(db, "Currency")
@@ -137,7 +137,7 @@ async def settings(request: Request, db: Session = Depends(get_db)):
 
 @app.post("/category/create", response_class=HTMLResponse)
 async def category_create(request: Request, category: str = Form(...), db: Session = Depends(get_db)):
-  message()
+  messages.clear()
   weblist = config.add_weblist(db, "Category", category)
   currencylist = config.get_weblist(db, "Currency")
   accounttypelist = config.get_weblist(db, "AccountType")
@@ -150,7 +150,7 @@ async def category_create(request: Request, category: str = Form(...), db: Sessi
 
 @app.post("/category/delete/{id}", response_class=HTMLResponse)
 async def category_delete(request: Request, id: int, db: Session = Depends(get_db)):
-  message()
+  messages.clear()
   if not config.delete_weblist(db, id):
     message("Error deleting category")
   userlist = get_users(db)
@@ -164,7 +164,7 @@ async def category_delete(request: Request, id: int, db: Session = Depends(get_d
 
 @app.post("/exchangerate/create", response_class=HTMLResponse)
 async def exchangerate_create(request: Request, currency_from: str = Form(...), currency_to: str = Form(...), rate: str = Form(...), db: Session = Depends(get_db)):
-  message()
+  messages.clear()
   newexchangerate = {
     "currency_from": currency_from,
     "currency_to": currency_to,
@@ -182,7 +182,7 @@ async def exchangerate_create(request: Request, currency_from: str = Form(...), 
 
 @app.post("/exchangerate/delete/{id}", response_class=HTMLResponse)
 async def exchangerate_delete(request: Request, id: int, db: Session = Depends(get_db)):
-  message()
+  messages.clear()
   if not delete_exchangerate(db, id):
     message("Error deleting ExhangeRate")
   userlist = get_users(db)
@@ -200,7 +200,7 @@ async def exchangerate_delete(request: Request, id: int, db: Session = Depends(g
 
 @app.get("/budget/overview", response_class=HTMLResponse)
 async def budget_overview(request: Request, db: Session = Depends(get_db)):
-  message()
+  messages.clear()
   currentdate = datetime.now()
   month = str(currentdate.month-1)
   if len(month) < 2: month = "0" + month
@@ -221,14 +221,14 @@ async def budget_overview(request: Request, db: Session = Depends(get_db)):
     else:
       budgetremain = budgetremain - budgetitem.amount
       budgetsum = budgetsum + budgetitem.amount
-  tabledata = get_table_data(db, transactionlist, budget.currency)
+  tabledata = get_table_data(db, transactionlist, budget.currency, budgetitemlist)
   budgettabledata = get_budget_data(budgetitemlist)
   categories = config.get_weblist(db, "Category")
   return templates.TemplateResponse("overview.html", {"request": request, "messages": messages, "g": g, "categories": categories, "transactionlist": transactionlist, "tabledata": tabledata, "budgetidlist": budgetidlist,"budget": budget, "budgetitemlist": budgetitemlist, "budgetsum": budgetsum, "budgetremain": budgetremain, "budgettabledata": budgettabledata})
 
 @app.post("/budget/overview/filtered/month", response_class=HTMLResponse)
 async def budget_overview_month(request: Request, month: str = Form(...), db: Session = Depends(get_db)):
-  message()
+  messages.clear()
   currentdate = datetime.now()
   startdate = str(currentdate.year) + "-" + month + "-01"
   enddate = str(currentdate.year) + "-" + month + "-32"
@@ -247,14 +247,106 @@ async def budget_overview_month(request: Request, month: str = Form(...), db: Se
     else:
       budgetremain = budgetremain - budgetitem.amount
       budgetsum = budgetsum + budgetitem.amount
-  tabledata = get_table_data(db, transactionlist, budget.currency)
+  tabledata = get_table_data(db, transactionlist, budget.currency, budgetitemlist)
   budgettabledata = get_budget_data(budgetitemlist)
   categories = config.get_weblist(db, "Category")
   return templates.TemplateResponse("overview.html", {"request": request, "messages": messages, "g": g, "categories": categories, "transactionlist": transactionlist, "tabledata": tabledata, "budgetidlist": budgetidlist,"budget": budget, "budgetitemlist": budgetitemlist, "budgetsum": budgetsum, "budgetremain": budgetremain, "budgettabledata": budgettabledata})
 
+@app.get("/budget/overview_dates", response_class=HTMLResponse)
+async def budget_overview_dates(request: Request, db: Session = Depends(get_db)):
+  messages.clear()
+  currentdate = datetime.now()
+  styear = str(currentdate.year-1)
+  month = ""
+  if len(str(currentdate.month)) < 2: month = "0" + str(currentdate.month)
+  else: month = str(currentdate.month)
+  startdate = str(styear) + "-" + month + "-01"
+  enddate = str(currentdate.year) + "-" + month + "-01"
+  xLabels = ""
+  for i in range(12):
+    if (currentdate.month+i) > 12:
+      xLabels = xLabels + str(currentdate.year) + "-" + str((currentdate.month+i)-12) + ","
+    else:
+      xLabels = xLabels + styear + "-" + str(currentdate.month+i) + ","
+  transactiondict = {}
+  txlabels = ["Income","Housing","Electric","Phone","Internet","Insurance","Mobility","Debt","Credit","Food"]
+  transactiondict = get_line_chart_data(db, txlabels, startdate, enddate)
+  transactionlist = get_transactions_dates(db, startdate, enddate)
+  budget = get_budget(db, 1)
+  budgetlist = get_budgets(db)
+  budgetidlist = []
+  for budget in budgetlist:
+    budgetidlist.append(budget.id)
+  budgetitemlist = get_budgetitems_for_budget(db, 1)
+  budgetsum = 0.00
+  budgetremain = 0.00
+  for budgetitem in budgetitemlist:
+    if budgetitem.category == "Income":
+      budgetremain = budgetremain + budgetitem.amount
+    else:
+      budgetremain = budgetremain - budgetitem.amount
+      budgetsum = budgetsum + budgetitem.amount
+  budgettabledata = get_budget_data(budgetitemlist)
+  categories = config.get_weblist(db, "Category")
+  return templates.TemplateResponse("overview_dates.html", {"request": request, "messages": messages, "g": g, "categories": categories, "budgetidlist": budgetidlist,"budget": budget, "budgetitemlist": budgetitemlist, "budgetsum": budgetsum, "budgetremain": budgetremain, "budgettabledata": budgettabledata, "startdate": startdate, "enddate": enddate, "xLabels": xLabels, "transactiondict": transactiondict, "txlabels": txlabels, "transactionlist": transactionlist})
+
+@app.post("/budget/overview_dates/specified", response_class=HTMLResponse)
+async def budget_overview_dates_specified(request: Request, budgetid: str = Form(...), startdate: str = Form(...), enddate: str = Form(...), db: Session = Depends(get_db)):
+  messages.clear()  
+  startarr = startdate.split("-")
+  endarr = enddate.split("-")
+  startyear = int(startarr[0])
+  endyear = int(endarr[0])
+  startmonth = int(startarr[1])
+  endmonth = int(endarr[1])
+  xLabels = ""
+  months = 0
+  if startyear < endyear:
+    if startmonth >= endmonth:
+      months = (12-startmonth)+endmonth
+    else:
+      months = (endmonth-startmonth)+12
+  elif startyear == endyear:
+    if startmonth >= endmonth:
+      message("Start Date must be before End Date")
+      months = 0
+    else:
+      months = endmonth-startmonth
+  elif startyear > endyear:
+    message("Start Date must be before End Date")
+    months = 0
+  else:
+    months = 12
+  for i in range(months):
+    if (endmonth+i) > 12:
+      xLabels = xLabels + str(endyear) + "-" + str((endmonth+i)-12) + ","
+    else:
+      xLabels = xLabels + str(startyear) + "-" + str(endmonth+i) + ","
+  transactiondict = {}
+  txlabels = ["Income","Housing","Electric","Phone","Internet","Insurance","Mobility","Debt","Credit","Food"]
+  transactiondict = get_line_chart_data(db, txlabels, startdate, enddate)
+  transactionlist = get_transactions_dates(db, startdate, enddate)
+  budget = get_budget(db, budgetid)
+  budgetlist = get_budgets(db)
+  budgetidlist = []
+  for budget in budgetlist:
+    budgetidlist.append(budget.id)
+  budgetitemlist = get_budgetitems_for_budget(db, 1)
+  budgetsum = 0.00
+  budgetremain = 0.00
+  for budgetitem in budgetitemlist:
+    if budgetitem.category == "Income":
+      budgetremain = budgetremain + budgetitem.amount
+    else:
+      budgetremain = budgetremain - budgetitem.amount
+      budgetsum = budgetsum + budgetitem.amount
+  budgettabledata = get_budget_data(budgetitemlist)
+  categories = config.get_weblist(db, "Category")
+  return templates.TemplateResponse("overview_dates.html", {"request": request, "messages": messages, "g": g, "categories": categories, "budgetidlist": budgetidlist,"budget": budget, "budgetitemlist": budgetitemlist, "budgetsum": budgetsum, "budgetremain": budgetremain, "budgettabledata": budgettabledata, "startdate": startdate, "enddate": enddate, "xLabels": xLabels, "transactiondict": transactiondict, "txlabels": txlabels, "transactionlist": transactionlist})
+
 @app.get("/budget/list", response_class=HTMLResponse)
 async def budget_list(request: Request, db: Session = Depends(get_db)):
-  message()
+  messages.clear()
   budgetlist = get_budgets(db)
   currencylist = config.get_weblist(db, "Currency")
   categories = config.get_weblist(db, "Category")
@@ -262,7 +354,7 @@ async def budget_list(request: Request, db: Session = Depends(get_db)):
 
 @app.get("/budget/detail/{id}", response_class=HTMLResponse)
 async def budget_detail(request: Request, id: int, db: Session = Depends(get_db)):
-  message()
+  messages.clear()
   budget = get_budget(db, id)
   budgetitemlist = get_budgetitems_for_budget(db, id)
   budgetsum = 0.00
@@ -285,7 +377,7 @@ async def budget_detail(request: Request, id: int, db: Session = Depends(get_db)
 
 @app.get("/budgetitem/detail/{id}", response_class=HTMLResponse)
 async def budgetitem_detail(request: Request, id: int, db: Session = Depends(get_db)):
-  message()
+  messages.clear()
   currentdate = datetime.now()
   startdate = str(currentdate.year-1) + "-" + str(currentdate.month) + str(currentdate.day)
   enddate = str(currentdate.year) + "-" + str(currentdate.month) + str(currentdate.day)
@@ -297,7 +389,7 @@ async def budgetitem_detail(request: Request, id: int, db: Session = Depends(get
 
 @app.post("/budgetitem/create", response_class=HTMLResponse)
 async def budgetitem_create(request: Request, budgetid: str = Form(...), name: str = Form(...), description: str = Form(...), amount: str = Form(...), category: str = Form(...), recurrence: str = Form(...), recurrenceday: str = Form(...), db: Session = Depends(get_db)):
-  message()
+  messages.clear()
   newbudgetitem = {
     "name": name,
     "description": description,
@@ -320,7 +412,7 @@ async def budgetitem_create(request: Request, budgetid: str = Form(...), name: s
 
 @app.post("/budgetitem/update/{id}/{field}", response_class=HTMLResponse)
 async def budgetitem_update(request: Request, id: int, field: str, value: str = Form(...), db: Session = Depends(get_db)):
-  message()
+  messages.clear()
   if not update_budgetitem_field(db, id, field, value):
     message("Error updating " + field)
   else:
@@ -371,7 +463,7 @@ async def budgetitem_get_ical(request: Request, id: int, db: Session = Depends(g
 
 @app.get("/account/list", response_class=HTMLResponse)
 async def account_list(request: Request, db: Session = Depends(get_db)):
-  message()
+  messages.clear()
   accountlist = get_accounts(db)
   categories = config.get_weblist(db, "Category")
   currencylist = config.get_weblist(db, "Currency")
@@ -380,7 +472,7 @@ async def account_list(request: Request, db: Session = Depends(get_db)):
 
 @app.get("/account/detail/{id}", response_class=HTMLResponse)
 async def account_detail(request: Request, id: int, db: Session = Depends(get_db)):
-  message()
+  messages.clear()
   account = get_account(db, id)
   categories = config.get_weblist(db, "Category")
   currencylist = config.get_weblist(db, "Currency")
@@ -390,7 +482,7 @@ async def account_detail(request: Request, id: int, db: Session = Depends(get_db
 
 @app.post("/account/create", response_class=HTMLResponse)
 async def account_create(request: Request, name: str = Form(...), accounttype: str = Form(...), currency: str = Form(...), iban: str = Form(...), bic: str = Form(...), country: str = Form(...), db: Session = Depends(get_db)):
-  message()
+  messages.clear()
   newaccount = {
     "name": name,
     "accounttype": accounttype,
@@ -426,7 +518,7 @@ async def account_delete(request: Request, id: int, db: Session = Depends(get_db
   account = get_account(db, id)
   if not delete_account(db, id):
     message("Error deleting account")
-  message()
+  messages.clear()
   accountlist = get_accounts(db)
   categories = config.get_weblist(db, "Category")
   accounttypelist = config.get_weblist(db, "AccountType")
@@ -438,35 +530,35 @@ async def account_delete(request: Request, id: int, db: Session = Depends(get_db
 
 @app.get("/transaction/list", response_class=HTMLResponse)
 async def transaction_list(request: Request, db: Session = Depends(get_db)):
-  message()
+  messages.clear()
   transactionlist = get_transactions(db)
   categories = config.get_weblist(db, "Category")
   return templates.TemplateResponse("transaction_list.html", {"request": request, "messages": messages, "g": g, "transactionlist": transactionlist, "categories": categories})
 
 @app.get("/transaction/list/sorted/{field}", response_class=HTMLResponse)
 async def transaction_list_sorted(request: Request, field: str, db: Session = Depends(get_db)):
-  message()
+  messages.clear()
   transactionlist = get_transactions_sorted(db, field)
   categories = config.get_weblist(db, "Category")
   return templates.TemplateResponse("transaction_list.html", {"request": request, "messages": messages, "g": g, "transactionlist": transactionlist, "categories": categories})
 
 @app.post("/transaction/list/filtered/category", response_class=HTMLResponse)
 async def transaction_list_categoryfilter(request: Request, filtervalue: str = Form(...), db: Session = Depends(get_db)):
-  message()
+  messages.clear()
   transactionlist = get_transactions_filtered(db, "Categiry", filtervalue)
   categories = config.get_weblist(db, "Category")
   return templates.TemplateResponse("transaction_list.html", {"request": request, "messages": messages, "g": g, "transactionlist": transactionlist, "categories": categories})
 
 @app.post("/transaction/list/filtered/date", response_class=HTMLResponse)
 async def transaction_list_datefilter(request: Request, startdate: str = Form(...), enddate: str = Form(...), db: Session = Depends(get_db)):
-  message()
+  messages.clear()
   transactionlist = get_transactions_dates(db, startdate, enddate)
   categories = config.get_weblist(db, "Category")
   return templates.TemplateResponse("transaction_list.html", {"request": request, "messages": messages, "g": g, "transactionlist": transactionlist, "categories": categories})
 
 @app.post("/transaction/list/filtered/month", response_class=HTMLResponse)
 async def transaction_list_monthfilter(request: Request, month: str = Form(...), db: Session = Depends(get_db)):
-  message()
+  messages.clear()
   currentdate = datetime.now()
   startdate = str(currentdate.year) + "-" + month + "-01"
   enddate = str(currentdate.year) + "-" + month + "-32"
@@ -476,14 +568,14 @@ async def transaction_list_monthfilter(request: Request, month: str = Form(...),
 
 @app.get("/transaction/detail/{id}", response_class=HTMLResponse)
 async def transaction_detail(request: Request, id: int, db: Session = Depends(get_db)):
-  message()
+  messages.clear()
   transaction = get_transaction(db, id)
   categories = config.get_weblist(db, "Category")
   return templates.TemplateResponse("transaction_detail.html", {"request": request, "messages": messages, "g": g, "transaction": transaction, "categories": categories})
   
 @app.post("/transaction/create", response_class=HTMLResponse)
 async def transaction_create(request: Request, name: str = Form(...), db: Session = Depends(get_db)):
-  message()
+  messages.clear()
   newtransaction = {
     "datetimestamp": datetimestamp,
     "amount": amount,
@@ -512,13 +604,13 @@ async def transaction_delete(request: Request, id: int, db: Session = Depends(ge
   transaction = get_transaction(db, id)
   if not delete_transaction(db, id):
     message("Error deleting transaction")
-  message()
+  messages.clear()
   transactionlist = get_transactions(db)
   return templates.TemplateResponse("transaction_list.html", {"request": request, "messages": messages, "g": g, "transactionlist": transactionlist})
 
 @app.get("/transaction/importview", response_class=HTMLResponse)
 async def transaction_importview(request: Request, db: Session = Depends(get_db)):
-  message()
+  messages.clear()
   importdict = {}
   uploadedfilelist = get_uploaded_files()
   accountlist = get_accounts(db)

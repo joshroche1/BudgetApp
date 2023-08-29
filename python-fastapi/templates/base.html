@@ -75,17 +75,19 @@
   </nav>
   
 </header>
-
-<div class="container-fluid">
-  {% block content %}{% endblock %}
-</div>
-
+  
 <div class="container m-1 p-1">
 {% for message in messages %}
   <div class="m-1 p-1">
-    <pre style="overflow-wrap: break-word;">{{ message }}</pre>
+    <div class="alert alert-warning" role="alert">
+      <pre style="overflow-wrap: break-word;">{{ message }}</pre>
+    </div>
   </div>
 {% endfor %}
+</div>
+  
+<div class="container-fluid">
+  {% block content %}{% endblock %}
 </div>
 
 <footer>
