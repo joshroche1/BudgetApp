@@ -1,4 +1,4 @@
-2023-10-02 18:56:18,994 jro smc-dev.jar[147625] WARN  [org.hib.too.sch.int.ExceptionHandlerLoggedImpl] (JPA Startup Thread) GenerationTarget encountered exception accepting command : Error executing DDL "create sequence hibernate_sequence start 1 increment 1" via JDBC Statement: org.hibernate.tool.schema.spi.CommandAcceptanceException: Error executing DDL "create sequence hibernate_sequence start 1 increment 1" via JDBC Statement
+2023-07-24 23:10:22,269 jro smc-dev.jar[296356] WARN  [org.hib.too.sch.int.ExceptionHandlerLoggedImpl] (JPA Startup Thread) GenerationTarget encountered exception accepting command : Error executing DDL "create sequence hibernate_sequence start 1 increment 1" via JDBC Statement: org.hibernate.tool.schema.spi.CommandAcceptanceException: Error executing DDL "create sequence hibernate_sequence start 1 increment 1" via JDBC Statement
 	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:67)
 	at org.hibernate.tool.schema.internal.SchemaCreatorImpl.applySqlString(SchemaCreatorImpl.java:458)
 	at org.hibernate.tool.schema.internal.SchemaCreatorImpl.applySqlStrings(SchemaCreatorImpl.java:442)
@@ -30,7 +30,7 @@ Caused by: org.postgresql.util.PSQLException: ERROR: relation "hibernate_sequenc
 	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:54)
 	... 16 more
 
-2023-10-02 18:56:19,005 jro smc-dev.jar[147625] WARN  [org.hib.too.sch.int.ExceptionHandlerLoggedImpl] (JPA Startup Thread) GenerationTarget encountered exception accepting command : Error executing DDL "
+2023-07-24 23:10:22,274 jro smc-dev.jar[296356] WARN  [org.hib.too.sch.int.ExceptionHandlerLoggedImpl] (JPA Startup Thread) GenerationTarget encountered exception accepting command : Error executing DDL "
     create table AccountEntity (
        id int8 not null,
         accounttype varchar(255),
@@ -78,7 +78,7 @@ Caused by: org.postgresql.util.PSQLException: ERROR: relation "accountentity" al
 	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:54)
 	... 16 more
 
-2023-10-02 18:56:19,010 jro smc-dev.jar[147625] WARN  [org.hib.too.sch.int.ExceptionHandlerLoggedImpl] (JPA Startup Thread) GenerationTarget encountered exception accepting command : Error executing DDL "
+2023-07-24 23:10:22,277 jro smc-dev.jar[296356] WARN  [org.hib.too.sch.int.ExceptionHandlerLoggedImpl] (JPA Startup Thread) GenerationTarget encountered exception accepting command : Error executing DDL "
     create table BudgetEntity (
        id int8 not null,
         currency varchar(255),
@@ -124,7 +124,7 @@ Caused by: org.postgresql.util.PSQLException: ERROR: relation "budgetentity" alr
 	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:54)
 	... 16 more
 
-2023-10-02 18:56:19,014 jro smc-dev.jar[147625] WARN  [org.hib.too.sch.int.ExceptionHandlerLoggedImpl] (JPA Startup Thread) GenerationTarget encountered exception accepting command : Error executing DDL "
+2023-07-24 23:10:22,279 jro smc-dev.jar[296356] WARN  [org.hib.too.sch.int.ExceptionHandlerLoggedImpl] (JPA Startup Thread) GenerationTarget encountered exception accepting command : Error executing DDL "
     create table BudgetItemEntity (
        id int8 not null,
         amount float8,
@@ -178,7 +178,7 @@ Caused by: org.postgresql.util.PSQLException: ERROR: relation "budgetitementity"
 	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:54)
 	... 16 more
 
-2023-10-02 18:56:19,019 jro smc-dev.jar[147625] WARN  [org.hib.too.sch.int.ExceptionHandlerLoggedImpl] (JPA Startup Thread) GenerationTarget encountered exception accepting command : Error executing DDL "
+2023-07-24 23:10:22,281 jro smc-dev.jar[296356] WARN  [org.hib.too.sch.int.ExceptionHandlerLoggedImpl] (JPA Startup Thread) GenerationTarget encountered exception accepting command : Error executing DDL "
     create table ConfigEntity (
        id int8 not null,
         name varchar(255),
@@ -222,7 +222,7 @@ Caused by: org.postgresql.util.PSQLException: ERROR: relation "configentity" alr
 	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:54)
 	... 16 more
 
-2023-10-02 18:56:19,023 jro smc-dev.jar[147625] WARN  [org.hib.too.sch.int.ExceptionHandlerLoggedImpl] (JPA Startup Thread) GenerationTarget encountered exception accepting command : Error executing DDL "
+2023-07-24 23:10:22,283 jro smc-dev.jar[296356] WARN  [org.hib.too.sch.int.ExceptionHandlerLoggedImpl] (JPA Startup Thread) GenerationTarget encountered exception accepting command : Error executing DDL "
     create table ExchangeEntity (
        id int8 not null,
         currency_from varchar(255),
@@ -268,7 +268,7 @@ Caused by: org.postgresql.util.PSQLException: ERROR: relation "exchangeentity" a
 	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:54)
 	... 16 more
 
-2023-10-02 18:56:19,027 jro smc-dev.jar[147625] WARN  [org.hib.too.sch.int.ExceptionHandlerLoggedImpl] (JPA Startup Thread) GenerationTarget encountered exception accepting command : Error executing DDL "
+2023-07-24 23:10:22,285 jro smc-dev.jar[296356] WARN  [org.hib.too.sch.int.ExceptionHandlerLoggedImpl] (JPA Startup Thread) GenerationTarget encountered exception accepting command : Error executing DDL "
     create table TransactionEntity (
        id int8 not null,
         accountid int8,
@@ -324,7 +324,7 @@ Caused by: org.postgresql.util.PSQLException: ERROR: relation "transactionentity
 	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:54)
 	... 16 more
 
-2023-10-02 18:56:19,032 jro smc-dev.jar[147625] WARN  [org.hib.too.sch.int.ExceptionHandlerLoggedImpl] (JPA Startup Thread) GenerationTarget encountered exception accepting command : Error executing DDL "
+2023-07-24 23:10:22,288 jro smc-dev.jar[296356] WARN  [org.hib.too.sch.int.ExceptionHandlerLoggedImpl] (JPA Startup Thread) GenerationTarget encountered exception accepting command : Error executing DDL "
     create table UserEntity (
        id int8 not null,
         email varchar(255),
@@ -372,8 +372,39 @@ Caused by: org.postgresql.util.PSQLException: ERROR: relation "userentity" alrea
 	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:54)
 	... 16 more
 
-2023-10-02 18:56:19,438 jro smc-dev.jar[147625] INFO  [net.jar.qua.bud.AdminResource] (Quarkus Main Thread) Added user entity
-2023-10-02 18:56:19,524 jro smc-dev.jar[147625] INFO  [io.quarkus] (Quarkus Main Thread) smc 0.0.1 on JVM (powered by Quarkus 2.16.4.Final) started in 9.288s. Listening on: http://localhost:8080
-2023-10-02 18:56:19,526 jro smc-dev.jar[147625] INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
-2023-10-02 18:56:19,527 jro smc-dev.jar[147625] INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, hibernate-orm, hibernate-orm-panache, jdbc-postgresql, micrometer, narayana-jta, qute, resteasy-reactive, resteasy-reactive-jackson, resteasy-reactive-qute, security, security-jpa, smallrye-context-propagation, vertx]
-2023-10-02 18:57:16,451 jro smc-dev.jar[147625] INFO  [io.quarkus] (Shutdown thread) smc stopped in 0.022s
+2023-07-24 23:10:22,523 jro smc-dev.jar[296356] INFO  [net.jar.qua.bud.AdminResource] (Quarkus Main Thread) Added user entity
+2023-07-24 23:10:22,585 jro smc-dev.jar[296356] INFO  [io.quarkus] (Quarkus Main Thread) smc 0.0.1 on JVM (powered by Quarkus 2.16.4.Final) started in 3.445s. Listening on: http://localhost:8080
+2023-07-24 23:10:22,586 jro smc-dev.jar[296356] INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2023-07-24 23:10:22,586 jro smc-dev.jar[296356] INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, hibernate-orm, hibernate-orm-panache, jdbc-postgresql, kubernetes, micrometer, narayana-jta, qute, resteasy-reactive, resteasy-reactive-jackson, resteasy-reactive-qute, security, security-jpa, smallrye-context-propagation, vertx]
+2023-07-24 23:10:51,521 jro smc-dev.jar[296356] ERROR [net.jar.qua.bud.TransactionResource] (executor-thread-1) Failed to handle request: java.lang.NumberFormatException: null
+	at java.base/java.lang.Long.parseLong(Long.java:655)
+	at java.base/java.lang.Long.parseLong(Long.java:817)
+	at net.jar.quarkus.budgetapp.BudgetResource.overview_by_id(BudgetResource.java:97)
+	at net.jar.quarkus.budgetapp.BudgetResource_Subclass.overview_by_id$$superforward1(Unknown Source)
+	at net.jar.quarkus.budgetapp.BudgetResource_Subclass$$function$$7.apply(Unknown Source)
+	at io.quarkus.arc.impl.AroundInvokeInvocationContext.proceed(AroundInvokeInvocationContext.java:54)
+	at io.quarkus.security.runtime.interceptor.SecurityHandler.handle(SecurityHandler.java:27)
+	at io.quarkus.security.runtime.interceptor.RolesAllowedInterceptor.intercept(RolesAllowedInterceptor.java:29)
+	at io.quarkus.security.runtime.interceptor.RolesAllowedInterceptor_Bean.intercept(Unknown Source)
+	at io.quarkus.arc.impl.InterceptorInvocation.invoke(InterceptorInvocation.java:42)
+	at io.quarkus.arc.impl.AroundInvokeInvocationContext.proceed(AroundInvokeInvocationContext.java:50)
+	at io.quarkus.resteasy.reactive.server.runtime.StandardSecurityCheckInterceptor.intercept(StandardSecurityCheckInterceptor.java:43)
+	at io.quarkus.resteasy.reactive.server.runtime.StandardSecurityCheckInterceptor_RolesAllowedInterceptor_Bean.intercept(Unknown Source)
+	at io.quarkus.arc.impl.InterceptorInvocation.invoke(InterceptorInvocation.java:42)
+	at io.quarkus.arc.impl.AroundInvokeInvocationContext.perform(AroundInvokeInvocationContext.java:41)
+	at io.quarkus.arc.impl.InvocationContexts.performAroundInvoke(InvocationContexts.java:33)
+	at net.jar.quarkus.budgetapp.BudgetResource_Subclass.overview_by_id(Unknown Source)
+	at net.jar.quarkus.budgetapp.BudgetResource_ClientProxy.overview_by_id(Unknown Source)
+	at net.jar.quarkus.budgetapp.BudgetResource$quarkusrestinvoker$overview_by_id_44fa151baa4eb602d54907952581b00630c0c81b.invoke(Unknown Source)
+	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
+	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:114)
+	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
+	at io.quarkus.vertx.core.runtime.VertxCoreRecorder$14.runWith(VertxCoreRecorder.java:576)
+	at org.jboss.threads.EnhancedQueueExecutor$Task.run(EnhancedQueueExecutor.java:2449)
+	at org.jboss.threads.EnhancedQueueExecutor$ThreadBody.run(EnhancedQueueExecutor.java:1478)
+	at org.jboss.threads.DelegatingRunnable.run(DelegatingRunnable.java:29)
+	at org.jboss.threads.ThreadLocalResettingRunnable.run(ThreadLocalResettingRunnable.java:29)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:829)
+
+2023-07-24 23:20:24,431 jro smc-dev.jar[296356] INFO  [io.quarkus] (Shutdown thread) smc stopped in 0.016s

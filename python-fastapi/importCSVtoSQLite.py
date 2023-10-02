@@ -53,13 +53,13 @@ def parse_date(datetimestamp: str, dateformat: str):
   return result
 
 ### id | datetimestamp | amount | convertedvalue | category | currency |   name   | description | accountid
-def create_txaction(idval, datetimestamp, amount, category, currency, name, description, accountid):
+def create_txaction(idval, datetimestamp, amount, category, currency, name, description, accountid, datetimeformat):
   db = get_db()
   error = None
   if error is not None:
     print(error)
   else:
-    timestamp = parse_date(datetimestamp, 'Y-m-d')
+    timestamp = parse_date(datetimestamp, datetimeformat)
     convertval = float(amount) * 0.93
     convertedval = float("{:.2f}".format(convertval))
     try:
@@ -78,7 +78,13 @@ def create_txaction(idval, datetimestamp, amount, category, currency, name, desc
 
 
 print("Import CSV into SQLite3 db\n\nPlease Enter Filename\n\n[Q/q] QUIT\n")
+print("CSV Format:\n[TIME|NAME|DESCRIPTION|CATEGORY|AMOUNT]\n")
 filename = input("> ")
+print("\nEnter currency [EUR]/[USD]\n")
+currency = input("> ")
+print("\nEnter date time format:\n[Y-m-d]\n[Y/m/d]\n[Y.m.d]\n[d.m.y]\n")
+datetimeformat = input("> ")
+accountid = input("Account ID > ")
 
 if filename.find("Q") > -1:
   print("\nEXIT")
@@ -87,7 +93,7 @@ elif filename.find("q") > -1:
   print("\nEXIT")
   sys.exit(0)
 elif len(filename) > 0:
-  intid = 3000
+  intid = 4000
   print("\Import File: " + filename + "\n")
   csvfile = open('upload/'+filename, 'r')
   for csvline in csvfile:
@@ -98,7 +104,7 @@ elif len(filename) > 0:
     txdesc = tmparr[2]
     txamt = tmparr[4]
     # idval, datetimestamp, amount, category, currency, name, description, accountid
-    if not create_txaction(intid, txdtime, txamt, txcat, 'USD', txdesc, txname, 2):
+    if not create_txaction(intid, txdtime, txamt, txcat, currency, txdesc, txname, accountid, datetimeformat):
       print("Could not insert transaction")
     else:
       print("Insert transaction: " + str(intid))
