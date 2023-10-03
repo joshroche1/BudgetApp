@@ -220,9 +220,12 @@ def convert_value(db: Session, original, currency_from, currency_to):
     result = original
   return result
 
-def get_table_data(db: Session, transactionlist, budgetcurrency, budgetitemlist):
-  result = ""
-  labels = ""
+def get_table_data(db: Session, txlist, budgetcurrency, budgetitemlist):
+  print(txlist)
+  print(budgetcurrency)
+  print(budgetitemlist)
+  result = []
+  labels = ''
   amounts = ""
   result2 = ""
   try:
@@ -235,7 +238,7 @@ def get_table_data(db: Session, transactionlist, budgetcurrency, budgetitemlist)
       elif labelarr.count(bitem.category) < 1:
         labelarr.append(bitem.category)
         valarr.append(0.0)
-    for transx in transactionlist:
+    for transx in txlist:
       resultkeys = resultdict.keys()
       if transx.amount > 0: pass
       elif resultdict.get(transx.category, "None") != "None":
@@ -255,11 +258,12 @@ def get_table_data(db: Session, transactionlist, budgetcurrency, budgetitemlist)
         else:
           resultdict[transx.category] = (transx.amount*(-1.0))
     for labl in labelarr:
-      labels = labels + labl + ","
+      labels = labels + '"' + labl + '",'
       amounts = amounts + str(resultdict[labl]) + ","
-    result = labels + "|" + amounts
+    result.append(labels)
+    result.append(amounts)
   except Exception as ex:
-    result = str(ex)
+    result.append(str(ex))
   return result
 
 def get_line_chart_data(db: Session, xLabels, startdate, enddate):

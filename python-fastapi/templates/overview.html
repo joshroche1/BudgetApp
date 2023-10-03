@@ -70,6 +70,35 @@ Overview
   <p>Chart data is based on the Transaction category and amount. Adjust transaction categories to fit the budget model.</p>
   
   <div class="m-1 p-1">
+    <div class="row">
+      <div class="col">
+        <form action="/budget/overview/filtered/month" method="post">
+          <div class="input-group">
+            <select id="month" name="month" class="form-select">
+              <option value="" selected disabled>Month</option>
+              <option value="01">JAN</option>
+              <option value="02">FEB</option>
+              <option value="03">MAR</option>
+              <option value="04">APR</option>
+              <option value="05">MAY</option>
+              <option value="06">JUN</option>
+              <option value="07">JUL</option>
+              <option value="08">AUG</option>
+              <option value="09">SEP</option>
+              <option value="10">OCT</option>
+              <option value="11">NOV</option>
+              <option value="12">DEC</option>
+            </select>
+            <input type="submit" value="Filter" class="btn btn-sm btn-success">
+          </div>
+        </form>
+      </div>
+      <div class="col">Start Date: {{ startdate }}</div>
+      <div class="col">End Date: {{ enddate }}</div>
+    </div>
+  </div>
+  
+  <div class="m-1 p-1">
     <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePieCharts" aria-expanded="false" aria-controls="collapsePieCharts">
       Pie Charts
     </button>
@@ -174,30 +203,6 @@ Overview
   </div>
   
   <div class="collapse show" id="collapseTransactions">
-    <div class="row">
-      <div class="col">
-        <form action="/budget/overview/filtered/month" method="post">
-          <div class="input-group">
-            <select id="month" name="month" class="form-select">
-              <option value="" selected disabled>Month</option>
-              <option value="01">JAN</option>
-              <option value="02">FEB</option>
-              <option value="03">MAR</option>
-              <option value="04">APR</option>
-              <option value="05">MAY</option>
-              <option value="06">JUN</option>
-              <option value="07">JUL</option>
-              <option value="08">AUG</option>
-              <option value="09">SEP</option>
-              <option value="10">OCT</option>
-              <option value="11">NOV</option>
-              <option value="12">DEC</option>
-            </select>
-            <input type="submit" value="Filter" class="btn btn-sm btn-success">
-          </div>
-        </form>
-      </div>
-    </div>
 
     <table class="table table-hover table-bordered">
 
@@ -273,28 +278,32 @@ var chartColors = [
   "Violet",
   "Pink"
 ];
-
-new Chart("myChart", {
-  type: "pie",
-  data: {
-    labels: xValues,
-    datasets: [{
-      backgroundColor: barColors,
-      data: yValues
-    }]
-  },
-  options: {
-    title: {
-      display: true,
-      text: "World Wide Wine Production 2018"
-    }
+let tdata = "{{ tabledata }}";
+const tmparrlabels = [{{ tabledata[0]|safe }}];
+const tmparramounts = [{{ tabledata[1] }}];
+/*if (tdata.search('|') < 0) {
+  tmparrlabels.push("Error parsing data. Missing '|' partition.");
+  tmparramounts.push(0);
+} else if (tdata.search(',') < 0) {
+  tmparrlabels.push("Error parsing data. Missing ',' partition.");
+  tmparramounts.push(0);
+} else {
+  const tmparr1 = tdata.split("|");
+  if (tmparr1[0].length < 1) {
+    tmparrlabels.push("Error parsing data. No labels.");
+  } else if (tmparr1[0].search(',') < 0) {
+    tmparrlabels.push(tmparr1[0]);
+  } else {
+    tmparrlabels.concat(tmparr1[0].split(","));
   }
-});
-var tdata = "{{ tabledata }}";
-const tmparr1 = tdata.split("|");
-const tmparrlabels = tmparr1[0].split(",");
-const tmparramounts = tmparr1[1].split(",");
-
+  if (tmparr1[1].length < 1) {
+    tmparramounts.push("Error parsing data. No values.");
+  } else if (tmparr1[1].search(',') < 0) {
+    tmparramounts.push(tmparr1[1]);
+  } else {
+    tmparramounts.concat(tmparr1[1].split(","));
+  }
+}*/
 new Chart("pieChart", {
   type: "pie",
   data: {
@@ -331,11 +340,34 @@ new Chart("barChart", {
     }
   }
 });
+let btdata = '{{ budgettabledata }}';
+const tmparrlabels2 = [{{ budgettabledata[0]|safe }}];
+const tmparramounts2 = [{{ budgettabledata[1] }}];
+/*if (btdata.indexOf("|") < 0) {
+  tmparrlabels2.push("Error parsing data. Missing '|' partition.");
+  tmparramounts2.push(0);
+} else if (btdata.indexOf(",") < 0) {
+  tmparrlabels2.push("Error parsing data. Missing ',' partition.");
+  tmparramounts2.push(0);
 
-var btdata = "{{ budgettabledata }}";
-const tmparr2 = btdata.split("|");
-const tmparrlabels2 = tmparr2[0].split(",");
-const tmparramounts2 = tmparr2[1].split(",");
+} else {
+  const tmparr2 = btdata.split("|");
+  if (tmparr2[0].length < 1) {
+    tmparrlabels2.push("Error parsing data. No labels.");
+  } else if (tmparr2[0].indexOf(",") < 0) {
+    tmparrlabels2.push(tmparr2[0]);
+  } else {
+    tmparrlabels2.concat(tmparr2[0].split(","));
+  }
+  if (tmparr2[1].length < 1) {
+    tmparramounts2.push("Error parsing data. No values.");
+  } else if (tmparr2[1].indexOf(",") < 0) {
+    tmparramounts2.push(tmparr2[1]);
+  } else {
+    tmparramounts2.concat(tmparr2[1].split(","));
+  }
+}*/
+
 new Chart("pieChartBudget", {
   type: "pie",
   data: {
