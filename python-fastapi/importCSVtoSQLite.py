@@ -93,7 +93,7 @@ elif filename.find("q") > -1:
   print("\nEXIT")
   sys.exit(0)
 elif len(filename) > 0:
-  intid = 4000
+  intid = 5000
   print("\Import File: " + filename + "\n")
   csvfile = open('upload/'+filename, 'r')
   for csvline in csvfile:
