@@ -20,7 +20,7 @@ from .filesystem import read_file, write_file, append_line, insert_line, delete_
 from .budget import get_budgets, get_budget, add_budget, delete_budget, update_budget_field
 from .budgetitem import get_budgetitems, get_budgetitem, add_budgetitem, delete_budgetitem, update_budgetitem_field, get_budgetitems_for_budget, get_budget_data
 from .account import get_accounts, get_account, add_account, delete_account, update_account_field
-from .transaction import get_transactions, get_transactions_sorted, get_transaction, add_transaction, delete_transaction, update_transaction_field, parse_csv_info, parse_format_csv,get_transactions_dates, get_table_data, get_category_data, get_transactions_filtered, get_line_chart_data, convert_value
+from .transaction import get_transactions, get_transactions_sorted, get_transaction, add_transaction, delete_transaction, update_transaction_field, parse_csv_info, parse_format_csv,get_transactions_dates, get_table_data, get_category_data, get_transactions_filtered, get_line_chart_data, get_year_outlook_data
 from .exchangerate import get_exchangerates, get_exchangerate, add_exchangerate, delete_exchangerate, update_exchangerate_field
 
 ### Initialization
@@ -205,7 +205,7 @@ async def budget_overview(request: Request, db: Session = Depends(get_db)):
   month = str(currentdate.month-1)
   if len(month) < 2: month = "0" + month
   startdate = str(currentdate.year) + "-" + month + "-01"
-  enddate = str(currentdate.year) + "-" + month + "-31"
+  enddate = str(currentdate.year) + "-" + month + "-32"
   transactionlist = get_transactions_dates(db, startdate, enddate)
   budget = get_budget(db, 1)
   budgetlist = get_budgets(db)
@@ -224,14 +224,14 @@ async def budget_overview(request: Request, db: Session = Depends(get_db)):
   tabledata = get_table_data(db, transactionlist, budget.currency, budgetitemlist)
   budgettabledata = get_budget_data(budgetitemlist)
   categories = config.get_weblist(db, "Category")
-  return templates.TemplateResponse("overview.html", {"request": request, "messages": messages, "g": g, "categories": categories, "transactionlist": transactionlist, "tabledata": tabledata, "budgetidlist": budgetidlist,"budget": budget, "budgetitemlist": budgetitemlist, "budgetsum": budgetsum, "budgetremain": budgetremain, "budgettabledata": budgettabledata, "startdate": startdate, "enddate": enddate})
+  return templates.TemplateResponse("overview.html", {"request": request, "messages": messages, "g": g, "categories": categories, "transactionlist": transactionlist, "tabledata": tabledata, "budgetidlist": budgetidlist,"budget": budget, "budgetitemlist": budgetitemlist, "budgetsum": budgetsum, "budgetremain": budgetremain, "budgettabledata": budgettabledata})
 
 @app.post("/budget/overview/filtered/month", response_class=HTMLResponse)
 async def budget_overview_month(request: Request, month: str = Form(...), db: Session = Depends(get_db)):
   messages.clear()
   currentdate = datetime.now()
   startdate = str(currentdate.year) + "-" + month + "-01"
-  enddate = str(currentdate.year) + "-" + month + "-31"
+  enddate = str(currentdate.year) + "-" + month + "-32"
   transactionlist = get_transactions_dates(db, startdate, enddate)
   budget = get_budget(db, 1)
   budgetlist = get_budgets(db)
@@ -250,7 +250,7 @@ async def budget_overview_month(request: Request, month: str = Form(...), db: Se
   tabledata = get_table_data(db, transactionlist, budget.currency, budgetitemlist)
   budgettabledata = get_budget_data(budgetitemlist)
   categories = config.get_weblist(db, "Category")
-  return templates.TemplateResponse("overview.html", {"request": request, "messages": messages, "g": g, "categories": categories, "transactionlist": transactionlist, "tabledata": tabledata, "budgetidlist": budgetidlist,"budget": budget, "budgetitemlist": budgetitemlist, "budgetsum": budgetsum, "budgetremain": budgetremain, "budgettabledata": budgettabledata, "startdate": startdate, "enddate": enddate})
+  return templates.TemplateResponse("overview.html", {"request": request, "messages": messages, "g": g, "categories": categories, "transactionlist": transactionlist, "tabledata": tabledata, "budgetidlist": budgetidlist,"budget": budget, "budgetitemlist": budgetitemlist, "budgetsum": budgetsum, "budgetremain": budgetremain, "budgettabledata": budgettabledata})
 
 @app.get("/budget/overview_dates", response_class=HTMLResponse)
 async def budget_overview_dates(request: Request, db: Session = Depends(get_db)):
@@ -343,6 +343,45 @@ async def budget_overview_dates_specified(request: Request, budgetid: str = Form
   budgettabledata = get_budget_data(budgetitemlist)
   categories = config.get_weblist(db, "Category")
   return templates.TemplateResponse("overview_dates.html", {"request": request, "messages": messages, "g": g, "categories": categories, "budgetidlist": budgetidlist,"budget": budget, "budgetitemlist": budgetitemlist, "budgetsum": budgetsum, "budgetremain": budgetremain, "budgettabledata": budgettabledata, "startdate": startdate, "enddate": enddate, "xLabels": xLabels, "transactiondict": transactiondict, "txlabels": txlabels, "transactionlist": transactionlist})
+
+@app.get("/budget/outlook/yearly", response_class=HTMLResponse)
+async def budget_outlook_yearly(request: Request, db: Session = Depends(get_db)):
+  messages.clear()
+  currentdate = datetime.now()
+  styear = str(currentdate.year-1)
+  month = ""
+  if len(str(currentdate.month)) < 2: month = "0" + str(currentdate.month)
+  else: month = str(currentdate.month)
+  startdate = str(styear) + "-" + month + "-01"
+  enddate = str(currentdate.year) + "-" + month + "-01"
+  xLabels = ""
+  for i in range(12):
+    if (currentdate.month+i) > 12:
+      xLabels = xLabels + str(currentdate.year) + "-" + str((currentdate.month+i)-12) + ","
+    else:
+      xLabels = xLabels + styear + "-" + str(currentdate.month+i) + ","
+  transactiondict = {}
+  txlabels = ["Income","Housing","Electric","Phone","Internet","Insurance","Mobility","Debt","Credit","Food"]
+  transactiondict = get_line_chart_data(db, txlabels, startdate, enddate)
+  transactionlist = get_transactions_dates(db, startdate, enddate)
+  budget = get_budget(db, 1)
+  budgetlist = get_budgets(db)
+  budgetidlist = []
+  for budget in budgetlist:
+    budgetidlist.append(budget.id)
+  budgetitemlist = get_budgetitems_for_budget(db, 1)
+  budgetsum = 0.00
+  budgetremain = 0.00
+  for budgetitem in budgetitemlist:
+    if budgetitem.category == "Income":
+      budgetremain = budgetremain + budgetitem.amount
+    else:
+      budgetremain = budgetremain - budgetitem.amount
+      budgetsum = budgetsum + budgetitem.amount
+  budgettabledata = get_budget_data(budgetitemlist)
+  yearoutlookdata = get_year_outlook_data(db, transactionlist, budget.currency, budgetitemlist)
+  categories = config.get_weblist(db, "Category")
+  return templates.TemplateResponse("outlook_yearly.html", {"request": request, "messages": messages, "g": g, "categories": categories, "budgetidlist": budgetidlist,"budget": budget, "budgetitemlist": budgetitemlist, "budgetsum": budgetsum, "budgetremain": budgetremain, "budgettabledata": budgettabledata, "startdate": startdate, "enddate": enddate, "xLabels": xLabels, "transactiondict": transactiondict, "txlabels": txlabels, "transactionlist": transactionlist, "yearoutlookdata": yearoutlookdata})
 
 @app.get("/budget/list", response_class=HTMLResponse)
 async def budget_list(request: Request, db: Session = Depends(get_db)):

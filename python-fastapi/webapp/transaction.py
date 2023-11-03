@@ -220,12 +220,9 @@ def convert_value(db: Session, original, currency_from, currency_to):
     result = original
   return result
 
-def get_table_data(db: Session, txlist, budgetcurrency, budgetitemlist):
-  print(txlist)
-  print(budgetcurrency)
-  print(budgetitemlist)
-  result = []
-  labels = ''
+def get_table_data(db: Session, transactionlist, budgetcurrency, budgetitemlist):
+  result = ""
+  labels = ""
   amounts = ""
   result2 = ""
   try:
@@ -238,7 +235,7 @@ def get_table_data(db: Session, txlist, budgetcurrency, budgetitemlist):
       elif labelarr.count(bitem.category) < 1:
         labelarr.append(bitem.category)
         valarr.append(0.0)
-    for transx in txlist:
+    for transx in transactionlist:
       resultkeys = resultdict.keys()
       if transx.amount > 0: pass
       elif resultdict.get(transx.category, "None") != "None":
@@ -258,13 +255,45 @@ def get_table_data(db: Session, txlist, budgetcurrency, budgetitemlist):
         else:
           resultdict[transx.category] = (transx.amount*(-1.0))
     for labl in labelarr:
-      labels = labels + '"' + labl + '",'
+      labels = labels + labl + ","
       amounts = amounts + str(resultdict[labl]) + ","
-    result.append(labels)
-    result.append(amounts)
+    result = labels + "|" + amounts
   except Exception as ex:
-    result.append(str(ex))
+    result = str(ex)
   return result
+
+def get_year_outlook_data(db: Session, transactionlist, budgetcurrency, budgetitemlist):
+  print("Yearly Outlook Data")
+  resultdict = {}
+  try:
+    labels = []
+    print(labels)
+    months = ["-01-","-02-","-03-","-04-","-05-","-06-","-07-","-08-","-09-","-10-","-11-","-12-"]
+    print(months)
+    for budgetitem in budgetitemlist:
+      print(budgetitem)
+      if labels.count(budgetitem.category) < 1:
+        print("Label doesnt exist")
+        labels.append(budgetitem.category)
+        print(labels)
+      else:
+        print("Label exists")
+    for label in labels:
+      resultlist = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+      for month in range(len(months)):
+        tmpamt = 0.0
+        for txaction in transactionlist:
+          if txaction.datetimestamp.find(months[month]) > 0:
+            if txaction.currency != budgetcurrency:
+              tmpamt += convert_value(db, (txaction.amount*(-1.0)), txaction.currency, budgetcurrency)
+            else:
+              tmpamt += txaction.amount*(-1.0)
+            transactionlist.remove(txaction)
+        resultlist[month] = tmpamt
+      resultdict[label] = resultlist
+  except Exception as ex:
+    resultdict["error"] = str(ex)
+  return resultdict
 
 def get_line_chart_data(db: Session, xLabels, startdate, enddate):
   resultdict = {}

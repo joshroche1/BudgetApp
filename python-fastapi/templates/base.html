@@ -36,6 +36,7 @@
               </li>
               <li><hr class="dropdown-divider"></li>
               <li><a class="btn btn-sm dropdown-item" href="/budget/overview">Overview</a></li>
+              <li><a class="btn btn-sm dropdown-item" href="/budget/outlook/yearly">Outlook-Year</a></li>
               <li><a class="btn btn-sm dropdown-item" href="/budget/list">Budgets</a></li>
               <li><hr class="dropdown-divider"></li>
               <li>
@@ -77,6 +78,9 @@
 </header>
   
 <div class="container m-1 p-1">
+  <div class="alert alert-warning" role="alert">
+    DEBUG OUTLOOK_YEARLY PAGE; get_year_outlook_data METHOD FOR TABLE
+  </div>
 {% for message in messages %}
   <div class="m-1 p-1">
     <div class="alert alert-warning" role="alert">

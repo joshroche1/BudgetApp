@@ -67,8 +67,8 @@ def update_budgetitem_field(db: Session, bid, field, newvalue):
   return True
 
 def get_budget_data(budgetitemlist):
-  result = []
-  labels = ''
+  result = ""
+  labels = ""
   amounts = ""
   try:
     resultdict = {}
@@ -80,13 +80,12 @@ def get_budget_data(budgetitemlist):
       elif resultdict.get(budgetitem.category, "None") == "None":
         resultdict[budgetitem.category] = budgetitem.amount
     for newlabel in resultdict.keys():
-      labels = labels + '"' + newlabel + '",'
+      labels = labels + newlabel + ","
     for newvalue in resultdict.values():
       amounts = amounts + str(newvalue) + ","
-    result.append(labels)
-    result.append(amounts)
+    result = labels + "|" + amounts
   except Exception as ex:
-    result.append(str(ex))
+    result = str(ex)
   return result
 
 #
