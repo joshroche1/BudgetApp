@@ -61,6 +61,10 @@ def get_transactions_dates(db: Session, startdate: str, enddate: str):
   transactionlist = db.query(models.Transaction).filter(models.Transaction.datetimestamp >= startdate).filter(models.Transaction.datetimestamp <= enddate).order_by(models.Transaction.datetimestamp.desc())
   return transactionlist
 
+def get_transactions_dates_asc(db: Session, startdate: str, enddate: str):
+  transactionlist = db.query(models.Transaction).filter(models.Transaction.datetimestamp >= startdate).filter(models.Transaction.datetimestamp <= enddate).order_by(models.Transaction.datetimestamp.asc())
+  return transactionlist
+
 def get_transactions_dates_category(db: Session, value:str, startdate: str, enddate: str):
   transactionlist = db.query(models.Transaction).filter(models.Transaction.datetimestamp >= startdate).filter(models.Transaction.datetimestamp <= enddate).filter(models.Transaction.category == value).order_by(models.Transaction.datetimestamp.desc())
   return transactionlist
@@ -216,7 +220,6 @@ def convert_value(db: Session, original, currency_from, currency_to):
     reslt = original * exrate
     result = float("{:.2f}".format(reslt))
   except Exception as ex:
-    print(str(ex))
     result = original
   return result
 
@@ -263,34 +266,44 @@ def get_table_data(db: Session, transactionlist, budgetcurrency, budgetitemlist)
   return result
 
 def get_year_outlook_data(db: Session, transactionlist, budgetcurrency, budgetitemlist):
-  print("Yearly Outlook Data")
   resultdict = {}
   try:
     labels = []
-    print(labels)
     months = ["-01-","-02-","-03-","-04-","-05-","-06-","-07-","-08-","-09-","-10-","-11-","-12-"]
-    print(months)
+    rangemonths = len(months)
     for budgetitem in budgetitemlist:
-      print(budgetitem)
       if labels.count(budgetitem.category) < 1:
-        print("Label doesnt exist")
         labels.append(budgetitem.category)
-        print(labels)
-      else:
-        print("Label exists")
     for label in labels:
-      resultlist = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
-      for month in range(len(months)):
+      resultlist = [0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00]
+      for month in range(rangemonths):
         tmpamt = 0.0
         for txaction in transactionlist:
           if txaction.datetimestamp.find(months[month]) > 0:
-            if txaction.currency != budgetcurrency:
-              tmpamt += convert_value(db, (txaction.amount*(-1.0)), txaction.currency, budgetcurrency)
-            else:
-              tmpamt += txaction.amount*(-1.0)
-            transactionlist.remove(txaction)
+            if txaction.category == label:
+              if txaction.category.find("Income") > -1:
+                if txaction.currency != budgetcurrency:
+                  tmpamt += convert_value(db, (txaction.amount*(1.0)), txaction.currency, budgetcurrency)
+                else:
+                  tmpamt += txaction.amount*(1.0)
+              else:
+                if txaction.currency != budgetcurrency:
+                  tmpamt += convert_value(db, (txaction.amount*(-1.0)), txaction.currency, budgetcurrency)
+                else:
+                  tmpamt += txaction.amount*(-1.0)
         resultlist[month] = tmpamt
       resultdict[label] = resultlist
+    incomerow = resultdict["Income"]
+    expensesrow = [0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00]
+    remainrow = [0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00]
+    for resultd in resultdict:
+      if resultd.find("Income") < 0:
+        for colitem in range(12):
+          expensesrow[colitem] += resultdict[resultd][colitem]
+    for column in range(12):
+      remainrow[column] = incomerow[column] - expensesrow[column]
+    resultdict["Expenses"] = expensesrow
+    resultdict["Remainder"] = remainrow
   except Exception as ex:
     resultdict["error"] = str(ex)
   return resultdict

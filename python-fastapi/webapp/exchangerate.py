@@ -22,8 +22,6 @@ def get_exchangerate(db: Session, bid):
   return exchangerate
 
 def find_exchangerate(db: Session, cur_from, cur_to):
-  print(cur_from)
-  print(cur_to)
   result = 1.0
   try:
     exchangerate = db.query(models.ExchangeRate).filter(models.ExchangeRate.currency_from == cur_from, models.ExchangeRate.currency_to == cur_to).first()

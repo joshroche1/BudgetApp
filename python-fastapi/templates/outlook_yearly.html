@@ -34,7 +34,11 @@ Overview
   <div class="row">
     <div class="col">
       <a href="/budget/outlook/yearly" class="btn"><h1>Yearly Outlook</h1></a>
+      <a href="/budget/detail/{{ budget.id }}" class="btn"><h3>{{ budget.name }}</h3></a>
     </div>
+    <div class="col">
+    </div>
+    <div class="col"></div>
   </div>
   
   <div class="row">
@@ -44,13 +48,14 @@ Overview
   
   <div class="m-1 p-1">
     <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTable" aria-expanded="false" aria-controls="collapseTable">
-      Year
+      Table
     </button>
   </div>
   
   <div class="collapse show table-responsive" id="collapseTable">
+    
     <table class="table table-sm table-hover table-bordered">
-      <tr>
+      <tr class="text-end table-dark">
         <th>YEAR</th>
         <th>JAN</th>
         <th>FEB</th>
@@ -66,86 +71,40 @@ Overview
         <th>DEC</th>
       </tr>
       
+      <tr class="table-primary">
+        <th>Income</th>
+        {% for income in yearoutlookheader['Income']%}
+        <td class="text-end">{{ income|round(2, 'floor')|default(0.0) }}</td>
+        {% endfor %}
+      </tr>
+      <tr class="table-primary">
+        <th>Expenses</th>
+        {% for expense in yearoutlookheader['Expenses']%}
+        <td class="text-end">{{ expense|round(2, 'floor')|default(0.0) }}</td>
+        {% endfor %}
+      </tr>
+      <tr class="table-primary">
+        <th>Remainder</th>
+        {% for remain in yearoutlookheader['Remainder']%}
+        <th class="text-end">{{ remain|round(2, 'floor')|default(0.0) }}</th>
+        {% endfor %}
+      </tr>
+      
       {% for yodata in yearoutlookdata %}
       <tr>
         <td>{{ yodata }}</td>
-        {% for odata in yodata %}
-        <td>{{ odata }}</td>
+        {% for odata in yearoutlookdata[yodata] %}
+        <td class="text-end">{{ odata|round(2, 'floor')|default(0.0) }}</td>
         {% endfor %}
       </tr>
       {% endfor %}
       
-      <tr>
-        <td>INCOME</td>
-        <td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td>
-        <td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td>
-      </tr>
-      <tr>
-        <td>EXPENSES</td>
-        <td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td>
-        <td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td>
-      </tr>
-      <tr>
-        <td>REMAIN</td>
-        <td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td>
-        <td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td>
-      </tr>
-      <tr>
-        <td>Housing</td>
-        <td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td>
-        <td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td>
-      </tr>
-      <tr>
-        <td>Electric</td>
-        <td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td>
-        <td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td>
-      </tr>
-      <tr>
-        <td>Phone</td>
-        <td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td>
-        <td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td>
-      </tr>
-      <tr>
-        <td>Internet</td>
-        <td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td>
-        <td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td>
-      </tr>
-      <tr>
-        <td>Insurance</td>
-        <td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td>
-        <td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td>
-      </tr>
-      <tr>
-        <td>Mobility</td>
-        <td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td>
-        <td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td>
-      </tr>
-      <tr>
-        <td>Debt</td>
-        <td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td>
-        <td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td>
-      </tr>
-      <tr>
-        <td>Credit</td>
-        <td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td>
-        <td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td>
-      </tr>
-      <tr>
-        <td>Food</td>
-        <td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td>
-        <td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td>
-      </tr>
-      <tr>
-        <td>Entertainment</td>
-        <td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td>
-        <td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td><td>1234.56</td>
-      </tr>
     </table>
   </div>
   
   <div class="m-1 p-1">
     <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLineChart" aria-expanded="false" aria-controls="collapseLineChart">
-      Line Chart
+      Chart
     </button>
   </div>
   
@@ -166,23 +125,33 @@ Overview
   </div>
   
   <div class="collapse show" id="collapseBudgetItems">
-    <table class="table table-hover table-bordered">
-      <tr>
-        <th><a href="" class="btn btn-sm">ID</a></th>
-        <th><a href="" class="btn btn-sm">Name</a></th>
-        <th><a href="" class="btn btn-sm">Description</a></th>
-        <th><a href="" class="btn btn-sm">Amount</a></th>
-        <th><a href="" class="btn btn-sm">Category</a></th>
-        <th><a href="" class="btn btn-sm">Recurrence</a></th>
-        <th><a href="" class="btn btn-sm">Recur Day</a></th>
+    <table class="table table-sm table-hover table-bordered">
+      <tr class="table-dark">
+        <th>ID</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Amount</th>
+        <th>Category</th>
+        <th>Recurrence</th>
+        <th>Recur Day</th>
         <th></th>
       </tr>
 
-      <tr>
+      <tr class="table-secondary">
         <th></th>
         <th></th>
         <th>Remainder</th>
-        <th>{{ budgetremain }}</th>
+        <th class="text-end">{{ budgetremain }}</th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+      <tr class="table-secondary">
+        <th></th>
+        <th></th>
+        <th>Bill Sum</th>
+        <th class="text-end">{{ budgetsum }}</th>
         <th></th>
         <th></th>
         <th></th>
@@ -192,9 +161,9 @@ Overview
       {% for budgetitem in budgetitemlist %}
       <tr>
         <td>{{ budgetitem.id }}</td>
-        <td>{{ budgetitem.name }}</td>
+        <td><a href="/budgetitem/detail/{{ budgetitem.id }}" class="btn">{{ budgetitem.name }}</a></td>
         <td>{{ budgetitem.description }}</td>
-        <td>{{ budgetitem.amount }}</td>
+        <td class="text-end">{{ budgetitem.amount }}</td>
         <td>{{ budgetitem.category }}</td>
         <td>{{ budgetitem.recurrence }}</td>
         <td>{{ budgetitem.recurrenceday }}</td>
@@ -206,16 +175,6 @@ Overview
       </tr>
       {% endfor %}
 
-      <tr>
-        <th></th>
-        <th></th>
-        <th>Bill Sum</th>
-        <th>{{ budgetsum }}</th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-      </tr>
     </table>
   </div>
   
