@@ -77,7 +77,7 @@ def add_transaction(db: Session, newtransaction):
   settings = config.Settings()
   amt = newtransaction['amount']
   cur=newtransaction['currency']
-  if currency == settings.defaultcurrency:
+  if cur == settings.defaultcurrency:
     convertval = newtransaction['amount']
   else:
     convertval = convert_value(db, amt, cur, settings.defaultcurrency)
@@ -180,6 +180,7 @@ def parse_format_csv(db: Session, csvfilecontent, delimiter, header, datetimefie
     csvlines = csvfilecontent.splitlines()
     numcols = len(csvlines[0].split(delimiter))
     numrows = len(csvlines)
+    print("Currency: " + currency)
     for csvline in csvlines:
       if header == "yes":
         resultarr.append("")
@@ -205,7 +206,7 @@ def parse_format_csv(db: Session, csvfilecontent, delimiter, header, datetimefie
           "category": tmp3,
           "name": tmp4,
           "description": tmp5,
-          "currency": str(currency),
+          "currency": currency,
           "accountid": int(accountid)
         }
         add_transaction(db, newtransaction)

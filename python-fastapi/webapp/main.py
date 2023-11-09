@@ -747,6 +747,7 @@ async def transaction_uploadedformatview(request: Request, uploadedfile: str = F
 async def transaction_importformatted(request: Request, uploadedfile: str = Form(...), delimiter: str = Form(...), currency: str = Form(...), header: str = Form(...), accountid: str = Form(...), datetimefield: str = Form(...), amountfield: str = Form(...), categoryfield: str = Form(...), namefield: str = Form(...), descriptionfield: str = Form(...), dateformat: str = Form(...), country: str = Form(...), db: Session = Depends(get_db)):
   result = ""
   importdict = {}
+  print("Currency: " + currency)
   try:
     filepath = "/upload/" + uploadedfile
     filecontents = read_file(filepath)

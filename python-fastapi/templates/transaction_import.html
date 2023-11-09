@@ -73,7 +73,7 @@ Transaction Import
         {% for file in uploadedfilelist %}
         <div class="btn-group">
           <a href="" class="btn btn-sm">{{ file }}</a>
-          <form action="/uploads/{{ file }}" method="post">
+          <form action="/upload/{{ file }}" method="post">
             <input type="submit" value="X" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-danger">
           </form>
         </div>
