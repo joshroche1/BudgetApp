@@ -18,7 +18,7 @@ def get_db():
 
 
 def get_transactions(db: Session):
-  transactionlist = db.query(models.Transaction).all()
+  transactionlist = db.query(models.Transaction).order_by(models.Transaction.datetimestamp.desc()).all()
   return transactionlist
 
 def get_transactions_sorted(db: Session, field: str):
@@ -42,19 +42,19 @@ def get_transactions_filtered(db: Session, field: str, value: str):
   print(field + " " + value)
   if field == "name":
     svalue = "%" + value + "%"
-    transactionlist = db.query(models.Transaction).filter(models.Transaction.name.match(svalue)).order_by(models.Transaction.id)
+    transactionlist = db.query(models.Transaction).filter(models.Transaction.name.match(svalue)).order_by(models.Transaction.datetimestamp.desc())
   elif field == "datetimestamp":
     svalue = "%" + value + "%"
-    transactionlist = db.query(models.Transaction).filter(models.Transaction.datetimestamp.match(svalue)).order_by(models.Transaction.id)
+    transactionlist = db.query(models.Transaction).filter(models.Transaction.datetimestamp.match(svalue)).order_by(models.Transaction.datetimestamp.desc())
   elif field == "category":
-    transactionlist = db.query(models.Transaction).filter(models.Transaction.category == value).order_by(models.Transaction.id)
+    transactionlist = db.query(models.Transaction).filter(models.Transaction.category == value).order_by(models.Transaction.datetimestamp.desc())
   elif field == "accountid":
     inval = int(value)
-    transactionlist = db.query(models.Transaction).filter(models.Transaction.accountid == intval).order_by(models.Transaction.id)
+    transactionlist = db.query(models.Transaction).filter(models.Transaction.accountid == intval).order_by(models.Transaction.datetimestamp.desc())
   elif field == "currency":
-    transactionlist = db.query(models.Transaction).filter(models.Transaction.currency == value).order_by(models.Transaction.id)
+    transactionlist = db.query(models.Transaction).filter(models.Transaction.currency == value).order_by(models.Transaction.datetimestamp.desc())
   else:
-    transactionlist = db.query(models.Transaction).order_by(models.Transaction.id)
+    transactionlist = db.query(models.Transaction).order_by(models.Transaction.datetimestamp.desc())
   return transactionlist
 
 def get_transactions_dates(db: Session, startdate: str, enddate: str):
@@ -117,6 +117,19 @@ def update_transaction_field(db: Session, bid, field, newvalue):
   else: 
     return False
   return True
+
+def update_transaction_category_bulk(db: Session, keyword: str, newcategory: str):
+  result = ""
+  keywrd = "%" + keyword + "%"
+  try:
+    txactions = db.query(models.Transaction).filter(models.Transaction.category.like(keywrd)).all()
+    for txaction in txactions:
+      txaction.category = newcategory
+    db.commit()
+    result = "Replaced [" + keyword + "] with [" + newcategory + "]"
+  except Exception as ex:
+    result = str(ex)
+  return result
 
 def parse_csv_info(csvfilecontent, delimiter, filename, fileformat):
   resultarr = []

@@ -20,7 +20,7 @@ from .filesystem import read_file, write_file, append_line, insert_line, delete_
 from .budget import get_budgets, get_budget, add_budget, delete_budget, update_budget_field
 from .budgetitem import get_budgetitems, get_budgetitem, add_budgetitem, delete_budgetitem, update_budgetitem_field, get_budgetitems_for_budget, get_budget_data
 from .account import get_accounts, get_account, add_account, delete_account, update_account_field
-from .transaction import get_transactions, get_transactions_sorted, get_transaction, add_transaction, delete_transaction, update_transaction_field, parse_csv_info, parse_format_csv,get_transactions_dates, get_table_data, get_category_data, get_transactions_filtered, get_line_chart_data, get_year_outlook_data, get_transactions_dates_asc
+from .transaction import get_transactions, get_transactions_sorted, get_transaction, add_transaction, delete_transaction, update_transaction_field, parse_csv_info, parse_format_csv,get_transactions_dates, get_table_data, get_category_data, get_transactions_filtered, get_line_chart_data, get_year_outlook_data, get_transactions_dates_asc, update_transaction_category_bulk
 from .exchangerate import get_exchangerates, get_exchangerate, add_exchangerate, delete_exchangerate, update_exchangerate_field
 
 ### Initialization
@@ -611,6 +611,15 @@ async def transaction_list_monthfilter(request: Request, month: str = Form(...),
   startdate = str(currentdate.year) + "-" + month + "-01"
   enddate = str(currentdate.year) + "-" + month + "-32"
   transactionlist = get_transactions_dates(db, startdate, enddate)
+  categories = config.get_weblist(db, "Category")
+  return templates.TemplateResponse("transaction_list.html", {"request": request, "messages": messages, "g": g, "transactionlist": transactionlist, "categories": categories})
+
+@app.post("/transaction/keywordreplace", response_class=HTMLResponse)
+async def transaction_keywordreplace(request: Request, keyword: str = Form(...), categoryreplace: str = Form(...), db: Session = Depends(get_db)):
+  messages.clear()
+  result = update_transaction_category_bulk(db, keyword, categoryreplace)
+  messages.append(result)
+  transactionlist = get_transactions(db)
   categories = config.get_weblist(db, "Category")
   return templates.TemplateResponse("transaction_list.html", {"request": request, "messages": messages, "g": g, "transactionlist": transactionlist, "categories": categories})
 

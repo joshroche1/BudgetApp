@@ -30,9 +30,9 @@ Transaction List
 
 {% block content %}
 {% if g.user %}
-<div id="filterpanel" class="collapse m-1 p-1">
-  <div class="row">
-    
+<div id="filterpanel" class="collapse m-1 p-1 bg-light">
+  
+  <div class="row m-1 p-1">
     <div class="col">
       <form action="/transaction/filtered/category" method="post">
         <div class="input-group">
@@ -79,8 +79,29 @@ Transaction List
         </div>
       </form>
     </div>
-    
   </div>
+  
+  <form action="/transaction/keywordreplace" method="post">
+    <div class="row m-1 p-1">
+      <div class="col">
+        <label for="keyword" class="form-label">Replace Keyword with Category in all Transactions</label>
+        <input type="text" id="keyword" name="keyword" placeholder="Keyword" class="form-control" required>
+      </div>
+      <div class="col">
+        <label for="categoryreplace" class="form-label">Category to Replace Keyword</label>
+        <select id="categoryreplace" name="categoryreplace" class="form-select" required>
+          <option value="" selected disabled>Category</option>
+          {% for category in categories %}
+          <option value="{{ category.value }}">{{ category.value }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col">
+        <input type="submit" value="Replace" onclick="return confirm('Are you sure?');" class="btn btn-success">
+      </div>
+    </div>
+  </form>
+  
 </div>
 
 <div class="m-3 p-3">
@@ -117,7 +138,6 @@ Transaction List
   <table class="table table-hover table-bordered">
 
     <tr>
-      <th><a href="/transaction/list/sorted/id" class="btn btn-sm">ID</a></th>
       <th><a href="/transaction/list/sorted/datetimestamp" class="btn btn-sm">Date</a></th>
       <th><a href="/transaction/list/sorted/amount" class="btn btn-sm">Amount<br><i>(Original Currency)</i></a></th>
       <th><a href="" class="btn btn-sm">Value</a></th>
@@ -129,12 +149,11 @@ Transaction List
 
     {% for transaction in transactionlist %}
     <tr>
-      <td>{{ transaction.id }}</td>
       <td>{{ transaction.datetimestamp }}</td>
-      <td>{{ transaction.amount }} {{ transaction.currency }}</td>
-      <td><i>{{ transaction.convertedvalue }}</i></td>
+      <td class="text-end">{{ transaction.currency }} {{ transaction.amount }}</td>
+      <td class="text-end"><i>{{ transaction.convertedvalue }}</i></td>
       <td>{{ transaction.category }}</td>
-      <td><a href="/transaction/detail/{{ transaction.id }}" class="btn btn-sm btn-light"><b>{{ transaction.name }}</b></a></td>
+      <td><a href="/transaction/detail/{{ transaction.id }}" class="btn btn-sm btn-light text-start"><b>{{ transaction.name }}</b></a></td>
       <td>{{ transaction.description }}</td>
       <td>{{ transaction.accountid }}</td>
     </tr>
