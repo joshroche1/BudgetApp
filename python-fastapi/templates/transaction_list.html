@@ -86,6 +86,12 @@ Transaction List
       <div class="col">
         <label for="keyword" class="form-label">Replace Keyword with Category in all Transactions</label>
         <input type="text" id="keyword" name="keyword" placeholder="Keyword" class="form-control" required>
+        <select id="fieldname" name="fieldname" class="form-select" required>
+          <option value="category" selected disabled>Name of Keyword Search Field</option>
+          <option value="name">Name</option>
+          <option value="description">Description</option>
+          <option value="category">Category</option>
+        </select>
       </div>
       <div class="col">
         <label for="categoryreplace" class="form-label">Category to Replace Keyword</label>

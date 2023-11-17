@@ -615,9 +615,9 @@ async def transaction_list_monthfilter(request: Request, month: str = Form(...),
   return templates.TemplateResponse("transaction_list.html", {"request": request, "messages": messages, "g": g, "transactionlist": transactionlist, "categories": categories})
 
 @app.post("/transaction/keywordreplace", response_class=HTMLResponse)
-async def transaction_keywordreplace(request: Request, keyword: str = Form(...), categoryreplace: str = Form(...), db: Session = Depends(get_db)):
+async def transaction_keywordreplace(request: Request, keyword: str = Form(...), fieldname: str = Form(...), categoryreplace: str = Form(...), db: Session = Depends(get_db)):
   messages.clear()
-  result = update_transaction_category_bulk(db, keyword, categoryreplace)
+  result = update_transaction_category_bulk(db, keyword, fieldname, categoryreplace)
   messages.append(result)
   transactionlist = get_transactions(db)
   categories = config.get_weblist(db, "Category")

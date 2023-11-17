@@ -118,11 +118,18 @@ def update_transaction_field(db: Session, bid, field, newvalue):
     return False
   return True
 
-def update_transaction_category_bulk(db: Session, keyword: str, newcategory: str):
+def update_transaction_category_bulk(db: Session, keyword: str, fieldname: str, newcategory: str):
   result = ""
   keywrd = "%" + keyword + "%"
   try:
-    txactions = db.query(models.Transaction).filter(models.Transaction.category.like(keywrd)).all()
+    if fieldname == "category":
+      txactions = db.query(models.Transaction).filter(models.Transaction.category.like(keywrd)).all()
+    elif fieldname == "name":
+      txactions = db.query(models.Transaction).filter(models.Transaction.name.like(keywrd)).all()
+    elif fieldname == "description":
+      txactions = db.query(models.Transaction).filter(models.Transaction.description.like(keywrd)).all()
+    else:
+      txactions = db.query(models.Transaction).filter(models.Transaction.category.like(keywrd)).all()
     for txaction in txactions:
       txaction.category = newcategory
     db.commit()
