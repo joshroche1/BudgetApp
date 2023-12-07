@@ -62,3 +62,8 @@ def update_budgetitem_field(db: Session, bid, field, newvalue):
     return False
   return True
 #
+
+def get_budgetitems_by_budget(db: Session, bid):
+  budgetitems = db.query(models.BudgetItem).filter(models.BudgetItem.budgetid == bid).order_by(models.BudgetItem.id).all()
+  return budgetitems
+#

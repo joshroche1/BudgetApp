@@ -10,9 +10,20 @@ BudgetApp
 
 {% block sidenav %}
 <div class="list-group">
+  <a class="list-group-item list-group-item-secondary list-group-item-action" href="">WEB</a>
+  <a class="list-group-item list-group-item-action" href="/">Index</a>
+  <a class="list-group-item list-group-item-action" href="/login">Login</a>
+  <a class="list-group-item list-group-item-action" href="/settings">Settings</a>
+  <a class="list-group-item list-group-item-action" href="/budgetview/1">Budget Detail</a>
+  <a class="list-group-item list-group-item-action" href="/accountview/1">Accounts</a>
+  <a class="list-group-item list-group-item-action" href="/transactionsview">Transactions</a>
+</div>
+<br>
+<div class="list-group">
+  <a class="list-group-item list-group-item-primary list-group-item-action" href="">REST</a>
   <a class="list-group-item list-group-item-action" href="/account/">Accounts</a>
-  <a class="list-group-item list-group-item-action" href="">Budgets</a>
-  <a class="list-group-item list-group-item-action" href="">Budget Items</a>
+  <a class="list-group-item list-group-item-action" href="/budget/">Budgets</a>
+  <a class="list-group-item list-group-item-action" href="/budgetitem/">Budget Items</a>
   <a class="list-group-item list-group-item-action" href="/transaction/">Transactions</a>
 </div>
 <br>

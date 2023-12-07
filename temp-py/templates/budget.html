@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+
+{% block title %}
+BudgetApp
+{% endblock %}
+
+{% block header %}
+BudgetApp
+{% endblock %}
+
+{% block sidenav %}
+<div class="list-group">
+  <a class="list-group-item list-group-item-secondary list-group-item-action" href="">Budget</a>
+  <a class="list-group-item list-group-item-action" href="/">Index</a>
+  <a class="list-group-item list-group-item-action" href="/login">Login</a>
+  <a class="list-group-item list-group-item-action" href="/settings">Settings</a>
+  <a class="list-group-item list-group-item-action" href="/budgetview/1">Budget Detail</a>
+  <a class="list-group-item list-group-item-action" href="/accountview/1">Accounts</a>
+  <a class="list-group-item list-group-item-action" href="/transactionsview">Transactions</a>
+</div>
+<br>
+<div class="list-group">
+  {% for bdgt in budgetlist %}
+  <a class="list-group-item list-group-item-action" href="/budgetview/{{ bdgt.id }}">{{ bdgt.name }}</a>
+  {% endfor %}
+</div>
+{% endblock %}
+
+{% block content %}
+<!-- MOVE TO if g.user BLOCK -->
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#newbudgetmodal">
+  New Budget
+</button>
+
+<div class="modal fade" id="newbudgetmodal" tabindex="-1" aria-labelledby="newbudgetmodallabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="" method="">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="newbudgetmodallabel">Create New Budget</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-12">
+              <label for="newbudgetname" class="form-label">Name</label>
+              <input type="text" id="newbudgetname" name="newbudgetname" placeholder="Name" class="form-control" required>
+            </div>
+            <div class="col-12">
+              <label for="newbudgetcurrency" class="form-label">Currency</label>
+              <select id="newbudgetcurrency" name="newbudgetcurrency" class="form-control">
+                {% for currency in currencylist %}
+                <option value="{{ currency.value }}">{{ currency.value }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-12">
+              <label for="newbudgetdescription" class="form-label">Description</label>
+              <textarea id="newbudgetdescription" name="newbudgetdescription" placeholder="Description" class="form-control"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <input type="submit" value="Add" onclick="return confirm('Create Budget?');" class="btn btn-success">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="card card-body">
+  <div class="row">
+    <div class="col-12 col-sm-6">
+      <h3 class="card-title">{{ budget.name }}</h3>
+    </div>
+    <div class="col-12 col-sm-6">
+      <form action="" method="">
+        <div class="input-group">
+          <input type="text" id="changename" name="changename" placeholder="{{ budget.name }}" class="form-control">
+          <input type="submit" value="Update" onclick="return confirm('Update Budget Name?');" class="btn btn-secondary">
+        </div>
+      </form>
+    </div>
+  </div>
+  <hr>
+  <div class="row">
+    <div class="col-12 col-sm-6">
+      <p>Currency</p>
+    </div>
+    <div class="col-12 col-sm-6">
+      <p>{{ budget.currency }}</p>
+      <form action="" method="">
+        <div class="input-group">
+          <select id="changecurrency" name="changecurrency" class="form-select" required>
+            <option value="" selected disabled>Currency</option>
+            {% for currency in currencylist %}
+            <option value="{{ currency.value }}">{{ currency.value }}</option>
+            {% endfor %}
+          </select>
+          <input type="submit" value="Update" onclick="return confirm('Update Budget Currency?');" class="btn btn-secondary">
+        </div>
+      </form>
+    </div>
+  </div>
+  <hr>
+  <div class="row">
+    <div class="col-12 col-sm-6">
+      <p>Description</p>
+    </div>
+    <div class="col-12 col-sm-6">
+      <form action="" method="">
+        <textarea id="changedescription" name="changedescription" class="form-control" required>{{ budget.description }}</textarea>
+        <input type="submit" value="Update" onclick="return confirm('Update Budget Description?');" class="btn btn-secondary">
+      </form>
+    </div>
+  </div>
+</div>
+<br>
+<div class="table-responsive">
+  <h3>Budget Items</h3>
+  <table class="table table-sm table-hover">
+    <form action="" method="">
+      <tr class="table-success">
+        <td><input type="text" id="newbiname" name="newbiname" placeholder="Name" class="form-control" required></td>
+        <td><input type="text" id="newbiamount" name="newbiamount" placeholder="Amount" class="form-control" required></td>
+        <td>
+          <select id="newbicategory" name="newbicategory" class="form-select" required>
+            <option value="" disabled selected>Category</option>
+            {% for category in categorylist %}
+            <option value="{{ category.value }}">{{ category.value }}</option>
+            {% endfor %}
+          </select>
+        </td>
+        <td>
+          <select id="newbirecurrence" name="newbirecurrence" class="form-select">
+            <option value="Monthly" selected>Recurrence</option>
+            <option value="Monthly">Monthly</option>
+            <option value="Quarterly">Quarterly</option>
+            <option value="Semiannually">Semiannually</option>
+            <option value="Annually">Annually</option>
+          </select>
+        </td>
+        <td><input type="number" id="newbirecurrenceday" name="newbirecurrenceday" min="1" max="31" class="form-control"></td>
+        <td><input type="text" id="newbidescription" name="newbidescription" placeholder="Description" class="form-control"></td>
+        <td><input type="submit" value="+" onclick="return confirm('Add Budget Item?');" class="btn btn-sm btn-secondary"></td>
+      </tr>
+    </form>
+    <tr>
+      <th>Name</th>
+      <th>Amount</th>
+      <th>Category</th>
+      <th>Recurrence</th>
+      <th>Day</th>
+      <th>Description</th>
+      <th></th>
+    </tr>
+    {% for budgetitem in budgetitems %}
+    <tr>
+      <td>{{ budgetitem.name }}</td>
+      <td>{{ budgetitem.amount }}</td>
+      <td>{{ budgetitem.category }}</td>
+      <td>{{ budgetitem.recurrence }}</td>
+      <td>{{ budgetitem.recurrenceday }}</td>
+      <td>{{ budgetitem.description }}</td>
+      <td>
+        <form action="" method="">
+          <input type="submit" value="X" onclick="return confirm('Delete Budget Item?');" class="btn btn-sm btn-secondary">
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% if g.user %}
+{% else %}
+{% endif %}
+{% endblock %}
