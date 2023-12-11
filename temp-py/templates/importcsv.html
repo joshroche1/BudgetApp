@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+
+{% block title %}
+BudgetApp
+{% endblock %}
+
+{% block header %}
+BudgetApp
+{% endblock %}
+
+{% block sidenav %}
+<div class="list-group">
+  <a class="list-group-item list-group-item-secondary list-group-item-action" href="">Transactions</a>
+  <a class="list-group-item list-group-item-action" href="/">Index</a>
+  <a class="list-group-item list-group-item-action" href="/login">Login</a>
+  <a class="list-group-item list-group-item-action" href="/settings">Settings</a>
+  <a class="list-group-item list-group-item-action" href="/budgetview/1">Budget Detail</a>
+  <a class="list-group-item list-group-item-action" href="/accountview/1">Accounts</a>
+  <a class="list-group-item list-group-item-action" href="/transactionsview">Transactions</a>
+</div>
+<br>
+<div class="list-group">
+  <a class="list-group-item list-group-item-action" href="">IMPORT CSV</a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="m-1 p-1">
+  {% for message in messages %}
+  <div class="alert alert-warning" role="alert">
+    {{ message }}
+  </div>
+  {% endfor %}
+</div>
+<!-- MOVE TO if g.user BLOCK -->
+<div class="card card-body">
+  <h3 class="card-title">Upload CSV File</h3>
+  <form action="/uploadfile" method="post" enctype="multipart/form-data">
+    <div class="row">
+      <div class="col-12 col-sm-3">
+        <input type="file" id="uploadedfile" name="uploadedfile" class="form-control" required>
+        <input type="submit" value="Upload File" onclick="return confirm('Upload File?');" class="btn btn-sm btn-success">
+      </div>
+      <div class="col-12 col-sm-3">
+        <select id="fileformat" name="fileformat" class="form-select">
+          <option value="csv" selected>CSV</option>
+          <option value="txt">TXT</option>
+        </select>
+      </div>
+      <div class="col-12 col-sm-3">
+        <select id="delimiter" name="delimiter" class="form-select">
+          <option value="," selected>Delimiter</option>
+          <option value=",">","</option>
+          <option value=";">";"</option>
+        </select>
+      </div>
+      <div class="col-12 col-sm-3">
+        <select id="header" name="header" class="form-select">
+          <option value="yes" selected>Has Header</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-sm table-hover table-bordered">
+    {% for linearr in importdict %}
+    <tr>
+      {% if loop.first %}
+      <form action="/transaction/importdata" method="post" enctype="multipart/form-data">
+        <th colspan="4">
+          <div class="row">
+            <div class="col-12 col-sm-6">
+              <div class="input-group">
+                <span class="input-group-text">Date/Time</span>
+                <select id="datetimefield" name="datetimefield" class="form-select" required>
+                  <option value="0" selected>Column</option>
+                  {% for item in linearr %}
+                  <option value="{{ loop.index }}">{{ loop.index }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="input-group">
+                <span class="input-group-text">Amount</span>
+                <select id="amountfield" name="amountfield" class="form-select" required>
+                  <option value="0" selected>Column</option>
+                  {% for item in linearr %}
+                  <option value="{{ loop.index }}">{{ loop.index }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="input-group">
+                <span class="input-group-text">Category</span>
+                <select id="categoryfield" name="categoryfield" class="form-select" required>
+                  <option value="0" selected>Column</option>
+                  {% for item in linearr %}
+                  <option value="{{ loop.index }}">{{ loop.index }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="input-group">
+                <span class="input-group-text">Name</span>
+                <select id="namefield" name="namefield" class="form-select" required>
+                  <option value="0" selected>Column</option>
+                  {% for item in linearr %}
+                  <option value="{{ loop.index }}">{{ loop.index }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="input-group">
+                <span class="input-group-text">Description</span>
+                <select id="descriptionfield" name="descriptionfield" class="form-select">
+                  <option value="0" selected>Column</option>
+                  {% for item in linearr %}
+                  <option value="{{ loop.index }}">{{ loop.index }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6">
+              <select id="uploadedfile" name="uploadedfile" class="form-select" required>
+                <option value="" selected disabled>Select Uploaded File</option>
+                {% for file in uploadedfilelist %}
+                <option value="{{ file }}">{{ file }}</option>
+                {% endfor %}
+              </select>
+              <select id="dateformat" name="dateformat" class="form-select">
+                <option value="Y-m-d" selected>Date Format</option>
+                <option value="Y-m-d">YYYY-MM-DD</option>
+                <option value="Y/m/d">YYYY/MM/DD</option>
+                <option value="Y.m.d">YYYY.MM.DD</option>
+                <option value="m-d-Y">MM-DD-YYYY (USA)</option>
+                <option value="m/d/Y">MM/DD/YYYY (USA)</option>
+                <option value="m-d-y">MM-DD-YY (USA)</option>
+                <option value="m/d/y">MM/DD/YY (USA)</option>
+                <option value="d.m.y">DD.MM.YY (DE)</option>
+                <option value="d/m/y">DD/MM/YY (DE)</option>
+              </select>
+              <select id="delimiter" name="delimiter" class="form-select">
+                <option value="," selected>Delimiter</option>
+                <option value=",">","</option>
+                <option value=";">";"</option>
+              </select>
+              <select id="header" name="header" class="form-select">
+                <option value="yes" selected>Has Header</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+              <select id="accountid" name="accountid" class="form-select">
+                <option value="0" selected>Account ID</option>
+                {% for account in accountlist %}
+                <option value="{{ account.id }}">{{ account.name }}</option>
+                {% endfor %}
+              </select>
+              <select id="currency" name="currency" class="form-select">
+                <option value="" selected disabled>Currency</option>
+                {% for currency in currencylist %}
+                <option value="{{ currency.value }}">{{ currency.value }}</option>
+                {% endfor %}
+              </select>
+              <select id="country" name="country" class="form-select">
+                <option value="" selected disabled>Country</option>
+                <option value="USA">USA</option>
+                <option value="DE">DE</option>
+              </select>
+              <input type="submit" value="Add" class="btn btn-sm btn-success">
+            </div>
+          </div>
+        </th>
+      </form>
+      {% elif loop.index == 2 %}
+      {% for item in linearr %}
+      <td><p>{{ loop.index }}</p>{{ item }}</td>
+      {% endfor %}
+      {% else %}
+      {% for item in linearr %}
+      <td>{{ item }}</td>
+      {% endfor %}
+      {% endif %}
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+
+{% if g.user %}
+{% else %}
+{% endif %}
+{% endblock %}

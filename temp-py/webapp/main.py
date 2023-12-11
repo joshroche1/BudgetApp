@@ -22,7 +22,8 @@ from .budget import get_budgets, get_budget, add_budget, delete_budget, update_b
 from .budgetitem import get_budgetitems, get_budgetitem, add_budgetitem, delete_budgetitem, update_budgetitem_field, get_budgetitems_by_budget
 from .exchangerate import get_exchangerates, get_exchangerate, find_exchangerate, add_exchangerate, delete_exchangerate, update_exchangerate_field
 from .account import get_accounts, get_account, add_account, delete_account, update_account_field
-from .transaction import get_transactions, get_transaction, add_transaction, delete_transaction, update_transaction_field
+from .transaction import get_transactions, get_transaction, add_transaction, delete_transaction, update_transaction_field, import_csv_data
+from .datautility import parse_csv_data
 
 ### Initialization
 
@@ -116,6 +117,61 @@ async def transactions_view(request: Request, db: Session = Depends(get_db)):
   accounttypelist = config.get_weblist(db, "AccountType")
   countrylist = config.get_weblist(db, "Country")
   return templates.TemplateResponse("transactions.html", {"request": request, "messages": messages, "g": g, "accountlist": accountlist, "budgetlist": budgetlist, "transactions": transactions, "categorylist": categorylist, "accounttypelist": accounttypelist, "countrylist": countrylist, "currencylist": currencylist})
+
+@app.get("/importcsvdata", response_class=HTMLResponse)
+async def importcsv_view(request: Request, db: Session = Depends(get_db)):
+  messages.clear()
+  importdict = {}
+  accountlist = get_accounts(db)
+  budgetlist = get_budgets(db)
+  uploadedfilelist = get_uploaded_files()
+  categorylist = config.get_weblist(db, "Category")
+  currencylist = config.get_weblist(db, "Currency")
+  accounttypelist = config.get_weblist(db, "AccountType")
+  countrylist = config.get_weblist(db, "Country")
+  return templates.TemplateResponse("importcsv.html", {"request": request, "messages": messages, "g": g, "accountlist": accountlist, "budgetlist": budgetlist, "categorylist": categorylist, "accounttypelist": accounttypelist, "countrylist": countrylist, "currencylist": currencylist, "importdict": importdict, "uploadedfilelist": uploadedfilelist})
+
+@app.post("/uploadfile", response_class=HTMLResponse)
+async def upload_file_view(request: Request, uploadedfile: UploadFile = File(...), fileformat: str = Form(...), header: str = Form(...), delimiter: str = Form(...), db: Session = Depends(get_db)):
+  result = ""
+  importdict = {}
+  try:
+    filename = uploadedfile.filename
+    fileread = await uploadedfile.read()
+    filecontents = str(fileread, 'iso-8859-1')
+    upload_result = upload_file(filename, filecontents)
+    importdict = parse_csv_data(filecontents, delimiter)
+    result = upload_result
+  except Exception as ex:
+    result = str(ex)
+  message(result)
+  accountlist = get_accounts(db)
+  uploadedfilelist = get_uploaded_files()
+  categories = config.get_weblist(db, "Category")
+  currencylist = config.get_weblist(db, "Currency")
+  accounttypelist = config.get_weblist(db, "AccountType")
+  return templates.TemplateResponse("importcsv.html", {"request": request, "messages": messages, "g": g, "categories": categories, "currencylist": currencylist, "accountlist": accountlist, "importdict": importdict, "uploadedfilelist": uploadedfilelist})
+
+@app.post("/transaction/importdata", response_class=HTMLResponse)
+async def transaction_importdata(request: Request, uploadedfile: str = Form(...), delimiter: str = Form(...), currency: str = Form(...), header: str = Form(...), accountid: str = Form(...), datetimefield: str = Form(...), amountfield: str = Form(...), categoryfield: str = Form(...), namefield: str = Form(...), descriptionfield: str = Form(...), dateformat: str = Form(...), country: str = Form(...), db: Session = Depends(get_db)):
+  result = ""
+  importdict = {}
+  try:
+    filepath = "/upload/" + uploadedfile
+    filecontents = read_file(filepath)
+    result = import_csv_data(db, filecontents, delimiter, header, datetimefield, amountfield, categoryfield, namefield, descriptionfield, currency, accountid, dateformat)
+  except Exception as ex:
+    result = str(ex)
+  message(result)
+  importdict = {}
+  budgetlist = get_budgets(db)
+  accountlist = get_accounts(db)
+  uploadedfilelist = get_uploaded_files()
+  categorylist = config.get_weblist(db, "Category")
+  currencylist = config.get_weblist(db, "Currency")
+  accounttypelist = config.get_weblist(db, "AccountType")
+  countrylist = config.get_weblist(db, "Country")
+  return templates.TemplateResponse("importcsv.html", {"request": request, "messages": messages, "g": g, "accountlist": accountlist, "budgetlist": budgetlist, "categorylist": categorylist, "accounttypelist": accounttypelist, "countrylist": countrylist, "currencylist": currencylist, "importdict": importdict, "uploadedfilelist": uploadedfilelist})
 
 #######
 ## REST

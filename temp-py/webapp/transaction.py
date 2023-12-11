@@ -70,3 +70,87 @@ def update_transaction_field(db: Session, bid, field, newvalue):
     return False
   return True
 #
+def import_csv_data(db: Session, csvcontent, delimiter, header, datetimefield, amountfield, categoryfield, namefield, descriptionfield, currency, accountid, dateformat):
+  result = ""
+  addedcount = 0
+  try:
+    csvlines = csvcontent.splitlines()
+    for cline in csvlines:
+      if header == "yes":
+        continue
+      else:
+        citems = cline.split(delimiter)
+        tmp1 = citems[int(datetimefield)-1].replace('"','')
+        timestamp = parse_date(tmp1, dateformat)
+        tmp2 = citems[int(amountfield)-1].replace('"','').replace(',','.')
+        tmp3 = citems[int(categoryfield)-1].replace('"','')
+        tmp4 = citems[int(namefield)-1].replace('"','')
+        tmp5 = citems[int(descriptionfield)-1].replace('"','')
+        newtransaction = {
+          "datetimestamp": timestamp,
+          "amount": float(tmp2),
+          "category": tmp3,
+          "name": tmp4,
+          "description": tmp5,
+          "currency": currency,
+          "accountid": int(accountid)
+        }
+        added = add_transaction(db, newtransaction)
+        if added != null:
+          addedcount += 1
+        else:
+          print("Transaction not added")
+    result = str(addedcount)
+  except Exception as ex:
+    result = str(ex)
+  return result
+
+def convert_value(db: Session, original, currency_from, currency_to):
+  result = 0.0
+  try:
+    exrate = find_exchangerate(db, currency_from, currency_to)
+    reslt = original * exrate
+    result = float("{:.2f}".format(reslt))
+  except Exception as ex:
+    result = original
+  return result
+
+def parse_date(datetimestamp: str, dateformat: str):
+  result = ""
+  currentdate = datetime.now().strftime('%Y-%m-%d')
+  try:
+    if dateformat == "Y-m-d":
+      tmp1 = datetimestamp.split('-')
+      if len(tmp1) != 3: return "Wrong length"
+      if not tmp1[0].isdecimal(): return "1 not decimal"
+      if not tmp1[1].isdecimal(): return "2 not decimal"
+      if not tmp1[2].isdecimal(): return "3 not decimal"
+      result = str(tmp1[0]) + "-" + str(tmp1[1]) + "-" + str(tmp1[2])
+    elif dateformat == "Y/m/d":
+      tmp1 = datetimestamp.split("/")
+      if len(tmp1) != 3: return "Wrong length"
+      if not tmp1[0].isdecimal(): return "1 not decimal"
+      if not tmp1[1].isdecimal(): return "2 not decimal"
+      if not tmp1[2].isdecimal(): return "3 not decimal"
+      result = str(tmp1[0]) + "-" + str(tmp1[1]) + "-" + str(tmp1[2])
+    elif dateformat == "Y.m.d":
+      tmp1 = datetimestamp.split(".")
+      if len(tmp1) != 3: return "Wrong length"
+      if not tmp1[0].isdecimal(): return "1 not decimal"
+      if not tmp1[1].isdecimal(): return "2 not decimal"
+      if not tmp1[2].isdecimal(): return "3 not decimal"
+      result = str(tmp1[0]) + "-" + str(tmp1[1]) + "-" + str(tmp1[2])
+    elif dateformat == "d.m.y":
+      tmp1 = datetimestamp.split(".")
+      if len(tmp1) != 3: return "Wrong length"
+      if not tmp1[0].isdecimal(): return "1 not decimal"
+      if not tmp1[1].isdecimal(): return "2 not decimal"
+      if not tmp1[2].isdecimal(): return "3 not decimal"
+      result = "20" + str(tmp1[2]) + "-" + str(tmp1[1]) + "-" + str(tmp1[0])
+    else:
+      return currentdate
+  except Exception as ex:
+    print(str(ex))
+    result = currentdate
+  return result
+#
