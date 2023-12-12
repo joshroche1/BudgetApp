@@ -5,7 +5,7 @@ BudgetApp
 {% endblock %}
 
 {% block header %}
-BudgetApp
+Settings
 {% endblock %}
 
 {% block sidenav %}
@@ -19,7 +19,7 @@ BudgetApp
 {% endblock %}
 
 {% block content %}
-<!-- MOVE TO if g.user BLOCK -->
+{% if g.user %}
 <div id="appinfopanel" class="collapse">
   <div class="card card-body">
     <div class="row">
@@ -285,7 +285,6 @@ BudgetApp
     </div>
   </div>
 </div>
-{% if g.user %}
 {% else %}
 {% endif %}
 {% endblock %}

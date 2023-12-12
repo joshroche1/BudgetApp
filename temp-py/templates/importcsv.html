@@ -5,34 +5,18 @@ BudgetApp
 {% endblock %}
 
 {% block header %}
-BudgetApp
+Import
 {% endblock %}
 
 {% block sidenav %}
 <div class="list-group">
   <a class="list-group-item list-group-item-secondary list-group-item-action" href="">Transactions</a>
-  <a class="list-group-item list-group-item-action" href="/">Index</a>
-  <a class="list-group-item list-group-item-action" href="/login">Login</a>
-  <a class="list-group-item list-group-item-action" href="/settings">Settings</a>
-  <a class="list-group-item list-group-item-action" href="/budgetview/1">Budget Detail</a>
-  <a class="list-group-item list-group-item-action" href="/accountview/1">Accounts</a>
-  <a class="list-group-item list-group-item-action" href="/transactionsview">Transactions</a>
-</div>
-<br>
-<div class="list-group">
   <a class="list-group-item list-group-item-action" href="">IMPORT CSV</a>
 </div>
 {% endblock %}
 
 {% block content %}
-<div class="m-1 p-1">
-  {% for message in messages %}
-  <div class="alert alert-warning" role="alert">
-    {{ message }}
-  </div>
-  {% endfor %}
-</div>
-<!-- MOVE TO if g.user BLOCK -->
+{% if g.user %}
 <div class="card card-body">
   <h3 class="card-title">Upload CSV File</h3>
   <form action="/uploadfile" method="post" enctype="multipart/form-data">
@@ -184,8 +168,6 @@ BudgetApp
     {% endfor %}
   </table>
 </div>
-
-{% if g.user %}
 {% else %}
 {% endif %}
 {% endblock %}

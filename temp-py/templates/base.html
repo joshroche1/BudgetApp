@@ -7,7 +7,9 @@
   <link rel="shortcut icon" href="{{ url_for('static', path='/favicon.ico') }}">
   <script src="{{ url_for('static', path='/bootstrap.bundle.min.js') }}"></script>
   <script src="{{ url_for('static', path='/jquery-3.6.3.min.js') }}"></script>  
-  <script src="{{ url_for('static', path='/Chart.js') }}"></script>
+  <!-- <script src="{{ url_for('static', path='/Chart.js') }}"></script>
+  -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
   <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
@@ -16,7 +18,7 @@
 <header>
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
-      <a class="navbar-brand" href="/">{% block header %}{% endblock %}</a>
+      <a class="navbar-brand" href="/">BudgetApp</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -25,25 +27,24 @@
           {% block navbar %}
           {% endblock %}
           {% if g.user %}
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
-          </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Dropdown
+              {% block header %}{% endblock %}
             </a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#">Action</a></li>
-              <li><a class="dropdown-item" href="#">Another action</a></li>
+              <li><a class="dropdown-item" href="/overview/1">Overview</a></li>
+              <li><a class="dropdown-item" href="/budgetview/1">Budget</a></li>
+              <li><a class="dropdown-item" href="/accountview/1">Account</a></li>
+              <li><a class="dropdown-item" href="/transactionsview">Transactions</a></li>
               <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="#">Something else here</a></li>
+              <li><a class="dropdown-item" href="/settings">Settings</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="/info">App Info</a></li>
+              <li><a class="dropdown-item" href="/docs">Docs</a></li>
             </ul>
           </li>
           <li class="nav-item">
-            <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+            <a class="nav-link" href="/logout">Logout</a>
           </li>
           {% else %}
           <li class="nav-item">
@@ -62,6 +63,13 @@
       {% block sidenav %}{% endblock %}
     </div>
     <div class="col-12 col-sm-10">
+      <div class="m-1 p-1">
+        {% for message in messages %}
+        <div class="alert alert-warning" role="alert">
+          {{ message }}
+        </div>
+        {% endfor %}
+      </div>
       {% block content %}{% endblock %}
     </div>
   </div>

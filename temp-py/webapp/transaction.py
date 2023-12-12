@@ -57,6 +57,9 @@ def update_transaction_field(db: Session, bid, field, newvalue):
   elif field == "amount": 
     transaction.amount = newvalue
     db.commit()
+  elif field == "convertedvalue": 
+    transaction.convertedvalue = newvalue
+    db.commit()
   elif field == "accountid": 
     transaction.accountid = newvalue
     db.commit()
@@ -69,6 +72,47 @@ def update_transaction_field(db: Session, bid, field, newvalue):
   else: 
     return False
   return True
+#
+
+def get_transactions_sorted(db: Session, field: str):
+  if field == "id":
+    transactionlist = db.query(models.Transaction).order_by(models.Transaction.id)
+  elif field == "name":
+    transactionlist = db.query(models.Transaction).order_by(models.Transaction.name)
+  elif field == "amount":
+    transactionlist = db.query(models.Transaction).order_by(models.Transaction.amount)
+  elif field == "datetimestamp":
+    transactionlist = db.query(models.Transaction).order_by(models.Transaction.datetimestamp.desc())
+  elif field == "category":
+    transactionlist = db.query(models.Transaction).order_by(models.Transaction.category)
+  elif field == "accountid":
+    transactionlist = db.query(models.Transaction).order_by(models.Transaction.accountid)
+  else:
+    transactionlist = db.query(models.Transaction).order_by(models.Transaction.datetimestamp.desc()).all()
+  return transactionlist
+
+def get_transactions_filtered(db: Session, field: str, value: str):
+  if field == "name":
+    svalue = "%" + value + "%"
+    transactionlist = db.query(models.Transaction).filter(models.Transaction.name.match(svalue)).order_by(models.Transaction.datetimestamp.desc())
+  elif field == "datetimestamp":
+    svalue = "%" + value + "%"
+    transactionlist = db.query(models.Transaction).filter(models.Transaction.datetimestamp.match(svalue)).order_by(models.Transaction.datetimestamp.desc())
+  elif field == "category":
+    transactionlist = db.query(models.Transaction).filter(models.Transaction.category == value).order_by(models.Transaction.datetimestamp.desc())
+  elif field == "accountid":
+    inval = int(value)
+    transactionlist = db.query(models.Transaction).filter(models.Transaction.accountid == intval).order_by(models.Transaction.datetimestamp.desc())
+  elif field == "currency":
+    transactionlist = db.query(models.Transaction).filter(models.Transaction.currency == value).order_by(models.Transaction.datetimestamp.desc())
+  else:
+    transactionlist = db.query(models.Transaction).order_by(models.Transaction.datetimestamp.desc())
+  return transactionlist
+
+def get_transactions_dates(db: Session, startdate: str, enddate: str):
+  transactionlist = db.query(models.Transaction).filter(models.Transaction.datetimestamp >= startdate).filter(models.Transaction.datetimestamp <= enddate).order_by(models.Transaction.datetimestamp.desc())
+  return transactionlist
+
 #
 def import_csv_data(db: Session, csvcontent, delimiter, header, datetimefield, amountfield, categoryfield, namefield, descriptionfield, currency, accountid, dateformat):
   result = ""
@@ -86,6 +130,8 @@ def import_csv_data(db: Session, csvcontent, delimiter, header, datetimefield, a
         tmp3 = citems[int(categoryfield)-1].replace('"','')
         tmp4 = citems[int(namefield)-1].replace('"','')
         tmp5 = citems[int(descriptionfield)-1].replace('"','')
+        msgout = "INSERT[transactions]: " + timestamp + " " + tmp3 + " " + tmp2 + " " + tmp4 + " " + tmp5
+        print(msgout)
         newtransaction = {
           "datetimestamp": timestamp,
           "amount": float(tmp2),

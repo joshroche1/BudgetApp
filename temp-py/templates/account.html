@@ -5,21 +5,12 @@ BudgetApp
 {% endblock %}
 
 {% block header %}
-BudgetApp
+Account
 {% endblock %}
 
 {% block sidenav %}
 <div class="list-group">
   <a class="list-group-item list-group-item-secondary list-group-item-action" href="">Account</a>
-  <a class="list-group-item list-group-item-action" href="/">Index</a>
-  <a class="list-group-item list-group-item-action" href="/login">Login</a>
-  <a class="list-group-item list-group-item-action" href="/settings">Settings</a>
-  <a class="list-group-item list-group-item-action" href="/budgetview/1">Budget Detail</a>
-  <a class="list-group-item list-group-item-action" href="/accountview/1">Accounts</a>
-  <a class="list-group-item list-group-item-action" href="/transactionsview">Transactions</a>
-</div>
-<br>
-<div class="list-group">
   {% for acct in accountlist %}
   <a class="list-group-item list-group-item-action" href="/accountview/{{ acct.id }}">{{ acct.name }}</a>
   {% endfor %}
@@ -27,8 +18,7 @@ BudgetApp
 {% endblock %}
 
 {% block content %}
-<!-- MOVE TO if g.user BLOCK -->
-<!-- Button trigger modal -->
+{% if g.user %}
 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#newaccountmodal">
   New Account
 </button>
@@ -157,8 +147,6 @@ BudgetApp
     </div>
   </div>
 </div>
-
-{% if g.user %}
 {% else %}
 {% endif %}
 {% endblock %}

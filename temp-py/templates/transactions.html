@@ -5,27 +5,18 @@ BudgetApp
 {% endblock %}
 
 {% block header %}
-BudgetApp
+Transactions
 {% endblock %}
 
 {% block sidenav %}
 <div class="list-group">
   <a class="list-group-item list-group-item-secondary list-group-item-action" href="">Transactions</a>
-  <a class="list-group-item list-group-item-action" href="/">Index</a>
-  <a class="list-group-item list-group-item-action" href="/login">Login</a>
-  <a class="list-group-item list-group-item-action" href="/settings">Settings</a>
-  <a class="list-group-item list-group-item-action" href="/budgetview/1">Budget Detail</a>
-  <a class="list-group-item list-group-item-action" href="/accountview/1">Accounts</a>
-  <a class="list-group-item list-group-item-action" href="/transactionsview">Transactions</a>
-</div>
-<br>
-<div class="list-group">
   <a class="list-group-item list-group-item-action" href="/importcsvdata">IMPORT CSV</a>
 </div>
 {% endblock %}
 
 {% block content %}
-<!-- MOVE TO if g.user BLOCK -->
+{% if g.user %}
 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#newtxactionmodal">
   Add Transaction
 </button>
@@ -77,7 +68,6 @@ BudgetApp
     {% endfor %}
   </table>
 </div>
-{% if g.user %}
 {% else %}
 {% endif %}
 {% endblock %}

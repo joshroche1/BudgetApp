@@ -74,6 +74,22 @@ async def login(request: Request):
   messages.clear()
   return templates.TemplateResponse("login.html", {"request": request, "messages": messages, "g": g})
 
+@app.post("/login")
+async def loginform(request: Request, username: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
+  messages.clear()
+  db_user = authenticate_user(db, username, password)
+  if db_user is None:
+    messages.append("User not found")
+    return templates.TemplateResponse("login.html", {"request": request, "messages": messages, "g": g})
+  g["user"] = db_user
+  return templates.TemplateResponse("index.html", {"request": request, "messages": messages, "g": g})
+
+@app.get("/logout", response_class=HTMLResponse)
+async def logout(request: Request):
+  messages.clear()
+  g.clear()
+  return templates.TemplateResponse("index.html", {"request": request, "messages": messages, "g": g})
+
 @app.get("/settings", response_class=HTMLResponse)
 async def settings(request: Request, db: Session = Depends(get_db)):
   messages.clear()
@@ -85,6 +101,43 @@ async def settings(request: Request, db: Session = Depends(get_db)):
   exchangeratelist = get_exchangerates(db)
   settings = get_settings()
   return templates.TemplateResponse("settings.html", {"request": request, "messages": messages, "g": g, "categorylist": categorylist, "accounttypelist": accounttypelist, "countrylist": countrylist, "currencylist": currencylist, "userlist": userlist, "settings": settings, "workingdir": workingdir, "exchangeratelist": exchangeratelist})
+
+@app.get("/overview/filter", response_class=HTMLResponse)
+async def overview_filtered(request: Request, budgetid: int | None = None, month: int | None = None, startdate: str | None = None, enddate: str | None = None, db: Session = Depends(get_db)):
+  messages.clear()
+  if budgetid is None:
+    budgetid = 1
+  budget = db.query(models.Budget).filter(models.Budget.id == budgetid).first()
+  messages.append("Budget: " + str(budgetid))
+  if month is not None:
+    messages.append("Month: " + str(month))
+  if startdate is not None:
+    messages.append("Start Date: " + startdate)
+  if enddate is not None:
+    messages.append("End Date: " + enddate)
+  budgetitems = get_budgetitems_by_budget(db, budgetid)
+  accountlist = get_accounts(db)
+  budgetlist = get_budgets(db)
+  transactions = get_transactions(db)
+  categorylist = config.get_weblist(db, "Category")
+  currencylist = config.get_weblist(db, "Currency")
+  accounttypelist = config.get_weblist(db, "AccountType")
+  countrylist = config.get_weblist(db, "Country")
+  return templates.TemplateResponse("overview.html", {"request": request, "messages": messages, "g": g, "budget": budget, "budgetitems": budgetitems, "accountlist": accountlist, "budgetlist": budgetlist, "transactions": transactions, "categorylist": categorylist, "accounttypelist": accounttypelist, "countrylist": countrylist, "currencylist": currencylist})
+
+@app.get("/overview/{bid}", response_class=HTMLResponse)
+async def overview(request: Request, bid: int, db: Session = Depends(get_db)):
+  messages.clear()
+  budget = db.query(models.Budget).filter(models.Budget.id == bid).first()
+  budgetitems = get_budgetitems_by_budget(db, bid)
+  accountlist = get_accounts(db)
+  budgetlist = get_budgets(db)
+  transactions = get_transactions(db)
+  categorylist = config.get_weblist(db, "Category")
+  currencylist = config.get_weblist(db, "Currency")
+  accounttypelist = config.get_weblist(db, "AccountType")
+  countrylist = config.get_weblist(db, "Country")
+  return templates.TemplateResponse("overview.html", {"request": request, "messages": messages, "g": g, "budget": budget, "budgetitems": budgetitems, "accountlist": accountlist, "budgetlist": budgetlist, "transactions": transactions, "categorylist": categorylist, "accounttypelist": accounttypelist, "countrylist": countrylist, "currencylist": currencylist})
 
 @app.get("/budgetview/{bid}", response_class=HTMLResponse)
 async def budget_view(request: Request, bid: int, db: Session = Depends(get_db)):
