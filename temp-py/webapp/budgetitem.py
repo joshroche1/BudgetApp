@@ -67,3 +67,18 @@ def get_budgetitems_by_budget(db: Session, bid):
   budgetitems = db.query(models.BudgetItem).filter(models.BudgetItem.budgetid == bid).order_by(models.BudgetItem.id).all()
   return budgetitems
 #
+def get_budget_data(budgetitemlist):
+  resultdict = {}
+  try:
+    for budgetitem in budgetitemlist:
+      resultkeys = resultdict.keys()
+      if budgetitem.category == "Income": pass
+      elif resultdict.get(budgetitem.category, "None") != "None":
+        resultdict[budgetitem.category] = resultdict[budgetitem.category] + budgetitem.amount
+      elif resultdict.get(budgetitem.category, "None") == "None":
+        resultdict[budgetitem.category] = budgetitem.amount
+  except Exception as ex:
+    resultdict["Error"] = str(ex)
+    print(str(ex))
+  return resultdict
+#

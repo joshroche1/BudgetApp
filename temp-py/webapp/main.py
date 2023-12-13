@@ -19,11 +19,11 @@ from . import models, schema, config
 from .auth import authenticate_user, create_user, get_current_user, oauth2_scheme, get_users, get_user_by_username, update_user_email, update_user_password
 from .filesystem import read_file, write_file, append_line, insert_line, delete_line, upload_file, get_uploaded_files, delete_file, get_ical_file
 from .budget import get_budgets, get_budget, add_budget, delete_budget, update_budget_field
-from .budgetitem import get_budgetitems, get_budgetitem, add_budgetitem, delete_budgetitem, update_budgetitem_field, get_budgetitems_by_budget
+from .budgetitem import get_budgetitems, get_budgetitem, add_budgetitem, delete_budgetitem, update_budgetitem_field, get_budgetitems_by_budget, get_budget_data
 from .exchangerate import get_exchangerates, get_exchangerate, find_exchangerate, add_exchangerate, delete_exchangerate, update_exchangerate_field
 from .account import get_accounts, get_account, add_account, delete_account, update_account_field
-from .transaction import get_transactions, get_transaction, add_transaction, delete_transaction, update_transaction_field, import_csv_data
-from .datautility import parse_csv_data
+from .transaction import get_transactions, get_transaction, add_transaction, delete_transaction, update_transaction_field, get_transactions_dates, import_csv_data, get_line_chart_data, get_pie_chart_data
+from .datautility import parse_csv_data, dates_month_list
 
 ### Initialization
 
@@ -105,39 +105,90 @@ async def settings(request: Request, db: Session = Depends(get_db)):
 @app.get("/overview/filter", response_class=HTMLResponse)
 async def overview_filtered(request: Request, budgetid: int | None = None, month: int | None = None, startdate: str | None = None, enddate: str | None = None, db: Session = Depends(get_db)):
   messages.clear()
+  monthlist = [1,2,3,4,5,6,7,8,9,10,11,12]
+  if startdate is not None:
+    if enddate is not None:
+      monthlist = dates_month_list(startdate, enddate)
   if budgetid is None:
     budgetid = 1
   budget = db.query(models.Budget).filter(models.Budget.id == budgetid).first()
-  messages.append("Budget: " + str(budgetid))
-  if month is not None:
-    messages.append("Month: " + str(month))
-  if startdate is not None:
-    messages.append("Start Date: " + startdate)
-  if enddate is not None:
-    messages.append("End Date: " + enddate)
+  xLabels = ""
+  for month in range(len(monthlist)):
+    xLabels += str(month) + ","
   budgetitems = get_budgetitems_by_budget(db, budgetid)
   accountlist = get_accounts(db)
   budgetlist = get_budgets(db)
-  transactions = get_transactions(db)
+  transactions = get_transactions_dates(db, startdate, enddate)
   categorylist = config.get_weblist(db, "Category")
+  txlabels = []
+  for category in categorylist:
+    txlabels.append(category.value)
+  txdict = get_line_chart_data(db, txlabels, startdate, enddate)
+  piedata = get_pie_chart_data(db, transactions, budget.currency, txlabels)
+  pielabels = ""
+  pieamounts = ""
+  lablarr = piedata.keys()
+  for labl in lablarr:
+    if piedata[labl] is not None:
+      pielabels = pielabels + labl + ","
+      pieamounts = pieamounts + str(piedata[labl]) + ","
+  piechartdata = pielabels + "|" + pieamounts
+  budgetitemdata = get_budget_data(budgetitems)
+  bilabels = ""
+  biamounts = ""
+  for bilabel in budgetitemdata.keys():
+    bilabels = bilabels + bilabel + ","
+  for value in budgetitemdata.values():
+    biamounts = biamounts + str(value) + ","
+  budgetchartdata = bilabels + "|" + biamounts
   currencylist = config.get_weblist(db, "Currency")
   accounttypelist = config.get_weblist(db, "AccountType")
   countrylist = config.get_weblist(db, "Country")
-  return templates.TemplateResponse("overview.html", {"request": request, "messages": messages, "g": g, "budget": budget, "budgetitems": budgetitems, "accountlist": accountlist, "budgetlist": budgetlist, "transactions": transactions, "categorylist": categorylist, "accounttypelist": accounttypelist, "countrylist": countrylist, "currencylist": currencylist})
+  return templates.TemplateResponse("overview.html", {"request": request, "messages": messages, "g": g, "budget": budget, "budgetitems": budgetitems, "accountlist": accountlist, "budgetlist": budgetlist, "transactions": transactions, "txdict": txdict, "xLabels": xLabels, "piechartdata": piechartdata, "piedata": piedata, "budgetchartdata": budgetchartdata, "categorylist": categorylist, "accounttypelist": accounttypelist, "countrylist": countrylist, "currencylist": currencylist})
 
 @app.get("/overview/{bid}", response_class=HTMLResponse)
 async def overview(request: Request, bid: int, db: Session = Depends(get_db)):
   messages.clear()
+  currentdate = datetime.now()
+  startdate = str(currentdate.year - 1) + "-" + str(currentdate.month) + "-" + str(currentdate.day)
+  enddate = str(currentdate.year) + "-" + str(currentdate.month) + "-" + str(currentdate.day)
+  xLabels = ""
+  for i in range(12):
+    if (currentdate.month+i) > 12:
+      xLabels = xLabels + str(currentdate.year) + "-" + str((currentdate.month+i)-12) + ","
+    else:
+      xLabels = xLabels + str(currentdate.year - 1) + "-" + str(currentdate.month+i) + ","
   budget = db.query(models.Budget).filter(models.Budget.id == bid).first()
   budgetitems = get_budgetitems_by_budget(db, bid)
   accountlist = get_accounts(db)
   budgetlist = get_budgets(db)
-  transactions = get_transactions(db)
+  transactions = get_transactions_dates(db, startdate, enddate)
   categorylist = config.get_weblist(db, "Category")
+  txlabels = []
+  for category in categorylist:
+    txlabels.append(category.value)
+  txdict = get_line_chart_data(db, txlabels, startdate, enddate)
+  piedata = get_pie_chart_data(db, transactions, budget.currency, txlabels)
+  pielabels = ""
+  pieamounts = ""
+  lablarr = piedata.keys()
+  for labl in lablarr:
+    if piedata[labl] is not None:
+      pielabels = pielabels + labl + ","
+      pieamounts = pieamounts + str(piedata[labl]) + ","
+  piechartdata = pielabels + "|" + pieamounts
+  budgetitemdata = get_budget_data(budgetitems)
+  bilabels = ""
+  biamounts = ""
+  for bilabel in budgetitemdata.keys():
+    bilabels = bilabels + bilabel + ","
+  for value in budgetitemdata.values():
+    biamounts = biamounts + str(value) + ","
+  budgetchartdata = bilabels + "|" + biamounts
   currencylist = config.get_weblist(db, "Currency")
   accounttypelist = config.get_weblist(db, "AccountType")
   countrylist = config.get_weblist(db, "Country")
-  return templates.TemplateResponse("overview.html", {"request": request, "messages": messages, "g": g, "budget": budget, "budgetitems": budgetitems, "accountlist": accountlist, "budgetlist": budgetlist, "transactions": transactions, "categorylist": categorylist, "accounttypelist": accounttypelist, "countrylist": countrylist, "currencylist": currencylist})
+  return templates.TemplateResponse("overview.html", {"request": request, "messages": messages, "g": g, "budget": budget, "budgetitems": budgetitems, "accountlist": accountlist, "budgetlist": budgetlist, "transactions": transactions, "txdict": txdict, "xLabels": xLabels, "piechartdata": piechartdata, "piedata": piedata, "budgetchartdata": budgetchartdata, "categorylist": categorylist, "accounttypelist": accounttypelist, "countrylist": countrylist, "currencylist": currencylist})
 
 @app.get("/budgetview/{bid}", response_class=HTMLResponse)
 async def budget_view(request: Request, bid: int, db: Session = Depends(get_db)):

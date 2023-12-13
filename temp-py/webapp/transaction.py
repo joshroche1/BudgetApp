@@ -113,6 +113,10 @@ def get_transactions_dates(db: Session, startdate: str, enddate: str):
   transactionlist = db.query(models.Transaction).filter(models.Transaction.datetimestamp >= startdate).filter(models.Transaction.datetimestamp <= enddate).order_by(models.Transaction.datetimestamp.desc())
   return transactionlist
 
+def get_transactions_dates_category(db: Session, value:str, startdate: str, enddate: str):
+  transactionlist = db.query(models.Transaction).filter(models.Transaction.datetimestamp >= startdate).filter(models.Transaction.datetimestamp <= enddate).filter(models.Transaction.category == value).order_by(models.Transaction.datetimestamp.desc())
+  return transactionlist
+
 #
 def import_csv_data(db: Session, csvcontent, delimiter, header, datetimefield, amountfield, categoryfield, namefield, descriptionfield, currency, accountid, dateformat):
   result = ""
@@ -199,4 +203,88 @@ def parse_date(datetimestamp: str, dateformat: str):
     print(str(ex))
     result = currentdate
   return result
+#
+def get_line_chart_data(db: Session, xLabels, startdate, enddate):
+  resultdict = {}
+  txdict = {}
+  montharr = []
+  try:
+    stdarr = startdate.split("-")
+    endarr = enddate.split("-")
+    styear = int(stdarr[0])
+    stmonth = int(stdarr[1])
+    endyear = int(endarr[0])
+    endmonth = int(endarr[1])
+    months = 0
+    if styear < endyear:
+      if stmonth >= endmonth:
+        months = (12-endmonth) + stmonth
+      elif stmonth < endmonth:
+        months = endmonth - stmonth + 12
+    elif styear == endyear:
+      if stmonth < endmonth:
+        months = endmonth - stmonth
+      else:
+        print("End month after start month: " + startdate + " " + enddate)
+        return 0
+    else:
+      print("End date after start date: " + startdate + " " + enddate)
+      return 0
+    for i in range(months+1):
+      if (int(stdarr[1])+i) > 12:
+        if stmonth+i < 10:
+          tmpstr = str(styear+1) + "-0" + str((stmonth+i)-12) + "-01"
+          montharr.append(tmpstr)
+        else:
+          tmpstr = str(styear+1) + "-0" + str((stmonth+i)-12) + "-01"
+          montharr.append(tmpstr)
+      else:
+        if stmonth+i < 10:
+          tmpstr = str(styear) + "-0" + str(stmonth+i) + "-01"
+          montharr.append(tmpstr)
+        else:
+          tmpstr = str(styear) + "-" + str(stmonth+i) + "-01"
+          montharr.append(tmpstr)
+    for xlabel in xLabels:
+      tmpvalstr = ""
+      for x in range(len(montharr)-1):
+        tmpamt = 0.0
+        txactions = get_transactions_dates_category(db,xlabel,montharr[x],montharr[x+1])
+        for txaction in txactions:
+          if xlabel == "Income":
+            tmpamt = tmpamt + (txaction.convertedvalue*1.0)
+          else:
+            tmpamt = tmpamt + (txaction.convertedvalue*-1.0)
+        tmpvalstr = tmpvalstr + str(tmpamt) + ","
+      txdict[xlabel] = tmpvalstr
+  except Exception as ex:
+    print(str(ex))
+  return txdict
+#
+def get_pie_chart_data(db: Session, transactionlist, budgetcurrency, txlabels):
+  resultdict = {}
+  try:
+    for transx in transactionlist:
+      resultkeys = resultdict.keys()
+      if transx.amount > 0: pass
+      elif resultdict.get(transx.category, "None") != "None":
+        if transx.currency is None:
+          resultdict[transx.category] = resultdict[transx.category] + (transx.amount*(-1.0))
+        elif transx.currency != budgetcurrency:
+          tmpamt = convert_value(db, (transx.amount*(-1.0)), transx.currency, budgetcurrency)
+          resultdict[transx.category] = resultdict[transx.category] + tmpamt
+        else:
+          resultdict[transx.category] = resultdict[transx.category] + (transx.amount*(-1.0))
+      elif resultdict.get(transx.category, "None") == "None":
+        if transx.currency is None:
+          resultdict[transx.category] = resultdict[transx.category] + (transx.amount*(-1.0))
+        elif transx.currency != budgetcurrency:
+          tmpamt = convert_value(db, (transx.amount*(-1.0)), transx.currency, budgetcurrency)
+          resultdict[transx.category] = tmpamt
+        else:
+          resultdict[transx.category] = (transx.amount*(-1.0))
+  except Exception as ex:
+    resultdict["Error"] = str(ex)
+    print(str(ex))
+  return resultdict
 #

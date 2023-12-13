@@ -74,19 +74,3 @@ def parse_csv_data(csvcontent, delimiter):
   except Exception as ex:
     resultarr.append(str(ex))
   return resultarr
-
-def parse_overview_line_chart_data(transactionlist, budgetitemlist, startdate, enddate):
-  resultdict = {}
-  try:
-    monthlist = dates_month_list(startdate, enddate)
-    categorylist = ["Income"]
-    for bitem in budgetitemlist:
-      if categorylist.count(bitem.category) < 1:
-        categorylist.append(bitem.category)
-    for txaction in transactionlist:
-      print(txaction)
-      #
-    #
-  except Exception as ex:
-    resultarr["Error"] = str(ex)
-  return 0

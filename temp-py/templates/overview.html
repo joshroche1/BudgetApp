@@ -129,6 +129,32 @@ BudgetApp
   <div class="table-responsive">
     <table class="table table-sm table-hover table-bordered">
       <tr>
+        <th><a href="" class="btn btn-sm">Category</a></th>
+        <th><a href="" class="btn btn-sm"></a></th>
+        <th><a href="" class="btn btn-sm">Amount</a></th>
+        <th><a href="" class="btn btn-sm"></a></th>
+        <th><a href="" class="btn btn-sm"></a></th>
+        <th><a href="" class="btn btn-sm"></a></th>
+        <th></th>
+      </tr>
+      
+      {% for pitem in piedata %}
+      <tr>
+        <td>{{ pitem }}</td>
+        <td></td>
+        <td class="text-end">{{ piedata[pitem]|round(2,'common') }}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      {% endfor %}
+      
+    </table>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-sm table-hover table-bordered">
+      <tr>
         <th><a href="" class="btn btn-sm">Name</a></th>
         <th><a href="" class="btn btn-sm">Description</a></th>
         <th><a href="" class="btn btn-sm">Amount</a></th>
@@ -189,24 +215,30 @@ BudgetApp
 <script>
 var chartColors = ["Maroon", "Gold", "Crimson", "DarkOrange", "SteelBlue", "MediumOrchid", "Blue", "Cyan", "Teal", "Navy", "Yellow", "Red", "MediumBlue", "Gold", "DarkRed", "DarkCyan", "Cyan", "Orange", "Brown", "Turquoise", "DarkOrange", "Green", "Maroon", "GreenYellow", "Tomato", "Indigo", "GoldenRod", "Purple", "Violet", "Pink"];
 
-var tdata = "";
-const tmparr1 = [];
+var actualdata = "{{ piechartdata }}";
+const actarr = actualdata.split("|");
+const actuallabels = actarr[0].split(",");
+const actualvalues = actarr[1].split(",");
+var budgetdata = "{{ budgetchartdata }}";
+const budgetarr = budgetdata.split("|");
+const budgetlabels = budgetarr[0].split(",");
+const budgetvalues = budgetarr[1].split(",");
 const tmparrlabels = ["Housing", "Electric", "Insurance", "Internet", "Mobility", "Phone", "Debt", "Credit", "Utilities"];
 const tmparramounts = [870.00, 205.00, 30.00, 115.00, 40.00, 91.00, 125.00, 375.00, 50.00];
 
 const pieChartBudget = new Chart("pieChartBudget", {
   type: "pie",
   data: {
-    labels: tmparrlabels,
+    labels: budgetlabels,
     datasets: [{
       backgroundColor: chartColors,
-      data: tmparramounts
+      data: budgetvalues
     }]
   },
   options: {
     title: {
       display: true,
-      text: "Budget Items"
+      text: "Budget"
     }
   }
 });
@@ -214,10 +246,10 @@ const pieChartBudget = new Chart("pieChartBudget", {
 const pieChartActual = new Chart("pieChartActual", {
   type: "pie",
   data: {
-    labels: tmparrlabels,
+    labels: actuallabels,
     datasets: [{
       backgroundColor: chartColors,
-      data: tmparramounts
+      data: actualvalues
     }]
   },
   options: {
@@ -228,17 +260,93 @@ const pieChartActual = new Chart("pieChartActual", {
   }
 });
 
-const testLineLabels = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN"];
 const testLineData = [4255.00, 4300.00, 4410.00, 4150.00, 4420.00, 4195.00];
+var xLabels = "{{ xLabels }}";
+const xlabelarr = xLabels.split(",");
+var incomedata = "{{ txdict.Income }}";
+const incomearr = incomedata.split(",");
+var housingdata = "{{ txdict.Housing }}";
+const housingarr = housingdata.split(",");
+var electricdata = "{{ txdict.Electric }}";
+const electricarr = electricdata.split(",");
+var phonedata = "{{ txdict.Phone }}";
+const phonearr = phonedata.split(",");
+var internetdata = "{{ txdict.Internet }}";
+const internetarr = internetdata.split(",");
+var insurancedata = "{{ txdict.Insurance }}";
+const insurancearr = insurancedata.split(",");
+var mobilitydata = "{{ txdict.Mobility }}";
+const mobilityarr = mobilitydata.split(",");
+var debtdata = "{{ txdict.Debt }}";
+const debtarr = debtdata.split(",");
+var creditdata = "{{ txdict.Credit }}";
+const creditarr = creditdata.split(",");
+var fooddata = "{{ txdict.Food }}";
+const foodarr = fooddata.split(",");
+var entertaindata = "{{ txdict.Entertainment }}";
+const entertainarr = entertaindata.split(",");
+var utildata = "{{ txdict.Utilities }}";
+const utilarr = utildata.split(",");
+var otherdata = "{{ txdict.Other }}";
+const otherarr = otherdata.split(",");
+
 const lineChart = new Chart("lineChart", {
   type: "line",
   data: {
-    labels: testLineLabels,
+    labels: xlabelarr,
     datasets: [{
-      data: testLineData,
+      data: incomearr,
       label: "Income",
       borderColor: "LimeGreen",
       backgroundColor: "HoneyDew"
+    },{
+      data: housingarr,
+      label: "Housing",
+      borderColor: "Maroon"
+    },{
+      data: electricarr,
+      label: "Electric",
+      borderColor: "Gold"
+    },{
+      data: utilarr,
+      label: "Utilities",
+      borderColor: "Navy"
+    },{
+      data: phonearr,
+      label: "Phone",
+      borderColor: "Crimson"
+    },{
+      data: internetarr,
+      label: "Internet",
+      borderColor: "DarkOrange"
+    },{
+      data: insurancearr,
+      label: "Insurance",
+      borderColor: "SteelBlue"
+    },{
+      data: debtarr,
+      label: "Debt",
+      borderColor: "Blue"
+    },{
+      data: creditarr,
+      label: "Credit",
+      borderColor: "Cyan"
+    },{
+      data: mobilityarr,
+      label: "Mobility",
+      borderColor: "Purple"
+    },{
+      data: foodarr,
+      label: "Food",
+      borderColor: "DarkGreen"
+    },{
+      data: entertainarr,
+      label: "Entertainment",
+      borderColor: "Violet"
+    },{
+      data: otherarr,
+      label: "Other",
+      borderColor: "Grey"
     }]
   },
   options: {
