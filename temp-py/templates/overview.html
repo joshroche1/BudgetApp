@@ -10,10 +10,8 @@ BudgetApp
 
 {% block sidenav %}
 <div class="list-group">
-  <a class="list-group-item list-group-item-secondary list-group-item-action" href="">WEB</a>
-  <a class="list-group-item list-group-item-action" href="/">Index</a>
-  <a class="list-group-item list-group-item-action" href="/login">Login</a>
-  <a class="list-group-item list-group-item-action" href="/settings">Settings</a>
+  <a class="list-group-item list-group-item-secondary list-group-item-action" href="/">Home</a>
+  <a class="list-group-item list-group-item-action" href="/overview/1">Overview</a>
   <a class="list-group-item list-group-item-action" href="/budgetview/1">Budget Detail</a>
   <a class="list-group-item list-group-item-action" href="/accountview/1">Accounts</a>
   <a class="list-group-item list-group-item-action" href="/transactionsview">Transactions</a>
@@ -28,6 +26,7 @@ BudgetApp
 </div>
 <br>
 <div class="list-group">
+  <a class="list-group-item list-group-item-action" href="/settings">Settings</a>
   <a class="list-group-item list-group-item-action" href="/info">Info</a>
   <a class="list-group-item list-group-item-action" href="/docs">Docs</a>
 </div>
@@ -35,6 +34,11 @@ BudgetApp
 
 {% block content %}
 {% if g.user %}
+<!-- Top of Page Button in lower right corner -->
+<div class="z-3 opacity-50 position-fixed bottom-0 end-0">
+  <a href="#pageheader" class="btn btn-sm btn-danger">&#8613;</a>
+</div>
+
 <div class="row">
   <div class="col">
     <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFilters" aria-expanded="false" aria-controls="collapseFilters">

@@ -232,11 +232,11 @@ def get_line_chart_data(db: Session, xLabels, startdate, enddate):
       return 0
     for i in range(months+1):
       if (int(stdarr[1])+i) > 12:
-        if stmonth+i < 10:
+        if (stmonth+i)-12 < 10:
           tmpstr = str(styear+1) + "-0" + str((stmonth+i)-12) + "-01"
           montharr.append(tmpstr)
         else:
-          tmpstr = str(styear+1) + "-0" + str((stmonth+i)-12) + "-01"
+          tmpstr = str(styear+1) + "-" + str((stmonth+i)-12) + "-01"
           montharr.append(tmpstr)
       else:
         if stmonth+i < 10:
@@ -250,12 +250,15 @@ def get_line_chart_data(db: Session, xLabels, startdate, enddate):
       for x in range(len(montharr)-1):
         tmpamt = 0.0
         txactions = get_transactions_dates_category(db,xlabel,montharr[x],montharr[x+1])
+        tmpamtformatted = 0.0
         for txaction in txactions:
           if xlabel == "Income":
             tmpamt = tmpamt + (txaction.convertedvalue*1.0)
+            tmpamtformatted = float("{:.2f}".format(tmpamt))
           else:
             tmpamt = tmpamt + (txaction.convertedvalue*-1.0)
-        tmpvalstr = tmpvalstr + str(tmpamt) + ","
+            tmpamtformatted = float("{:.2f}".format(tmpamt))
+        tmpvalstr = tmpvalstr + str(tmpamtformatted) + ","
       txdict[xlabel] = tmpvalstr
   except Exception as ex:
     print(str(ex))
@@ -269,20 +272,26 @@ def get_pie_chart_data(db: Session, transactionlist, budgetcurrency, txlabels):
       if transx.amount > 0: pass
       elif resultdict.get(transx.category, "None") != "None":
         if transx.currency is None:
-          resultdict[transx.category] = resultdict[transx.category] + (transx.amount*(-1.0))
+          tmpamtformatted = float("{:.2f}".format(transx.amount*(-1.0)))
+          resultdict[transx.category] = resultdict[transx.category] + (tmpamtformatted)
         elif transx.currency != budgetcurrency:
           tmpamt = convert_value(db, (transx.amount*(-1.0)), transx.currency, budgetcurrency)
-          resultdict[transx.category] = resultdict[transx.category] + tmpamt
+          tmpamtformatted = float("{:.2f}".format(tmpamt))
+          resultdict[transx.category] = resultdict[transx.category] + tmpamtformatted
         else:
-          resultdict[transx.category] = resultdict[transx.category] + (transx.amount*(-1.0))
+          tmpamtformatted = float("{:.2f}".format(transx.amount*(-1.0)))
+          resultdict[transx.category] = resultdict[transx.category] + (tmpamtformatted)
       elif resultdict.get(transx.category, "None") == "None":
         if transx.currency is None:
-          resultdict[transx.category] = resultdict[transx.category] + (transx.amount*(-1.0))
+          tmpamtformatted = float("{:.2f}".format(transx.amount*(-1.0)))
+          resultdict[transx.category] = resultdict[transx.category] + (tmpamtformatted)
         elif transx.currency != budgetcurrency:
           tmpamt = convert_value(db, (transx.amount*(-1.0)), transx.currency, budgetcurrency)
-          resultdict[transx.category] = tmpamt
+          tmpamtformatted = float("{:.2f}".format(tmpamt))
+          resultdict[transx.category] = tmpamtformatted
         else:
-          resultdict[transx.category] = (transx.amount*(-1.0))
+          tmpamtformatted = float("{:.2f}".format(transx.amount*(-1.0)))
+          resultdict[transx.category] = (tmpamtformatted)
   except Exception as ex:
     resultdict["Error"] = str(ex)
     print(str(ex))

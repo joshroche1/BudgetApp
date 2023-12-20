@@ -17,6 +17,11 @@ Transactions
 
 {% block content %}
 {% if g.user %}
+<!-- Top of Page Button in lower right corner -->
+<div class="z-3 opacity-50 position-fixed bottom-0 end-0">
+  <a href="#pageheader" class="btn btn-sm btn-danger">&#8613;</a>
+</div>
+
 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#newtxactionmodal">
   Add Transaction
 </button>
