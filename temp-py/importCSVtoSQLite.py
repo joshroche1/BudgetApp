@@ -53,14 +53,14 @@ def parse_date(datetimestamp: str, dateformat: str):
   return result
 
 ### id | datetimestamp | amount | convertedvalue | category | currency |   name   | description | accountid
-def create_txaction(idval, datetimestamp, amount, category, currency, name, description, accountid):
+def create_txaction(idval, datetimestamp, datetimeformat, amount, category, currency, name, description, accountid, convertvalue):
   db = get_db()
   error = None
   if error is not None:
     print(error)
   else:
-    timestamp = parse_date(datetimestamp, 'Y-m-d')
-    convertval = float(amount) * 0.93
+    timestamp = parse_date(datetimestamp, datetimeformat)
+    convertval = float(amount) * float(convertvalue)
     convertedval = float("{:.2f}".format(convertval))
     try:
       sqlcmd = "INSERT INTO transactions (id,datetimestamp,amount,convertedvalue,category,currency,description,name,accountid) values ('"
@@ -79,6 +79,16 @@ def create_txaction(idval, datetimestamp, amount, category, currency, name, desc
 
 print("Import CSV into SQLite3 db\n\nPlease Enter Filename\n\n[Q/q] QUIT\n")
 filename = input("> ")
+newcurrency = input("Currency [USD/EUR]> ")
+print("Date/Time Format\n Y-m-d\n d.m.y\n")
+dtformat = input("> ")
+accountid = input("Account ID> ")
+convertvalue = input("Conversion Rate [USD->EUR=0.93]> ")
+coldtime = input("Column [Date/Time]> ")
+colcat = input("Column [Category]>")
+colname = input("Column [Name]>")
+coldesc = input("Column [Description]>")
+colamt = input("Column [Amount]>")
 
 if filename.find("Q") > -1:
   print("\nEXIT")
@@ -87,18 +97,18 @@ elif filename.find("q") > -1:
   print("\nEXIT")
   sys.exit(0)
 elif len(filename) > 0:
-  intid = 3000
+  intid = int(accountid) * 10000
   print("\Import File: " + filename + "\n")
   csvfile = open('upload/'+filename, 'r')
   for csvline in csvfile:
     tmparr = csvline.split(',')
-    txdtime = tmparr[0]
-    txcat = tmparr[3]
-    txname = tmparr[1]
-    txdesc = tmparr[2]
-    txamt = tmparr[4]
+    txdtime = tmparr[int(coldtime)]
+    txcat = tmparr[int(colcat)]
+    txname = tmparr[int(colname)]
+    txdesc = tmparr[int(coldesc)]
+    txamt = tmparr[int(colamt)]
     # idval, datetimestamp, amount, category, currency, name, description, accountid
-    if not create_txaction(intid, txdtime, txamt, txcat, 'USD', txdesc, txname, 2):
+    if not create_txaction(intid, txdtime, dtformat, txamt, txcat, newcurrency, txdesc, txname, accountid, convertvalue):
       print("Could not insert transaction")
     else:
       print("Insert transaction: " + str(intid))
