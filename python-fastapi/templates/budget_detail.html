@@ -3,7 +3,7 @@
 {% block title %}
 
 {% if g.user %}
-Budget Detail - {{ budget.id }}
+Budget - {{ budget.id }}
 {% else %}
 {% endif %}
 
@@ -19,22 +19,16 @@ Budget: {{ budget.id }}
 {% endblock %}
 
 {% block navbar %}
-<li class="nav-item"><a href="" class="nav-link btn btn-sm">|</a></li>
-<li class="nav-item">
-  <a href="/budget/list" class="nav-link btn btn-sm btn-secondary">Budgets</a>
-</li>
-<li class="nav-item"><a href="" class="nav-link btn btn-sm">|</a></li>
-<li class="nav-item">
-  <form action="/budget/delete/{{ budget.id }}" method="post">
-    <input type="submit" value="DELETE" onclick="return confirm('Are you sure?');" class="nav-link btn btn-sm btn-danger">
-  </form>
-</li>
 {% endblock %}
 
 {% block content %}
 
 {% if g.user %}
 <div class="container">
+  
+  <form action="/budget/delete/{{ budget.id }}" method="post">
+    <input type="submit" value="DELETE" onclick="return confirm('Are you sure?');" class="nav-link btn btn-sm btn-danger">
+  </form>
   
   <div class="m-3 p-3">
     

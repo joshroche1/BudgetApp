@@ -15,18 +15,12 @@ Account List
 {% endblock %}
 
 {% block navbar %}
-<li class="nav-item"><a href="" class="nav-link btn btn-sm">|</a></li>
-<li class="nav-item">
-  <a href="/account/list" class="nav-link btn btn-sm btn-secondary">LIST</a>
-</li>
-<li class="nav-item"><a href="" class="nav-link btn btn-sm">|</a></li>
-<li class="nav-item">
-  <button class="nav-link btn btn-sm btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#filterpanel" aria-expanded="false" aria-controls="filterpanel">Filters</button>
-</li>
 {% endblock %}
 
 {% block content %}
 {% if g.user %}
+<button class="nav-link btn btn-sm btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#filterpanel" aria-expanded="false" aria-controls="filterpanel">Filters</button>
+
 <div id="filterpanel" class="collapse m-1 p-1">
   <div class="row">
     

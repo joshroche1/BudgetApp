@@ -2,7 +2,7 @@
 
 {% block title %}
 {% if g.user %}
-Transaction Detail - {{ transaction.id }}
+Transaction - {{ transaction.id }}
 {% else %}
 {% endif %}
 {% endblock %}
@@ -15,24 +15,18 @@ Transaction: {{ transaction.id }}
 {% endblock %}
 
 {% block navbar %}
-<li class="nav-item"><a href="" class="nav-link btn btn-sm">|</a></li>
-<li class="nav-item">
-  <a href="/transaction/list" class="nav-link btn btn-sm btn-secondary">LIST</a>
-</li>
 <li class="nav-item">
   <a href="/transaction/importview" class="nav-link btn btn-sm btn-secondary">IMPORT</a>
-</li>
-<li class="nav-item"><a href="" class="nav-link btn btn-sm">|</a></li>
-<li class="nav-item">
-  <form action="/transaction/delete/{{ transaction.id }}" method="post">
-    <input type="submit" value="DELETE" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-danger">
-  </form>
 </li>
 {% endblock %}
 
 {% block content %}
 {% if g.user %}
 <div class="container">
+  
+  <form action="/transaction/delete/{{ transaction.id }}" method="post">
+    <input type="submit" value="DELETE" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-danger">
+  </form>
   
   <div class="m-3 p-3">
     

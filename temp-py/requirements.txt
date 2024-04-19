@@ -1,9 +1,0 @@
-# BudgetApp - Python-FastAPI version
-# Requirements
-
-dotenv
-sqlalchemy
-bcrypt
-pandas
-fastapi[all]
-uvicorn
