@@ -23,14 +23,15 @@ To use PostgreSQL:
 
 ### To run:
 
-> uvicorn webapp.main:app \
->   --app-dir /PATH/TO/APP \
->   --env-file /PATH/TO/ENV \
->   --host 0.0.0.0 \
->   --port 8000 \
->   --log-level info \
->   --access-log \
->   --use-colors
+uvicorn webapp.main:app \
+  --app-dir /home/josh/github/BudgetApp/python-fastapi \
+  --env-file /home/josh/github/BudgetApp/python-fastapi/.env \
+  --host 0.0.0.0 \
+  --port 8000 \
+  --log-level info \
+  --access-log \
+  --use-colors \
+  --reload
 
 
 > gunicorn webapp.main:app -D \
