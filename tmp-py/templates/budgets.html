@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Budgets
+{% endblock %}
+
+{% block header %}
+Budgets
+{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+
+{% block sidenav %}
+{% endblock %}
+
+{% block content %}
+<!-- Top of Page Button in lower right corner -->
+<div class="z-3 opacity-50 position-fixed bottom-0 end-0">
+  <a href="#pageheader" class="btn btn-sm btn-danger">&#8613;</a>
+</div>
+
+<div class="container-fluid">
+
+  <div class="row">
+    <div class="col-12 col-sm-3">
+      <button type="button" data-bs-toggle="collapse" data-bs-target="#filterpanel" aria-expanded="false" aria-controls="filterpanel" class="btn btn-sm btn-success">FILTER</button>
+      <button type="button" data-bs-toggle="collapse" data-bs-target="#createpanel" aria-expanded="false" aria-controls="createpanel" class="btn btn-sm btn-success">CREATE</button>
+      <a href="/accounts" class="btn btn-sm btn-secondary">REFRESH</a>
+    </div>
+    <div class="col-12 col-sm-3">
+      <select id="limit" name="limit" class="form-select">
+        <option value="" disabled>Per Page</option>
+        <option value="10">10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+        <option value="200">200</option>
+        <option value="500">500</option>
+      </select>
+    </div>
+    <div class="col-12 col-sm-3"></div>
+    <div class="col-12 col-sm-3"></div>
+  </div>
+
+  <!-- Filter Panel -->
+  <div id="filterpanel" class="collapse">
+    <div class="row">
+      <div class="col-12 col-sm-3">
+        <form action="" method="">
+          <div class="input-group">
+            <input type="text" id="searchterm" name="searchterm" Placeholder="Enter a search term" class="form-control">
+            <input type="submit" value="Search" class="btn btn-sm btn-success">
+          </div>
+        </form>
+      </div>
+      <div class="col-12 col-sm-3">
+      </div>
+      <div class="col-12 col-sm-3">
+      </div>
+      <div class="col-12 col-sm-3">
+      </div>
+    </div>
+  </div>
+  
+  <!-- Create Panel -->
+  <div id="createpanel" class="collapse">
+    <form action="" method="">
+      <div class="row">
+        <div class="col">
+          <input type="text" id="name" name="name" Placeholder="Name" class="form-control">
+        </div>
+        <div class="col">
+          <input type="text" id="description" name="description" Placeholder="Description" class="form-control">
+        </div>
+        <div class="col">
+          <input type="submit" value="Add" class="btn btn-sm btn-success">
+        </div>        
+      </div>
+    </form>
+  </div>
+
+  <table class="table table-hover">
+  
+    <tr>
+      <th><a href="/budgets?sortby=id" class="btn btn-sm">ID</a></th>
+      <th><a href="/budgets?sortby=name" class="btn btn-sm">Name</a></th>
+      <th><a href="" class="btn btn-sm">Description</a></th>
+      <th><a href="" class="btn btn-sm">Owner</a></th>
+    </tr>
+    
+    {% for budget in budgetlist %}
+    <tr>
+      <td>
+        <a class="btn btn-sm dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">{{ budget.id }}</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item btn btn-sm" href="">Edit</a></li>
+            <li>
+              <form action="" method="">
+                <input type="submit" value="DELETE" onclick="return confirm('Delete entry?');" class="dropdown-item">
+              </form>
+            </li>
+          </ul>
+        </a>
+      </td>
+      <td>{{ budget.name }}</td>
+      <td>{{ budget.description }}</td>
+      <td>{{ budget.ownerid }}</td>
+    </tr>
+    {% endfor %}
+  
+  </table>
+
+</div>
+
+{% endblock %}
