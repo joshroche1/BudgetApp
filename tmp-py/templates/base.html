@@ -24,6 +24,12 @@
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">{% block header %} {% endblock %}</a>
             <ul class="dropdown-menu">
               <li>
+                <div class="btn-group" role="group" aria-label="Settings Button group">
+                  <a class="btn btn-sm dropdown-item" href="/settings">Settings</a>
+                </div>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
                 <div class="btn-group" role="group" aria-label="Budgets Button group">
                   <a class="btn btn-sm dropdown-item" href="/budgets">Budgets</a>
                 </div>
@@ -52,6 +58,7 @@
               <li><a class="dropdown-item btn btn-sm" href="">Logout</a></li>
             </ul>
           </li>
+          <li class="nav-item"><a href="/settings" class="nav-link text-start btn btn-sm m-1 p-1">Settings</a></li>
           <li class="nav-item"><a href="/budgets" class="nav-link text-start btn btn-sm m-1 p-1">Budgets</a></li>
           <li class="nav-item"><a href="/accounts" class="nav-link text-start btn btn-sm m-1 p-1">Accounts</a></li>
           <li class="nav-item"><a href="/transactions" class="nav-link text-start btn btn-sm m-1 p-1">Transactions</a></li>
@@ -65,6 +72,9 @@
 <div class="row container-fluid">
   <div class="d-none d-lg-block col-lg-1">
     <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        <a href="/settings" class="list-group-item-action text-start btn">Settings</a>
+      </li>
       <li class="list-group-item">
         <a href="/budgets" class="list-group-item-action text-start btn">Budgets</a>
       </li>

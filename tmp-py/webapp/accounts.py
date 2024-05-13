@@ -16,8 +16,15 @@ def get_account(db: Session, id):
   entity = db.query(models.Account).filter(models.Account.id == id).first()
   return entity
 
-def add_account(db: Session, newaccount):
+def create_account(db: Session, newaccount):
   entity = models.Account(name=newaccount.name, description=newaccount.description)
+  db.add(entity)
+  db.commit()
+  db.refresh(entity)
+  return entity
+
+def add_account(db: Session, newname: str, newdescription: str, newcurrency: str, newaccounttype: str):
+  entity = models.Account(name=newname, description=newdescription, currency=newcurrency, accounttype=newaccounttype)
   db.add(entity)
   db.commit()
   db.refresh(entity)

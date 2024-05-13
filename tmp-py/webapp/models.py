@@ -14,6 +14,23 @@ class User(Base):
   accounts = relationship("Account", back_populates="owner")
 
 
+class Weblist(Base):
+  __tablename__ = "weblists"
+  
+  id = Column(Integer, primary_key=True, index=True)
+  name = Column(String)
+  value = Column(String)
+
+
+class ExchangeRate(Base):
+  __tablename__ = "exchangerates"
+  
+  id = Column(Integer, primary_key=True, index=True)
+  currency_from = Column(String, default="")
+  currency_to = Column(String, default="")
+  rate = Column(Float)
+
+
 class Budget(Base):
   __tablename__ = "budgets"
   id = Column(Integer, primary_key=True, index=True)
@@ -40,6 +57,7 @@ class Account(Base):
   id = Column(Integer, primary_key=True, index=True)
   name = Column(String, default="")
   description = Column(String, default="")
+  accounttype = Column(String, default="")
   currency = Column(String, default="")
   ownerid = Column(Integer, ForeignKey("users.id"))
   owner = relationship("User", back_populates="accounts")

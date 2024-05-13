@@ -4,6 +4,7 @@ from pydantic import BaseModel
 class AccountBase(BaseModel):
   name: str
   description: str
+  accounttype: str
   ownerid: int
   currency: str
 
@@ -46,6 +47,34 @@ class Budget(BudgetBase):
   id: int
   budgetitems: list[BudgetItem] = []
   
+  class Config:
+    orm_mode = True
+
+
+class ExchangeRateBase(BaseModel):
+  currency_from: str
+  currency_ro: str
+
+class ExchangeRateCreate(ExchangeRateBase):
+  rate: float
+
+class ExchangeRate(ExchangeRateBase):
+  id: int
+
+  class Config:
+    orm_mode = True
+
+
+class WeblistBase(BaseModel):
+  name: str
+  value: str
+
+class WeblistCreate(WeblistBase):
+  pass
+
+class Weblist(WeblistBase):
+  id: int
+
   class Config:
     orm_mode = True
 

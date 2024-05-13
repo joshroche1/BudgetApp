@@ -15,9 +15,69 @@ Budgets
 {% endblock %}
 
 {% block content %}
+<script>
+$(document).ready(function(){
+
+  $("#searchfilter").on("keyup", function(){
+    var value = $(this).val().toLowerCase();
+    $("#item_table tr").filter(function(){
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+  $("#filtercurrency").change(function() {
+    var value = $(this).val();
+    $("#item_table tr").filter(function() {
+      $(this).toggle($(this).text().indexOf(value) > -1)
+    });
+  });
+  
+  $(".item_detail").click(function(event){
+    let budget_id = $(event.currentTarget).text();
+    let get_url = "/rest/budget/" + budget_id;
+    $.get(get_url, function(data, status){
+      $("#modalLabel").text(data.id);
+      $("#budget_name").text(data.name);
+      $("#budget_description").text(data.description);
+      $("#budget_currency").text(data.currency);
+    });
+  });
+  $(".delete_item").click(function(event){
+    if (confirm("Delete budget?")) {
+      let budget_id = $(event.currentTarget).text();
+      let post_url = "/rest/budget/delete/" + budget_id;
+      $.post(post_url, function(data, status){
+        let textout = "Response [" + status + "]: " + data;
+        $("#response_output").text(textout);
+      });
+    }
+  });
+  
+  $("#create_budget_submit").click(function(event){
+    if (confirm("Add budget?")) {
+      let newname = $("#new_name").val();
+      let newdescription = $("#new_description").val();
+      let newcurrency = $("#new_currency").val();
+      let stritem = '{"name": "'+newname+'", "description": "'+newdescription+'", "currency": "'+newcurrency+'"}';
+      const newitem = JSON.parse(stritem);
+      $.post("/rest/budget/add", newitem, function(data, status){
+        let textout = "Response [" + status + "]: " + data;
+        $("#response_output").text(textout);
+      });
+    }
+  });
+  
+});
+</script>
+
 <!-- Top of Page Button in lower right corner -->
 <div class="z-3 opacity-50 position-fixed bottom-0 end-0">
   <a href="#pageheader" class="btn btn-sm btn-danger">&#8613;</a>
+</div>
+
+<div class="row">
+  <div class="col">
+    <code><pre><p id="response_output"></p></pre></code>
+  </div>
 </div>
 
 <div class="container-fluid">
@@ -25,8 +85,8 @@ Budgets
   <div class="row">
     <div class="col-12 col-sm-3">
       <button type="button" data-bs-toggle="collapse" data-bs-target="#filterpanel" aria-expanded="false" aria-controls="filterpanel" class="btn btn-sm btn-success">FILTER</button>
-      <button type="button" data-bs-toggle="collapse" data-bs-target="#createpanel" aria-expanded="false" aria-controls="createpanel" class="btn btn-sm btn-success">CREATE</button>
-      <a href="/accounts" class="btn btn-sm btn-secondary">REFRESH</a>
+      <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#create_budget">CREATE</button>
+      <a href="/transactions" class="btn btn-sm btn-secondary">REFRESH</a>
     </div>
     <div class="col-12 col-sm-3">
       <select id="limit" name="limit" class="form-select">
@@ -47,14 +107,15 @@ Budgets
   <div id="filterpanel" class="collapse">
     <div class="row">
       <div class="col-12 col-sm-3">
-        <form action="" method="">
-          <div class="input-group">
-            <input type="text" id="searchterm" name="searchterm" Placeholder="Enter a search term" class="form-control">
-            <input type="submit" value="Search" class="btn btn-sm btn-success">
-          </div>
-        </form>
+        <input id="searchfilter" name="searchfilter" Placeholder="Enter a search term" class="form-control">
       </div>
       <div class="col-12 col-sm-3">
+        <select id="filtercurrency" name="filtercurrency" class="form-select">
+          <option value="" disabled>Currency</option>
+          {% for currency in currencylist %}
+          <option value="{{ currency.value }}">{{ currency.value }}</option>
+          {% endfor %}
+        </select>
       </div>
       <div class="col-12 col-sm-3">
       </div>
@@ -62,50 +123,26 @@ Budgets
       </div>
     </div>
   </div>
-  
-  <!-- Create Panel -->
-  <div id="createpanel" class="collapse">
-    <form action="" method="">
-      <div class="row">
-        <div class="col">
-          <input type="text" id="name" name="name" Placeholder="Name" class="form-control">
-        </div>
-        <div class="col">
-          <input type="text" id="description" name="description" Placeholder="Description" class="form-control">
-        </div>
-        <div class="col">
-          <input type="submit" value="Add" class="btn btn-sm btn-success">
-        </div>        
-      </div>
-    </form>
-  </div>
 
-  <table class="table table-hover">
+  <table id="item_table" name="item_table" class="table table-hover">
   
     <tr>
       <th><a href="/budgets?sortby=id" class="btn btn-sm">ID</a></th>
       <th><a href="/budgets?sortby=name" class="btn btn-sm">Name</a></th>
       <th><a href="" class="btn btn-sm">Description</a></th>
-      <th><a href="" class="btn btn-sm">Owner</a></th>
+      <th><a href="/budgets?sortby=currency" class="btn btn-sm">Currency</a></th>
+      <th></th>
     </tr>
     
     {% for budget in budgetlist %}
     <tr>
       <td>
-        <a class="btn btn-sm dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">{{ budget.id }}</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item btn btn-sm" href="">Edit</a></li>
-            <li>
-              <form action="" method="">
-                <input type="submit" value="DELETE" onclick="return confirm('Delete entry?');" class="dropdown-item">
-              </form>
-            </li>
-          </ul>
-        </a>
+        <button id="budget_{{ budget.id }}" class="btn item_detail" data-bs-toggle="modal" data-bs-target="#edit_budget">{{ budget.id }}</button>
       </td>
       <td>{{ budget.name }}</td>
       <td>{{ budget.description }}</td>
-      <td>{{ budget.ownerid }}</td>
+      <td>{{ budget.currency }}</td>
+      <td><button class="btn btn-sm btn-danger delete_item">{{ budget.id }}</button></td>
     </tr>
     {% endfor %}
   
@@ -113,4 +150,81 @@ Budgets
 
 </div>
 
+<!-- EDIT MODAL -->
+<div class="modal fade" id="edit_budget" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalLabel"></h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col">
+            <div class="input-group">
+              <span id="budget_name" class="input-group-text"></span>
+              <input type="text" id="update_budget_name" name="update_budget_name" placeholder="Name" class="form-control">
+              <button type="button" id="budget_name_update" class="btn btn-sm btn-success">X</button>
+            </div>
+            <div class="input-group">
+              <span id="budget_description" class="input-group-text"></span>
+              <input type="text" id="update_budget_description" name="update_budget_description" placeholder="Description" class="form-control">
+              <button type="button" id="budget_description_update" class="btn btn-sm btn-success">X</button>
+            </div>
+          </div>
+          <div class="col">
+            <div class="input-group">
+              <span id="budget_currency" class="input-group-text"></span>
+              <select id="update_budget_currency" name="update_budget_currency" class="form-select">
+                <option value="" disabled>Currency</option>
+                {% for currency in currencylist %}
+                <option value="{{ currency.value }}">{{ currency.value }}</option>
+                {% endfor %}
+              </select>
+              <button type="button" id="budget_currency_update" class="btn btn-sm btn-success">X</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-success">Update</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CREATE MODAL -->
+<div class="modal fade" id="create_budget" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalLabel">New Budget</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col">
+            <label class="form-label">Name</label>
+            <input type="text" id="new_name" name="new_name" placeholder="Name" class="form-control">
+            <label class="form-label">Description</label>
+            <input type="text" id="new_description" name="new_description" placeholder="Description" class="form-control">
+          </div>
+          <div class="col">
+            <label class="form-label">Currency</label>
+            <select id="new_currency" name="new_currency" class="form-select">
+              <option value="" selected disabled>Currency</option>
+              {% for currency in currencylist %}
+              <option value="{{ currency.value }}">{{ currency.value }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="create_budget_submit" class="btn btn-success">Create</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

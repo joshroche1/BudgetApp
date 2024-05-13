@@ -18,8 +18,15 @@ def get_budget(db: Session, id):
   entity = db.query(models.Budget).filter(models.Budget.id == id).first()
   return entity
 
-def add_budget(db: Session, newbudget):
+def create_budget(db: Session, newbudget):
   entity = models.Budget(name=newbudget.name, description=newbudget.description, ownerid=newbudget.ownerid)
+  db.add(entity)
+  db.commit()
+  db.refresh(entity)
+  return entity
+
+def add_budget(db: Session, newname: str, newdescription: str, newcurrency: str, newownerid: int):
+  entity = models.Budget(name=newname, description=newdescription, currency=newcurrency, ownerid=newownerid)
   db.add(entity)
   db.commit()
   db.refresh(entity)
