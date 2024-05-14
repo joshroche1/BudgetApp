@@ -118,6 +118,14 @@ $(document).ready(function(){
       <a href="/transactions" class="btn btn-sm btn-secondary">REFRESH</a>
     </div>
     <div class="col-12 col-sm-3">
+      <form action="/transactions/importfile" method="post" enctype="multipart/form-data">
+        <div class="input-group">
+          <input type="file" id="uploadfile" name="uploadfile" class="form-control">
+          <input type="submit" value="Import" onclick="confirm('Import file?');" class="btn btn-success">
+        </div>
+      </form>
+    </div>
+    <div class="col-12 col-sm-3">
       <select id="limit" name="limit" class="form-select">
         <option value="" disabled>Per Page</option>
         <option value="10">10</option>
@@ -128,7 +136,6 @@ $(document).ready(function(){
         <option value="500">500</option>
       </select>
     </div>
-    <div class="col-12 col-sm-3"></div>
     <div class="col-12 col-sm-3"></div>
   </div>
 
@@ -274,7 +281,7 @@ $(document).ready(function(){
   </div>
 </div>
 
-<!-- EDIT MODAL -->
+<!-- CREATE MODAL -->
 <div class="modal fade" id="create_transaction" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">

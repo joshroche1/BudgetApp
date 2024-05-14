@@ -182,16 +182,16 @@ $(document).ready(function(){
         <div id="collapse_A" class="collapse">
           <table class="table table-hover">
             <tr>
-              <td>Database</td>
-              <td></td>
+              <td>User: {{ g.user }}</td>
+              <td>{{ g }}</td>
+            </tr>
+            <tr>
+              <td>Base Directory</td>
+              <td>{{ settings['base_dir'] }}</td>
             </tr>
             <tr>
               <td>Database</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>Database</td>
-              <td></td>
+              <td>{{ settings.database_vendor }}://{{ settings.database_user }}@{{ settings.database_host }}:{{ settings.database_post }}/{{ settings.database_name }}</td>
             </tr>
           </table>
         </div>
@@ -411,6 +411,28 @@ $(document).ready(function(){
               <td><button class="btn btn-sm btn-danger user_delete">{{ user.id }}</button></td>
             </tr>
             {% endfor %}
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col">
+      <div id="accordion_E" class="m-1 p-1">
+        <div>
+          <a href="#collapse_E" data-bs-toggle="collapse" class="btn btn-sm btn-light">Logging</a>
+        </div>
+        <div id="collapse_E" class="collapse">
+          <table class="table table-hover">
+            <tr>
+              <td>Logpath</td>
+              <td>{{ settings.logfile_path }}</td>
+            </tr>
+            <tr>
+              <td>Log Level</td>
+              <td>{{ settings.log_level }}</td>
+            </tr>
           </table>
         </div>
       </div>

@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{% if g.user %}
+Import File
+{% else %}
+{% endif %}
+{% endblock %}
+
+{% block header %}
+{% if g.user %}
+Import File
+{% else %}
+{% endif %}
+{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+
+{% block sidenav %}
+{% endblock %}
+
+{% block content %}
+{% if g.user %}
+
+<!-- Top of Page Button in lower right corner -->
+<div class="z-3 opacity-50 position-fixed bottom-0 end-0">
+  <a href="#pageheader" class="btn btn-sm btn-danger">&#8613;</a>
+</div>
+
+<div class="row">
+  <div class="col">
+    <code><pre><p id="response_output"></p></pre></code>
+  </div>
+</div>
+
+<form action="/transactions/importdata" method="post">
+<div class="row">
+  <div class="col">
+    <table class="table table-hover">
+      <tr>
+        <td>Filename</td>
+        <td>{{ result.filename }}</td>
+      </tr>
+      <tr>
+        <td>Content Type</td>
+        <td>{{ result.contenttype }}</td>
+      </tr>
+      <tr>
+        <td>Size</td>
+        <td>{{ result.size }}</td>
+      </tr>
+      <tr>
+        <td>Headers</td>
+        <td>{{ result.headers }}</td>
+      </tr>
+    </table>
+  </div>
+  <div class="col">
+    <label class="form-label">Date/Time Format</label>
+    <select id="import_datetimeformat" name="import_datetimeformat" class="form-select" required>
+      <option value="" selected disabled>Date/Time Format</option>
+      <option value="yyyymmdd">YYYYmmdd</option>
+      <option value="yyyy-mm-dd">YYYY-mm-dd</option>
+      <option value="dd.mm.yy">dd.mm.YY</option>
+      <option value="ddmmmyy">ddmmmYY</option>
+      <option value="ddmmmyyyy">ddmmmYYYY</option>
+    </select>
+    <label class="form-label">Account ID</label>
+    <select id="import_accountid" name="import_accountid" class="form-select" required>
+      <option value="" selected disabled>Account ID</option>
+      {% for account in accountlist %}
+      <option value="{{ account.id }}">{{ account.name }}</option>
+      {% endfor %}
+    </select>
+    <label class="form-label">Currency</label>
+    <select id="import_currency" name="import_currency" class="form-select" required>
+      <option value="" selected disabled>Currency</option>
+      {% for currency in currencylist %}
+      <option value="{{ currency.value }}">{{ currency.value }}</option>
+      {% endfor %}
+    </select>
+    <input type="hidden" id="importeddata" name="importeddata" value="{{ filecontents }}">
+    <input type="submit" value="IMPORT DATA" onclick="confirm('Import data?');" class="btn btn-success">
+  </div>
+  <table class="table table-sm table-hover">
+    <tr>
+      <th>
+        <label class="form-label">Date/Time</label>
+        <select id="datetimefield" name="datetimefield" class="form-select" required>
+          <option value="0" selected>Column</option>
+          {% for item in importarr[0] %}
+          <option value="{{ loop.index }}">{{ loop.index }}</option>
+          {% endfor %}
+        </select>
+      </th>
+      <th>
+        <label class="form-label">Name</label>
+        <select id="namefield" name="namefield" class="form-select" required>
+          <option value="0" selected>Column</option>
+          {% for item in importarr[0] %}
+          <option value="{{ loop.index }}">{{ loop.index }}</option>
+          {% endfor %}
+        </select>
+      </th>
+      <th>
+        <label class="form-label">Description</label>
+        <select id="descriptionfield" name="descriptionfield" class="form-select" required>
+          <option value="0" selected>Column</option>
+          {% for item in importarr[0] %}
+          <option value="{{ loop.index }}">{{ loop.index }}</option>
+          {% endfor %}
+        </select>
+      </th>
+      <th>
+        <label class="form-label">Amount</label>
+        <select id="amountfield" name="amountfield" class="form-select" required>
+          <option value="0" selected>Column</option>
+          {% for item in importarr[0] %}
+          <option value="{{ loop.index }}">{{ loop.index }}</option>
+          {% endfor %}
+        </select>
+      </th>
+      <th>
+        <label class="form-label">Category</label>
+        <select id="categoryfield" name="categoryfield" class="form-select" required>
+          <option value="0" selected>Column</option>
+          {% for item in importarr[0] %}
+          <option value="{{ loop.index }}">{{ loop.index }}</option>
+          {% endfor %}
+        </select>
+      </th>
+      <th></th>
+    </tr>
+    
+    {% for tmparr in importarr %}
+    <tr>
+      {% for tmpitem in tmparr %}
+      <td>{{ tmpitem }}</td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+</form>
+
+<div class="row">
+  <code style="overflow: auto;">{{ result }}</code>
+</div>
+
+{% else %}
+{% endif %}
+{% endblock %}

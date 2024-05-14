@@ -1,13 +1,14 @@
-from fastapi import Depends, FastAPI, Request, Form
+import datetime
+from fastapi import Depends, FastAPI, Request, Form, File, UploadFile
 from fastapi.responses import HTMLResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from pydantic import BaseModel
+from functools import lru_cache
 from sqlalchemy.orm import Session
 
 from .database import SessionLocal, engine
-from . import models, schemas, auth, accounts, budgets, transactions, users, weblists, exchangerates
+from . import models, schemas, auth, config, accounts, budgets, transactions, users, weblists, exchangerates
 
 ### Initialization
 
@@ -17,6 +18,10 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 messages = []
 g = {}
+
+@lru_cache
+def get_settings():
+  return config.Settings()
 
 def message(msg: str = ""):
   messages.append(msg)
@@ -28,6 +33,44 @@ def get_db():
   finally:
     db.close()
 
+def parse_date(datetimestamp: str, dateformat: str):
+  result = ""
+  currentdate = datetime.datetime.now().strftime('%Y-%m-%d')
+  try:
+    if dateformat == "Y-m-d":
+      tmp1 = datetimestamp.split('-')
+      if len(tmp1) != 3: return "Wrong length"
+      if not tmp1[0].isdecimal(): return "1 not decimal"
+      if not tmp1[1].isdecimal(): return "2 not decimal"
+      if not tmp1[2].isdecimal(): return "3 not decimal"
+      result = str(tmp1[0]) + "-" + str(tmp1[1]) + "-" + str(tmp1[2])
+    elif dateformat == "Y/m/d":
+      tmp1 = datetimestamp.split("/")
+      if len(tmp1) != 3: return "Wrong length"
+      if not tmp1[0].isdecimal(): return "1 not decimal"
+      if not tmp1[1].isdecimal(): return "2 not decimal"
+      if not tmp1[2].isdecimal(): return "3 not decimal"
+      result = str(tmp1[0]) + "-" + str(tmp1[1]) + "-" + str(tmp1[2])
+    elif dateformat == "Y.m.d":
+      tmp1 = datetimestamp.split(".")
+      if len(tmp1) != 3: return "Wrong length"
+      if not tmp1[0].isdecimal(): return "1 not decimal"
+      if not tmp1[1].isdecimal(): return "2 not decimal"
+      if not tmp1[2].isdecimal(): return "3 not decimal"
+      result = str(tmp1[0]) + "-" + str(tmp1[1]) + "-" + str(tmp1[2])
+    elif dateformat == "d.m.y":
+      tmp1 = datetimestamp.split(".")
+      if len(tmp1) != 3: return "Wrong length"
+      if not tmp1[0].isdecimal(): return "1 not decimal"
+      if not tmp1[1].isdecimal(): return "2 not decimal"
+      if not tmp1[2].isdecimal(): return "3 not decimal"
+      result = "20" + str(tmp1[2]) + "-" + str(tmp1[1]) + "-" + str(tmp1[0])
+    else:
+      return currentdate
+  except Exception as ex:
+    print(str(ex))
+    result = currentdate
+  return result
 
 ### VIEWS ###
 
@@ -57,16 +100,19 @@ async def view_logout(request: Request):
 
 @app.get("/settings", response_class=HTMLResponse)
 async def view_settings(request: Request, db: Session = Depends(get_db)):
+  messages.clear()
   categorylist = weblists.get_weblist(db, "Category")
   currencylist = weblists.get_weblist(db, "Currency")
   accounttypelist = weblists.get_weblist(db, "AccountType")
   countrylist = weblists.get_weblist(db, "Country")
   userlist = users.list_users(db)
   exchangeratelist = exchangerates.list_exchangerates(db)
-  return templates.TemplateResponse("settings.html", {"request": request, "messages": messages, "g": g, "categorylist": categorylist, "currencylist": currencylist, "accounttypelist": accounttypelist, "countrylist": countrylist, "exchangeratelist": exchangeratelist, "userlist": userlist})
+  settings = get_settings()
+  return templates.TemplateResponse("settings.html", {"request": request, "messages": messages, "g": g, "categorylist": categorylist, "currencylist": currencylist, "accounttypelist": accounttypelist, "countrylist": countrylist, "exchangeratelist": exchangeratelist, "userlist": userlist, "settings": settings})
 
 @app.get("/transactions", response_class=HTMLResponse)
 async def view_transactions(request: Request, skip: int = 0, limit: int = 1000, filterby: str = "", filtervalue: str = "", sortby: str = "", db: Session = Depends(get_db)):
+  messages.clear()
   transactionlist = transactions.list_transactions(db, skip=skip, limit=limit, filterby=filterby, filtervalue=filtervalue, sortby=sortby)
   categorylist = weblists.get_weblist(db, "Category")
   currencylist = weblists.get_weblist(db, "Currency")
@@ -77,6 +123,7 @@ async def view_transactions(request: Request, skip: int = 0, limit: int = 1000, 
 
 @app.get("/accounts", response_class=HTMLResponse)
 async def view_accounts(request: Request, skip: int = 0, limit: int = 1000, filterby: str = "", filtervalue: str = "", sortby: str = "", db: Session = Depends(get_db)):
+  messages.clear()
   accountlist = accounts.list_accounts(db, skip=skip, limit=limit, filterby=filterby, filtervalue=filtervalue, sortby=sortby)
   currencylist = weblists.get_weblist(db, "Currency")
   accounttypelist = weblists.get_weblist(db, "AccountType")
@@ -84,9 +131,67 @@ async def view_accounts(request: Request, skip: int = 0, limit: int = 1000, filt
 
 @app.get("/budgets", response_class=HTMLResponse)
 async def view_budgets(request: Request, skip: int = 0, limit: int = 1000, filterby: str = "", filtervalue: str = "", sortby: str = "", db: Session = Depends(get_db)):
+  messages.clear()
   budgetlist = budgets.list_budgets(db, skip=skip, limit=limit, filterby=filterby, filtervalue=filtervalue, sortby=sortby)
   currencylist = weblists.get_weblist(db, "Currency")
   return templates.TemplateResponse("budgets.html", {"request": request, "messages": messages, "g": g, "currencylist": currencylist, "budgetlist": budgetlist})
+
+@app.post("/transactions/importfile", response_class=HTMLResponse)
+async def view_transactions_importfile(request: Request, uploadfile: UploadFile = File(...), db: Session = Depends(get_db)):
+  messages.clear()
+  result = {}
+  importarr = []
+  try:
+    fileread = await uploadfile.read()
+    filecontents = str(fileread, 'iso-8859-1')
+    for tmpline in filecontents.split("\n"):
+      tmparr = tmpline.split(",")
+      importarr.append(tmparr)
+    result["filename"] = uploadfile.filename
+    result["contenttype"] = uploadfile.content_type
+    result["headers"] = uploadfile.headers
+    result["size"] = uploadfile.size
+    result["contents"] = filecontents
+    result["error"] = ""
+  except Exception as ex:
+    result["error"] = str(ex)
+  currencylist = weblists.get_weblist(db, "Currency")
+  accountlist = accounts.list_accounts(db, skip=0, limit=1000, filterby="", filtervalue="", sortby="")
+  return templates.TemplateResponse("importfile.html", {"request": request, "messages": messages, "g": g, "result": result, "importarr": importarr, "filecontents": filecontents, "currencylist": currencylist, "accountlist": accountlist})
+
+@app.post("/transactions/importdata", response_class=HTMLResponse)
+async def view_transactions_importdata(request: Request, import_datetimeformat: str = Form(...), import_accountid: str = Form(...), import_currency: str = Form(...), datetimefield: str = Form(...), namefield: str = Form(...), descriptionfield: str = Form(...), amountfield: str = Form(...), categoryfield: str = Form(...), importeddata: str = Form(...), db: Session = Depends(get_db)):
+  messages.clear()
+  result = ""
+  datetime_col = int(datetimefield)-1
+  name_col = int(namefield)-1
+  description_col = int(descriptionfield)-1
+  amount_col = int(amountfield)-1
+  category_col = int(categoryfield)-1
+  acctid = int(import_accountid)
+  to_currency = accounts.get_account(db, acctid).currency
+  exrate = 1.0
+  if import_currency != str(to_currency):
+    exchangerate = exchangerates.get_exchangerate_from_to(db, currency, to_currency)
+    exrate = exchange.rate
+  try:
+    tmparray = importeddata.split("\n")
+    for tmpline in tmparray:
+      tmparr = tmpline.split(",")
+      newdatetime = parse_date(tmparr[datetime_col], import_datetimeformat)
+      amount = float(tmparr[amount_col])
+      convertedvalue = amount*float(exrate)
+      entity = transactions.add_transaction(db, newdatetime, amount, convertedvalue, tmparr[category_col], import_currency, tmparr[name_col], tmparr[description_col], acctid)
+  except Exception as ex:
+    result = str(ex)
+  message(result)
+  transactionlist = transactions.list_transactions(db, skip=0, limit=1000, filterby="", filtervalue="", sortby="")
+  categorylist = weblists.get_weblist(db, "Category")
+  currencylist = weblists.get_weblist(db, "Currency")
+  accounttypelist = weblists.get_weblist(db, "AccountType")
+  countrylist = weblists.get_weblist(db, "Country")
+  accountlist = accounts.list_accounts(db, skip=0, limit=1000, filterby="", filtervalue="", sortby="")
+  return templates.TemplateResponse("transactions.html", {"request": request, "messages": messages, "g": g, "categorylist": categorylist, "currencylist": currencylist, "accounttypelist": accounttypelist, "countrylist": countrylist, "accountlist": accountlist, "transactionlist": transactionlist})
 
 ### REST ###
 
