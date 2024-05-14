@@ -1,12 +1,13 @@
 from fastapi import Depends, FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from .database import SessionLocal, engine
-from . import models, schemas, accounts, budgets, transactions, users, weblists, exchangerates
+from . import models, schemas, auth, accounts, budgets, transactions, users, weblists, exchangerates
 
 ### Initialization
 
@@ -14,6 +15,11 @@ models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
+messages = []
+g = {}
+
+def message(msg: str = ""):
+  messages.append(msg)
 
 def get_db():
   db = SessionLocal()
@@ -27,7 +33,27 @@ def get_db():
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
-  return templates.TemplateResponse("index.html", {"request": request})
+  return templates.TemplateResponse("index.html", {"request": request, "messages": messages, "g": g})
+
+@app.get("/login", response_class=HTMLResponse)
+async def view_login_page(request: Request):
+  messages.clear()
+  return templates.TemplateResponse("login.html", {"request": request, "messages": messages, "g": g})
+
+@app.post("/login", response_class=HTMLResponse)
+async def view_login(request: Request, username: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
+  messages.clear()
+  token = auth.authenticate_user(db, username, password)
+  loginuser = auth.get_user_by_email(db, username)
+  g["token"] = token
+  g["user"] = loginuser.email
+  return templates.TemplateResponse("index.html", {"request": request, "messages": messages, "g": g})
+
+@app.get("/logout", response_class=HTMLResponse)
+async def view_logout(request: Request):
+  messages.clear()
+  g.clear()
+  return templates.TemplateResponse("index.html", {"request": request, "messages": messages, "g": g})
 
 @app.get("/settings", response_class=HTMLResponse)
 async def view_settings(request: Request, db: Session = Depends(get_db)):
@@ -35,8 +61,9 @@ async def view_settings(request: Request, db: Session = Depends(get_db)):
   currencylist = weblists.get_weblist(db, "Currency")
   accounttypelist = weblists.get_weblist(db, "AccountType")
   countrylist = weblists.get_weblist(db, "Country")
+  userlist = users.list_users(db)
   exchangeratelist = exchangerates.list_exchangerates(db)
-  return templates.TemplateResponse("settings.html", {"request": request, "categorylist": categorylist, "currencylist": currencylist, "accounttypelist": accounttypelist, "countrylist": countrylist, "exchangeratelist": exchangeratelist})
+  return templates.TemplateResponse("settings.html", {"request": request, "messages": messages, "g": g, "categorylist": categorylist, "currencylist": currencylist, "accounttypelist": accounttypelist, "countrylist": countrylist, "exchangeratelist": exchangeratelist, "userlist": userlist})
 
 @app.get("/transactions", response_class=HTMLResponse)
 async def view_transactions(request: Request, skip: int = 0, limit: int = 1000, filterby: str = "", filtervalue: str = "", sortby: str = "", db: Session = Depends(get_db)):
@@ -46,20 +73,20 @@ async def view_transactions(request: Request, skip: int = 0, limit: int = 1000, 
   accounttypelist = weblists.get_weblist(db, "AccountType")
   countrylist = weblists.get_weblist(db, "Country")
   accountlist = accounts.list_accounts(db, skip=0, limit=1000, filterby="", filtervalue="", sortby="")
-  return templates.TemplateResponse("transactions.html", {"request": request, "categorylist": categorylist, "currencylist": currencylist, "accounttypelist": accounttypelist, "countrylist": countrylist, "accountlist": accountlist, "transactionlist": transactionlist})
+  return templates.TemplateResponse("transactions.html", {"request": request, "messages": messages, "g": g, "categorylist": categorylist, "currencylist": currencylist, "accounttypelist": accounttypelist, "countrylist": countrylist, "accountlist": accountlist, "transactionlist": transactionlist})
 
 @app.get("/accounts", response_class=HTMLResponse)
 async def view_accounts(request: Request, skip: int = 0, limit: int = 1000, filterby: str = "", filtervalue: str = "", sortby: str = "", db: Session = Depends(get_db)):
   accountlist = accounts.list_accounts(db, skip=skip, limit=limit, filterby=filterby, filtervalue=filtervalue, sortby=sortby)
   currencylist = weblists.get_weblist(db, "Currency")
   accounttypelist = weblists.get_weblist(db, "AccountType")
-  return templates.TemplateResponse("accounts.html", {"request": request, "accounttypelist": accounttypelist, "currencylist": currencylist, "accountlist": accountlist})
+  return templates.TemplateResponse("accounts.html", {"request": request, "messages": messages, "g": g, "accounttypelist": accounttypelist, "currencylist": currencylist, "accountlist": accountlist})
 
 @app.get("/budgets", response_class=HTMLResponse)
 async def view_budgets(request: Request, skip: int = 0, limit: int = 1000, filterby: str = "", filtervalue: str = "", sortby: str = "", db: Session = Depends(get_db)):
   budgetlist = budgets.list_budgets(db, skip=skip, limit=limit, filterby=filterby, filtervalue=filtervalue, sortby=sortby)
   currencylist = weblists.get_weblist(db, "Currency")
-  return templates.TemplateResponse("budgets.html", {"request": request, "currencylist": currencylist, "budgetlist": budgetlist})
+  return templates.TemplateResponse("budgets.html", {"request": request, "messages": messages, "g": g, "currencylist": currencylist, "budgetlist": budgetlist})
 
 ### REST ###
 
@@ -138,7 +165,7 @@ async def rest_add_transaction(request: Request, datetimestamp: str = Form(...),
   to_currency = accounts.get_account(db, int(accountid)).currency
   if str(currency) != str(to_currency):
     exrate = exchangerates.get_exchangerate_from_to(db, currency, to_currency)
-    convertedvalue = float(amount)*exrate
+    convertedvalue = float(amount)*float(exrate.rate)
   entity = transactions.add_transaction(db, datetimestamp, float(amount), convertedvalue, category, currency, name, description, accountid)
   return entity
 
@@ -149,7 +176,7 @@ async def rest_update_transaction(request: Request, id: int, fieldname: str, fie
 
 @app.post("/rest/transaction/delete/{id}")
 async def rest_delete_transaction(request: Request, id: int, db: Session = Depends(get_db)):
-  transaction = transaction.get_transaction(db, id)
+  transaction = transactions.get_transaction(db, id)
   result = transactions.delete_transaction(db, id)
   return result
 
@@ -157,28 +184,35 @@ async def rest_delete_transaction(request: Request, id: int, db: Session = Depen
 
 @app.get("/rest/user/")
 async def rest_list_user(request: Request, db: Session = Depends(get_db)):
-  entitylist = users.list_users(db)
+  entitylist = auth.get_users(db)
   return entitylist
 
 @app.get("/rest/user/{id}")
 async def rest_get_user(request: Request, id: int, db: Session = Depends(get_db)):
-  entity = users.get_user(db, id)
+  entity = auth.get_user(db, id)
   return entity
   
 @app.post("/rest/user/")
 async def rest_create_user(request: Request, newentity: schemas.UserCreate, db: Session = Depends(get_db)):
-  entity = users.create_user(db, newentity)
+  entity = auth.create_user(db, newentity)
   return entity
 
 @app.post("/rest/user/add")
-async def rest_add_user(request: Request, email: str = Form(...), password: str = Form(...), passwordcheck: str = Form(...), db: Session = Depends(get_db)):
-  entity = users.add_user(db, email, password, passwordcheck)
+async def rest_add_user(request: Request, username: str = Form(...), email: str = Form(...), password: str = Form(...), passwordcheck: str = Form(...), db: Session = Depends(get_db)):
+  if password != passwordcheck:
+    return {"error":"Passwords must match"}
+  entity = auth.add_user(db, username, email, password)
   return entity
 
 @app.post("/rest/user/delete/{id}")
 async def rest_delete_user(request: Request, id: int, db: Session = Depends(get_db)):
-  result = users.delete_user(db, id)
+  result = auth.delete_user(db, id)
   return result
+
+@app.post("/token")
+async def token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+  token = auth.authenticate_user(db, form_data.username, form_data.password)
+  return token
 
 #
 

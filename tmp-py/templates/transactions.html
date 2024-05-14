@@ -1,11 +1,17 @@
 {% extends 'base.html' %}
 
 {% block title %}
+{% if g.user %}
 Transactions
+{% else %}
+{% endif %}
 {% endblock %}
 
 {% block header %}
+{% if g.user %}
 Transactions
+{% else %}
+{% endif %}
 {% endblock %}
 
 {% block navbar %}
@@ -15,6 +21,7 @@ Transactions
 {% endblock %}
 
 {% block content %}
+{% if g.user %}
 <script>
 $(document).ready(function(){
 
@@ -318,5 +325,6 @@ $(document).ready(function(){
     </div>
   </div>
 </div>
-
+{% else %}
+{% endif %}
 {% endblock %}

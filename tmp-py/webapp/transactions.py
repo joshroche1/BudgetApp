@@ -51,7 +51,7 @@ def create_transaction(db: Session, newtransaction):
   db.refresh(entity)
   return entity
 
-def add_transaction(db: Session, newdatetimtestamp, newamount, newconvertedvalue, newcategory, newcurrency, newname, newdescription, newaccount):
+def add_transaction(db: Session, newdatetimestamp, newamount, newconvertedvalue, newcategory, newcurrency, newname, newdescription, newaccountid):
   entity = models.Transaction(name=newname, description=newdescription, amount=newamount, convertedvalue=newconvertedvalue, currency=newcurrency, category=newcategory, accountid=newaccountid, datetimestamp=newdatetimestamp)
   db.add(entity)
   db.commit()

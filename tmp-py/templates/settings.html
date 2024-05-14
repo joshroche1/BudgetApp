@@ -1,11 +1,17 @@
 {% extends 'base.html' %}
 
 {% block title %}
+{% if g.user %}
 Settings
+{% else %}
+{% endif %}
 {% endblock %}
 
 {% block header %}
+{% if g.user %}
 Settings
+{% else %}
+{% endif %}
 {% endblock %}
 
 {% block navbar %}
@@ -15,6 +21,7 @@ Settings
 {% endblock %}
 
 {% block content %}
+{% if g.user %}
 <script>
 $(document).ready(function(){
   
@@ -394,10 +401,12 @@ $(document).ready(function(){
               </div>
               </td>
               <td><button type="button" id="new_user_submit" name="new_user_submit" class="btn btn-sm btn-success">ADD</button></td>
+              <td></td>
             </tr>
             
             {% for user in userlist %}
             <tr>
+              <td>{{ user.username }}</td>
               <td>{{ user.email }}</td>
               <td><button class="btn btn-sm btn-danger user_delete">{{ user.id }}</button></td>
             </tr>
@@ -427,5 +436,6 @@ $(document).ready(function(){
     </div>
   </div>
 </div>
-
+{% else %}
+{% endif %}
 {% endblock %}
