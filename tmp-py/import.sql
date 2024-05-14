@@ -37,10 +37,10 @@ INSERT INTO exchangerates (id, currency_from, currency_to, rate) VALUES
 INSERT INTO budgets (id, name, description, currency, ownerid) VALUES
 (1, 'Default', 'Default budget', 'EUR', 1);
 
-INSERT INTO budgetitems (id, name, description, amount, budgetid) VALUES
-(1, 'Income', 'Paycheck', 5000.00, 1),
-(2, 'Electric', 'Electric', 210.00, 1),
-(3, 'Housing', 'Rent Payment', 870.00, 1);
+INSERT INTO budgetitems (id, name, description, amount, category, budgetid) VALUES
+(1, 'Income', 'Paycheck', 5000.00, 'Income', 1),
+(2, 'Electric', 'EnBW', 210.00, 'Electric', 1),
+(3, 'Housing', 'Rent Payment', 870.00, 'Housing', 1);
 
 INSERT INTO accounts (id, name, description, currency, accounttype, ownerid) VALUES
 (1, 'EU Bank', 'Bank in the EU', 'EUR', 'Checking', 1);

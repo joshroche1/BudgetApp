@@ -48,6 +48,7 @@ class BudgetItem(Base):
   name = Column(String, default="")
   description = Column(String, default="")
   amount = Column(Float)
+  category = Column(String, default="")
   budgetid = Column(Integer, ForeignKey("budgets.id"))
   owner = relationship("Budget", back_populates="budgetitems")
 

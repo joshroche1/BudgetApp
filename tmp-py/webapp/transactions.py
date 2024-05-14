@@ -40,6 +40,9 @@ def list_transactions(db: Session, skip: int = 0, limit: int = 1000, filterby: s
     elif filterby == "accountid": return db.query(models.Transaction).filter(models.Transaction.accountid == filtervalue).order_by(models.Transaction.id.asc()).offset(skip).limit(limit).all()
     else: return db.query(models.Transaction).order_by(models.Transaction.id.asc()).offset(skip).limit(limit).all()
 
+def list_transactions_by_dates(db: Session, startdate: str, enddate: str):
+    return db.query(models.Transaction).filter(models.Transaction.datetimestamp >= startdate).filter(models.Transaction.datetimestamp <= enddate).order_by(models.Transaction.datetimestamp.desc()).all()
+
 def get_transaction(db: Session, id):
   entity = db.query(models.Transaction).filter(models.Transaction.id == id).first()
   return entity

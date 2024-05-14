@@ -73,6 +73,32 @@ $(document).ready(function(){
     }
   });
   
+  $("#create_budgetitem_submit").click(function(event){
+    if (confirm("Add budget item?")) {
+      let newname = $("#new_bi_name").val();
+      let newdescription = $("#new_bi_description").val();
+      let newamount = $("#new_bi_amount").val();
+      let newcategory = $("#new_bi_category").val();
+      let newbudgetid = $("#new_bi_budgetid").val();
+      let stritem = '{"name": "'+newname+'", "description": "'+newdescription+'", "amount": "'+newamount+'", "category": "'+newcategory+'", "budgetid": "'+newbudgetid+'"}';
+      const newitem = JSON.parse(stritem);
+      $.post("/rest/budgetitem/add", newitem, function(data, status){
+        let textout = "Response [" + status + "]: " + data;
+        $("#response_output").text(textout);
+      });
+    }
+  });
+  $(".delete_budgetitem").click(function(event){
+    if (confirm("Delete budget item?")) {
+      let budgetitem_id = $(event.currentTarget).text();
+      let post_url = "/rest/budgetitem/delete/" + budgetitem_id;
+      $.post(post_url, function(data, status){
+        let textout = "Response [" + status + "]: " + data;
+        $("#response_output").text(textout);
+      });
+    }
+  });
+  
 });
 </script>
 
@@ -137,6 +163,7 @@ $(document).ready(function(){
       <th><a href="/budgets?sortby=id" class="btn btn-sm">ID</a></th>
       <th><a href="/budgets?sortby=name" class="btn btn-sm">Name</a></th>
       <th><a href="" class="btn btn-sm">Description</a></th>
+      <th><button class="btn" data-bs-toggle="modal" data-bs-target="#create_budgetitem">+</button></th>
       <th><a href="/budgets?sortby=currency" class="btn btn-sm">Currency</a></th>
       <th></th>
     </tr>
@@ -148,6 +175,18 @@ $(document).ready(function(){
       </td>
       <td>{{ budget.name }}</td>
       <td>{{ budget.description }}</td>
+      <td>
+        <table class="table table-sm">
+          {% for bitem in budget.budgetitems %}
+          <tr>
+            <td>{{ bitem.name }}</td>
+            <td>{{ bitem.amount }}</td>
+            <td>{{ bitem.category }}</td>
+            <td><button class="btn btn-sm btn-danger delete_budgetitem">{{ bitem.id }}</button></td>
+          </tr>
+          {% endfor %}
+        </table>
+      </td>
       <td>{{ budget.currency }}</td>
       <td><button class="btn btn-sm btn-danger delete_item">{{ budget.id }}</button></td>
     </tr>
@@ -230,6 +269,45 @@ $(document).ready(function(){
       </div>
       <div class="modal-footer">
         <button type="button" id="create_budget_submit" class="btn btn-success">Create</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CREATE MODAL -->
+<div class="modal fade" id="create_budgetitem" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalLabel">New Budget Item</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col">
+            <label class="form-label">Name</label>
+            <input type="text" id="new_bi_name" name="new_bi_name" placeholder="Name" class="form-control">
+            <label class="form-label">Description</label>
+            <input type="text" id="new_bi_description" name="new_bi_description" placeholder="Description" class="form-control">
+            
+          </div>
+          <div class="col">
+            <label class="form-label">Amount</label>
+            <input type="text" id="new_bi_amount" name="new_bi_amount" placeholder="Amount" class="form-control">
+            <label class="form-label">Category</label>
+            <select id="new_bi_category" name="new_bi_category" class="form-select">
+              <option value="" selected disabled>Category</option>
+              {% for category in categorylist %}
+              <option value="{{ category.value }}">{{ category.value }}</option>
+              {% endfor %}
+            </select>
+            <label class="form-label">Budget ID</label>
+            <input type="text" id="new_bi_budgetid" name="new_bi_budgetid" placeholder="Budget ID" class="form-control">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="create_budgetitem_submit" class="btn btn-success">Create</button>
       </div>
     </div>
   </div>

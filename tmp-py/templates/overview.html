@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{% if g.user %}
+Budgets
+{% else %}
+{% endif %}
+{% endblock %}
+
+{% block header %}
+{% if g.user %}
+Budgets
+{% else %}
+{% endif %}
+{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+
+{% block sidenav %}
+{% endblock %}
+
+{% block content %}
+{% if g.user %}
+<script>
+$(document).ready(function(){
+
+  $("#searchfilter").on("keyup", function(){
+    var value = $(this).val().toLowerCase();
+    $("#item_table tr").filter(function(){
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+  $("#filtercurrency").change(function() {
+    var value = $(this).val();
+    $("#item_table tr").filter(function() {
+      $(this).toggle($(this).text().indexOf(value) > -1)
+    });
+  });
+  
+  $(".item_detail").click(function(event){
+    let budget_id = $(event.currentTarget).text();
+    let get_url = "/rest/budget/" + budget_id;
+    $.get(get_url, function(data, status){
+      $("#modalLabel").text(data.id);
+      $("#budget_name").text(data.name);
+      $("#budget_description").text(data.description);
+      $("#budget_currency").text(data.currency);
+    });
+  });
+  $(".delete_item").click(function(event){
+    if (confirm("Delete budget?")) {
+      let budget_id = $(event.currentTarget).text();
+      let post_url = "/rest/budget/delete/" + budget_id;
+      $.post(post_url, function(data, status){
+        let textout = "Response [" + status + "]: " + data;
+        $("#response_output").text(textout);
+      });
+    }
+  });
+  
+  $("#create_budget_submit").click(function(event){
+    if (confirm("Add budget?")) {
+      let newname = $("#new_name").val();
+      let newdescription = $("#new_description").val();
+      let newcurrency = $("#new_currency").val();
+      let stritem = '{"name": "'+newname+'", "description": "'+newdescription+'", "currency": "'+newcurrency+'"}';
+      const newitem = JSON.parse(stritem);
+      $.post("/rest/budget/add", newitem, function(data, status){
+        let textout = "Response [" + status + "]: " + data;
+        $("#response_output").text(textout);
+      });
+    }
+  });
+  
+  $("#create_budgetitem_submit").click(function(event){
+    if (confirm("Add budget item?")) {
+      let newname = $("#new_bi_name").val();
+      let newdescription = $("#new_bi_description").val();
+      let newamount = $("#new_bi_amount").val();
+      let newcategory = $("#new_bi_category").val();
+      let newbudgetid = $("#new_bi_budgetid").val();
+      let stritem = '{"name": "'+newname+'", "description": "'+newdescription+'", "amount": "'+newamount+'", "category": "'+newcategory+'", "budgetid": "'+newbudgetid+'"}';
+      const newitem = JSON.parse(stritem);
+      $.post("/rest/budgetitem/add", newitem, function(data, status){
+        let textout = "Response [" + status + "]: " + data;
+        $("#response_output").text(textout);
+      });
+    }
+  });
+  $(".delete_budgetitem").click(function(event){
+    if (confirm("Delete budget item?")) {
+      let budgetitem_id = $(event.currentTarget).text();
+      let post_url = "/rest/budgetitem/delete/" + budgetitem_id;
+      $.post(post_url, function(data, status){
+        let textout = "Response [" + status + "]: " + data;
+        $("#response_output").text(textout);
+      });
+    }
+  });
+  
+});
+</script>
+
+<!-- Top of Page Button in lower right corner -->
+<div class="z-3 opacity-50 position-fixed bottom-0 end-0">
+  <a href="#pageheader" class="btn btn-sm btn-danger">&#8613;</a>
+</div>
+
+<div class="row">
+  <div class="col">
+    <code><pre><p id="response_output"></p></pre></code>
+  </div>
+</div>
+
+<div class="container-fluid">
+
+  <form action="/overview" method="get">
+  <div class="row">
+    <div class="col">
+      <select id="budgetid" name="budgetid" class="form-select">
+        <option value="" selected disabled>Budget ID</option>
+        {% for budget in budgetlist %}
+        <option value="{{ budget.id }}">{{ budget.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col">
+      <div class="input-group">
+        <span class="input-group-text">Start</span>
+        <input type="date" id="startdate" name="startdate" class="form-control">
+        <span class="input-group-text">End</span>
+        <input type="date" id="enddate" name="enddate" class="form-control">
+      </div>
+    </div>
+    <div class="col">
+    </div>
+    <div class="col">
+      <input type="submit" value="UPDATE" class="btn btn-sm btn-primary">
+    </div>
+  </div>
+  </form>
+  
+  <div class="row">
+  </div>
+  
+  <div class="row">
+    <table class="table table-sm table-hover">
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Amount</th>
+        <th>Description</th>
+      </tr>
+      
+      {% for bitem in budgetitemlist %}
+      <tr>
+        <td>{{ bitem.id }}</td>
+        <td>{{ bitem.name }}</td>
+        <td>{{ bitem.category }}</td>
+        <td>{{ bitem.amount }}</td>
+        <td>{{ bitem.description }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  
+  <div class="row">
+    <table class="table table-sm table-hover">
+      <tr>
+        <th>ID</th>
+        <th>Date/Time</th>
+        <th>Amount</th>
+        <th></th>
+        <th>Category</th>
+        <th>Name</th>
+        <th>Currency</th>
+      </tr>
+      
+      {% for txaction in transactionlist %}
+      <tr>
+        <td>{{ txaction.id }}</td>
+        <td>{{ txaction.datetimestamp }}</td>
+        <td>{{ txaction.amount }}</td>
+        <td>{{ txaction.convertedamount }}</td>
+        <td>{{ txaction.category }}</td>
+        <td>{{ txaction.name }}</td>
+        <td>{{ txaction.currency }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+</div>
+{% else %}
+{% endif %}
+{% endblock %}

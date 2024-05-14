@@ -22,6 +22,7 @@ class BudgetItemBase(BaseModel):
   name: str
   description: str
   amount: float
+  category: str
   budgetid: int
 
 class BudgetItemCreate(BudgetItemBase):

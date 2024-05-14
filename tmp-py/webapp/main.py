@@ -8,7 +8,7 @@ from functools import lru_cache
 from sqlalchemy.orm import Session
 
 from .database import SessionLocal, engine
-from . import models, schemas, auth, config, accounts, budgets, transactions, users, weblists, exchangerates
+from . import models, schemas, auth, config, accounts, budgets, budgetitems, transactions, users, weblists, exchangerates
 
 ### Initialization
 
@@ -133,8 +133,9 @@ async def view_accounts(request: Request, skip: int = 0, limit: int = 1000, filt
 async def view_budgets(request: Request, skip: int = 0, limit: int = 1000, filterby: str = "", filtervalue: str = "", sortby: str = "", db: Session = Depends(get_db)):
   messages.clear()
   budgetlist = budgets.list_budgets(db, skip=skip, limit=limit, filterby=filterby, filtervalue=filtervalue, sortby=sortby)
+  categorylist = weblists.get_weblist(db, "Category")
   currencylist = weblists.get_weblist(db, "Currency")
-  return templates.TemplateResponse("budgets.html", {"request": request, "messages": messages, "g": g, "currencylist": currencylist, "budgetlist": budgetlist})
+  return templates.TemplateResponse("budgets.html", {"request": request, "messages": messages, "g": g, "currencylist": currencylist, "categorylist": categorylist, "budgetlist": budgetlist})
 
 @app.post("/transactions/importfile", response_class=HTMLResponse)
 async def view_transactions_importfile(request: Request, uploadfile: UploadFile = File(...), db: Session = Depends(get_db)):
@@ -193,6 +194,17 @@ async def view_transactions_importdata(request: Request, import_datetimeformat: 
   accountlist = accounts.list_accounts(db, skip=0, limit=1000, filterby="", filtervalue="", sortby="")
   return templates.TemplateResponse("transactions.html", {"request": request, "messages": messages, "g": g, "categorylist": categorylist, "currencylist": currencylist, "accounttypelist": accounttypelist, "countrylist": countrylist, "accountlist": accountlist, "transactionlist": transactionlist})
 
+@app.get("/overview", response_class=HTMLResponse)
+async def view_overview(request: Request, skip: int = 0, limit: int = 1000, filterby: str = "", filtervalue: str = "", sortby: str = "", budgetid: int = 1, startdate: str = "2020-01-01", enddate: str = "2024-04-04", db: Session = Depends(get_db)):
+  messages.clear()
+  transactionlist = transactions.list_transactions_by_dates(db, startdate, enddate)
+  budgetlist = budgets.list_budgets(db, skip=0, limit=1000, filterby="", filtervalue="", sortby="")
+  budgetitemlist = budgetitems.list_budgetitems(db, filterby="budgetid", filtervalue=budgetid)
+  categorylist = weblists.get_weblist(db, "Category")
+  currencylist = weblists.get_weblist(db, "Currency")
+  accounttypelist = weblists.get_weblist(db, "AccountType")
+  return templates.TemplateResponse("overview.html", {"request": request, "messages": messages, "g": g, "transactionlist": transactionlist, "currencylist": currencylist, "categorylist": categorylist, "accounttypelist": accounttypelist, "budgetlist": budgetlist, "budgetitemlist": budgetitemlist})
+
 ### REST ###
 
 @app.get("/rest/account/")
@@ -245,6 +257,33 @@ async def rest_add_budget(request: Request, name: str = Form(...), description: 
 @app.post("/rest/budget/delete/{id}")
 async def rest_delete_budget(request: Request, id: int, db: Session = Depends(get_db)):
   result = budgets.delete_budget(db, id)
+  return result
+
+#
+
+@app.get("/rest/budgetitem/")
+async def rest_list_budgetitem(request: Request, db: Session = Depends(get_db)):
+  entitylist = budgetitems.list_budgetitems(db)
+  return entitylist
+
+@app.get("/rest/budgetitem/{id}")
+async def rest_get_budgetitem(request: Request, id: int, db: Session = Depends(get_db)):
+  entity = budgetitems.get_budgetitem(db, id)
+  return entity
+  
+@app.post("/rest/budgetitem/")
+async def rest_create_budgetitem(request: Request, newentity: schemas.BudgetItemCreate, db: Session = Depends(get_db)):
+  entity = budgetitems.create_budgetitem(db, newentity)
+  return entity
+
+@app.post("/rest/budgetitem/add")
+async def rest_add_budgetitem(request: Request, name: str = Form(...), description: str = Form(...), amount: str = Form(...), category: str = Form(...), budgetid: str = Form(...), db: Session = Depends(get_db)):
+  entity = budgetitems.add_budgetitem(db, name, description, amount, category, budgetid)
+  return entity
+
+@app.post("/rest/budgetitem/delete/{id}")
+async def rest_delete_budgetitem(request: Request, id: int, db: Session = Depends(get_db)):
+  result = budgetitems.delete_budgetitem(db, id)
   return result
 
 #
@@ -304,6 +343,8 @@ async def rest_create_user(request: Request, newentity: schemas.UserCreate, db: 
 
 @app.post("/rest/user/add")
 async def rest_add_user(request: Request, username: str = Form(...), email: str = Form(...), password: str = Form(...), passwordcheck: str = Form(...), db: Session = Depends(get_db)):
+  if username == "": return {"message": "No username provided"}
+  if email == "": return {"message": "No email provided"}
   if password != passwordcheck:
     return {"error":"Passwords must match"}
   entity = auth.add_user(db, username, email, password)
