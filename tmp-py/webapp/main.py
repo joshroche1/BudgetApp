@@ -203,7 +203,8 @@ async def view_overview(request: Request, skip: int = 0, limit: int = 1000, filt
   categorylist = weblists.get_weblist(db, "Category")
   currencylist = weblists.get_weblist(db, "Currency")
   accounttypelist = weblists.get_weblist(db, "AccountType")
-  return templates.TemplateResponse("overview.html", {"request": request, "messages": messages, "g": g, "transactionlist": transactionlist, "currencylist": currencylist, "categorylist": categorylist, "accounttypelist": accounttypelist, "budgetlist": budgetlist, "budgetitemlist": budgetitemlist})
+  overviewdata = transactions.parse_overview_data(db, startdate, enddate, budgetitemlist)
+  return templates.TemplateResponse("overview.html", {"request": request, "messages": messages, "g": g, "transactionlist": transactionlist, "currencylist": currencylist, "categorylist": categorylist, "accounttypelist": accounttypelist, "budgetlist": budgetlist, "budgetitemlist": budgetitemlist, "overviewdata": overviewdata})
 
 ### REST ###
 
