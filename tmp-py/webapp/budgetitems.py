@@ -19,14 +19,14 @@ def get_budgetitem(db: Session, id):
   return entity
 
 def create_budgetitem(db: Session, newbudgetitem):
-  entity = models.BudgetItem(name=newbudgetitem.name, description=newbudgetitem.description, amount=newbudgetitem.amount, category=newbudgetitem.category, budgetid=newbudgetitem.budgetid)
+  entity = models.BudgetItem(name=newbudgetitem.name, description=newbudgetitem.description, amount=newbudgetitem.amount, category=newbudgetitem.category, recurrence=newbudgetitem.recurrence, duedate=newbudgetitem.duedate, budgetid=newbudgetitem.budgetid)
   db.add(entity)
   db.commit()
   db.refresh(entity)
   return entity
 
-def add_budgetitem(db: Session, newname: str, newdescription: str, newamount: str, newcategory: str, newbudgetid: int):
-  entity = models.BudgetItem(name=newname, description=newdescription, amount=newamount, category=newcategory, budgetid=newbudgetid)
+def add_budgetitem(db: Session, newname: str, newdescription: str, newamount: str, newcategory: str, newrecurrence: str, newduedate: str, newbudgetid: int):
+  entity = models.BudgetItem(name=newname, description=newdescription, amount=newamount, category=newcategory, recurrence=newrecurrence, duedate=newduedate, budgetid=newbudgetid)
   db.add(entity)
   db.commit()
   db.refresh(entity)

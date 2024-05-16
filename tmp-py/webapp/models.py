@@ -49,6 +49,8 @@ class BudgetItem(Base):
   description = Column(String, default="")
   amount = Column(Float)
   category = Column(String, default="")
+  recurrence = Column(String, default="")
+  duedate = Column(Integer)
   budgetid = Column(Integer, ForeignKey("budgets.id"))
   owner = relationship("Budget", back_populates="budgetitems")
 

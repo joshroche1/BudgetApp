@@ -1,0 +1,25 @@
+1,Category,Other
+2,Category,Housing
+3,Category,Electric
+4,Category,Water
+5,Category,Utilities
+6,Category,Phone
+7,Category,Internet
+8,Category,Insurance
+9,Category,Debt
+10,Category,Credit
+11,Category,Food
+12,Category,Mobility
+13,Category,Entertainment
+14,Category,Income
+15,Category,Expense
+16,AccountType,Checking
+17,AccountType,Savings
+18,Currency,USD
+19,Currency,EUR
+20,Country,USA
+21,Country,DE
+22,Category,Shopping
+23,Category,Transfer
+24,Category,"Child Support"
+25,Category,Bills

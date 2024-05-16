@@ -225,7 +225,7 @@ async def rest_create_account(request: Request, newentity: schemas.AccountCreate
 
 @app.post("/rest/account/add")
 async def rest_add_account(request: Request, name: str = Form(...), description: str = Form(...), currency: str = Form(...), accounttype: str = Form(...), db: Session = Depends(get_db)):
-  entity = accounts.add_account(db, name, description, accounttype, currency)
+  entity = accounts.add_account(db, name, description, currency, accounttype)
   return entity
 
 @app.post("/rest/account/delete/{id}")
@@ -278,8 +278,8 @@ async def rest_create_budgetitem(request: Request, newentity: schemas.BudgetItem
   return entity
 
 @app.post("/rest/budgetitem/add")
-async def rest_add_budgetitem(request: Request, name: str = Form(...), description: str = Form(...), amount: str = Form(...), category: str = Form(...), budgetid: str = Form(...), db: Session = Depends(get_db)):
-  entity = budgetitems.add_budgetitem(db, name, description, amount, category, budgetid)
+async def rest_add_budgetitem(request: Request, name: str = Form(...), description: str = Form(...), amount: str = Form(...), category: str = Form(...), recurrence: str = Form(...), duedate: str = Form(...), budgetid: str = Form(...), db: Session = Depends(get_db)):
+  entity = budgetitems.add_budgetitem(db, name, description, amount, category, recurrence, duedate, budgetid)
   return entity
 
 @app.post("/rest/budgetitem/delete/{id}")

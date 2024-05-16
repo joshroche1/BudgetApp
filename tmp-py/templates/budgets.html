@@ -55,6 +55,7 @@ $(document).ready(function(){
       $.post(post_url, function(data, status){
         let textout = "Response [" + status + "]: " + data;
         $("#response_output").text(textout);
+        location.reload();
       });
     }
   });
@@ -69,6 +70,7 @@ $(document).ready(function(){
       $.post("/rest/budget/add", newitem, function(data, status){
         let textout = "Response [" + status + "]: " + data;
         $("#response_output").text(textout);
+        location.reload();
       });
     }
   });
@@ -79,12 +81,15 @@ $(document).ready(function(){
       let newdescription = $("#new_bi_description").val();
       let newamount = $("#new_bi_amount").val();
       let newcategory = $("#new_bi_category").val();
+      let newrecurrence = $("#new_bi_recurrence").val();
+      let newduedate = $("#new_bi_duedate").val();
       let newbudgetid = $("#new_bi_budgetid").val();
-      let stritem = '{"name": "'+newname+'", "description": "'+newdescription+'", "amount": "'+newamount+'", "category": "'+newcategory+'", "budgetid": "'+newbudgetid+'"}';
+      let stritem = '{"name": "'+newname+'", "description": "'+newdescription+'", "amount": "'+newamount+'", "category": "'+newcategory+'", "recurrence": "'+newrecurrence+'", "duedate": "'+newduedate+'", "budgetid": "'+newbudgetid+'"}';
       const newitem = JSON.parse(stritem);
       $.post("/rest/budgetitem/add", newitem, function(data, status){
         let textout = "Response [" + status + "]: " + data;
         $("#response_output").text(textout);
+        location.reload();
       });
     }
   });
@@ -95,6 +100,7 @@ $(document).ready(function(){
       $.post(post_url, function(data, status){
         let textout = "Response [" + status + "]: " + data;
         $("#response_output").text(textout);
+        location.reload();
       });
     }
   });
@@ -289,6 +295,17 @@ $(document).ready(function(){
             <input type="text" id="new_bi_name" name="new_bi_name" placeholder="Name" class="form-control">
             <label class="form-label">Description</label>
             <input type="text" id="new_bi_description" name="new_bi_description" placeholder="Description" class="form-control">
+            <label class="form-label">Due Date</label>
+            <input type="number" id="new_bi_duedate" name="new_bi_duedate" min="1" max="31" value="1" class="form-control">
+            <label class="form-label">Recurrence</label>
+            <select id="new_bi_recurrence" name="new_bi_recurrence" class="form-select">
+              <option value="Monthly" selected>Recurrence</option>
+              <option value="Monthly">Monthly</option>
+              <option value="Weekly">Weekly</option>
+              <option value="Bi-weekly">Bi-weekly</option>
+              <option value="Bi-annually">Bi-annually</option>
+              <option value="Yearly">Yearly</option>
+            </select>
             
           </div>
           <div class="col">

@@ -24,6 +24,8 @@ class BudgetItemBase(BaseModel):
   amount: float
   category: str
   budgetid: int
+  recurrence: str
+  duedate: int
 
 class BudgetItemCreate(BudgetItemBase):
   pass
