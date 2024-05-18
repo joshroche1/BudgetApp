@@ -19,6 +19,27 @@ templates = Jinja2Templates(directory="templates")
 messages = []
 g = {}
 
+testChartData = {
+  "lineChartData": {
+    "labels": "JAN,FEB,MAR,APR,MAY,JUN,JUL,AUG,SEP,OCT,NOV,DEC",
+    "Income": "4220.00, 4200.00, 4200.00, 4200.00, 4200.00, 4200.00, 4200.00, 4200.00, 4200.00, 4200.00, 4200.00, 4200.00",
+    "Housing": "870.00, 870.00, 870.00, 870.00, 870.00, 870.00, 870.00, 870.00, 870.00, 870.00, 870.00, 870.00",
+    "Phone": "95.00, 95.00, 96.00, 95.15, 95.00, 94.00, 95.00, 95.10, 95.90, 95.00, 95.00, 95.00",
+    "Internet": "115.00, 115.00, 115.30, 115.00, 115.50, 115.50, 115.45, 115.00, 115.00, 115.15, 115.00, 116.00",
+    "Utilities": "250.00, 250.00, 250.00, 250.00, 250.00, 250.00, 250.00, 250.00, 250.00, 250.00, 250.00, 250.00",
+    "Debt": "350.00, 350.00, 350.00, 350.00, 350.00, 350.00, 350.00, 350.00, 350.00, 350.00, 350.00, 350.00",
+    "Credit": "250.00, 250.00, 250.00, 250.00, 250.00, 250.00, 250.00, 250.00, 250.00, 250.00, 250.00, 250.00"
+  },
+  "pieChartData": {
+    "labels": "Housing,Electric,Phone,Internet,Utilities,Debt,Credit",
+    "data": "870.00,205.00,95.00,115.00,250.00,350.00,250.00"
+  },
+  "barChartData": {
+    "labels": "Housing,Electric,Phone,Internet,Utilities,Debt,Credit",
+    "data": "870.00,205.00,95.00,115.00,250.00,350.00,250.00"
+  },
+}
+
 @lru_cache
 def get_settings():
   return config.Settings()
@@ -195,16 +216,20 @@ async def view_transactions_importdata(request: Request, import_datetimeformat: 
   return templates.TemplateResponse("transactions.html", {"request": request, "messages": messages, "g": g, "categorylist": categorylist, "currencylist": currencylist, "accounttypelist": accounttypelist, "countrylist": countrylist, "accountlist": accountlist, "transactionlist": transactionlist})
 
 @app.get("/overview", response_class=HTMLResponse)
-async def view_overview(request: Request, skip: int = 0, limit: int = 1000, filterby: str = "", filtervalue: str = "", sortby: str = "", budgetid: int = 1, startdate: str = "2020-01-01", enddate: str = "2024-04-04", db: Session = Depends(get_db)):
+async def view_overview(request: Request, skip: int = 0, limit: int = 1000, filterby: str = "", filtervalue: str = "", sortby: str = "", budgetid: int = 1, startdate: str = "", enddate: str = "", db: Session = Depends(get_db)):
   messages.clear()
+  currentdate = datetime.datetime.now()
+  if enddate == "": enddate = currentdate.strftime('%Y-%m-%d')
+  if startdate == "": startdate = datetime.datetime(currentdate.year-1, currentdate.month, currentdate.day).strftime('%Y-%m-%d')
+  #chartData = testChartData
   transactionlist = transactions.list_transactions_by_dates(db, startdate, enddate)
   budgetlist = budgets.list_budgets(db, skip=0, limit=1000, filterby="", filtervalue="", sortby="")
   budgetitemlist = budgetitems.list_budgetitems(db, filterby="budgetid", filtervalue=budgetid)
   categorylist = weblists.get_weblist(db, "Category")
   currencylist = weblists.get_weblist(db, "Currency")
   accounttypelist = weblists.get_weblist(db, "AccountType")
-  overviewdata = transactions.parse_overview_data(db, startdate, enddate, budgetitemlist)
-  return templates.TemplateResponse("overview.html", {"request": request, "messages": messages, "g": g, "transactionlist": transactionlist, "currencylist": currencylist, "categorylist": categorylist, "accounttypelist": accounttypelist, "budgetlist": budgetlist, "budgetitemlist": budgetitemlist, "overviewdata": overviewdata})
+  chartData = transactions.parse_data_overview(db, startdate, enddate, budgetitemlist)
+  return templates.TemplateResponse("overview.html", {"request": request, "messages": messages, "g": g, "transactionlist": transactionlist, "currencylist": currencylist, "categorylist": categorylist, "accounttypelist": accounttypelist, "budgetlist": budgetlist, "budgetitemlist": budgetitemlist, "chartData": chartData})
 
 ### REST ###
 

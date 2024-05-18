@@ -141,13 +141,41 @@ $(document).ready(function(){
   </div>
   </form>
   
-  <div class="row">
+  <div class="m-1 p-1">
+    <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseChartData" aria-expanded="false" aria-controls="collapseChartData">
+      <h3>Chart Data</h3>
+    </button>
+  </div>
+  <div id="collapseChartData" class="collapse">
+    <code>{{ chartData }}</code>
+  </div> 
+  
+  <div class="m-1 p-1">
+    <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLineChart" aria-expanded="false" aria-controls="collapseLineChart">
+      <h3>Line Chart</h3>
+    </button>
+  </div>
+  <div id="collapseLineChart" class="collapse show">
+    <canvas id="lineChartBudget" style="width:100%;max-width:1600px;height:400px;max-height:1600px;"></canvas>
   </div>
   
-  <div class="row">
-    <h3>Chart data</h3>
-    <code>{{ overviewdata }}</code>
+  <div class="m-1 p-1">
+    <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePieCharts" aria-expanded="false" aria-controls="collapsePieCharts">
+      <h3>Line Chart</h3>
+    </button>
   </div>
+  <div id="collapsePieCharts" class="collapse show">
+    <div class="row">
+      <div class="col">
+        <h3>Budget Items</h3>
+        <canvas id="pieChartBudgetItems" style="width:100%;max-width:1600px;height:400px;max-height:1600px;"></canvas>
+      </div>
+      <div class="col">
+        <h3>Transactions</h3>
+        <canvas id="pieChartTxactions" style="width:100%;max-width:1600px;height:400px;max-height:1600px;"></canvas>
+      </div>
+    </div>
+  </div>  
   
   <div class="row">
     <table class="table table-sm table-hover">
@@ -198,6 +226,137 @@ $(document).ready(function(){
   </div>
 
 </div>
+<script>
+var barColors = [
+  "#b91d47",
+  "#00aba9",
+  "#2b5797",
+  "#e8c3b9",
+  "#1e7145",
+  "#00FFFF",
+  "#7FFFD4",
+  "#FFE4C4",
+  "#0000FF"
+];
+var chartColors = [
+  "Maroon",
+  "Gold",
+  "Crimson",
+  "DarkOrange",
+  "SteelBlue",
+  "MediumOrchid",
+  "Blue",
+  "Cyan",
+  "Teal",
+  "Navy",
+  "Yellow",
+  "Red",
+  "MediumBlue",
+  "Gold",
+  "DarkRed",
+  "DarkCyan",
+  "Cyan",
+  "Orange",
+  "Brown",
+  "Turquoise",
+  "DarkOrange",
+  "Green",
+  "Maroon",
+  "GreenYellow",
+  "Tomato",
+  "Indigo",
+  "GoldenRod",
+  "Purple",
+  "Violet",
+  "Pink"
+];
+new Chart("pieChartBudgetItems", {
+  type: "doughnut",
+  data: {
+    labels: '{{ chartData.budgetChartDict.labels }}'.split(","),
+    datasets: [{
+      backgroundColor: chartColors,
+      data: '{{ chartData.budgetChartDict.data }}'.split(",")
+    }]
+  },
+  options: {
+    title: {
+      display: true,
+      text: "Budget Items"
+    }
+  }
+});
+new Chart("pieChartTxactions", {
+  type: "doughnut",
+  data: {
+    labels: '{{ chartData.txChartDict.labels }}'.split(","),
+    datasets: [{
+      backgroundColor: chartColors,
+      data: '{{ chartData.txChartDict.data }}'.split(",")
+    }]
+  },
+  options: {
+    legend: {
+      display: true
+    },
+    title: {
+      display: true,
+      text: "Transactions"
+    }
+  }
+});
+new Chart("lineChartBudget", {
+  type: "line",
+  data: {
+    labels: '{{ chartData.lineChartData.labels }}'.split(","),
+    datasets: [{
+      data: '{{ chartData.lineChartData.Income }}'.split(","),
+      label: "Income",
+      borderColor: "LimeGreen",
+      backgroundColor: "HoneyDew"
+    },{
+      data: '{{ chartData.lineChartData.Housing }}'.split(","),
+      label: "Housing",
+      borderColor: "Maroon",
+    },{
+      data: '{{ chartData.lineChartData.Electric }}'.split(","),
+      label: "Electric",
+      borderColor: "Gold",
+    },{
+      data: '{{ chartData.lineChartData.Phone }}'.split(","),
+      label: "Phone",
+      borderColor: "Crimson",
+    },{
+      data: '{{ chartData.lineChartData.Internet }}'.split(","),
+      label: "Internet",
+      borderColor: "DarkOrange",
+    },{
+      data: '{{ chartData.lineChartData.Debt }}'.split(","),
+      label: "Debt",
+      borderColor: "Blue",
+    },{
+      data: '{{ chartData.lineChartData.Credit }}'.split(","),
+      label: "Credit",
+      borderColor: "Cyan",
+    }]
+  },
+  options: {
+    elements: {
+      line: {
+        borderWidth: 2,
+        tension: 0.2
+      }
+    },
+    legend: {
+      display: true
+    },
+    title: {
+      display: true,
+      text: "Budget"
+    }
+  }
+});
+</script>
 {% else %}
 {% endif %}
 {% endblock %}

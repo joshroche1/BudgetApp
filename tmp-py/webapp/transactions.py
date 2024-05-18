@@ -93,66 +93,100 @@ def delete_transaction(db: Session, bid):
   db.commit()
   return True
 
-def parse_overview_data(db: Session, startdate, enddate, budgetitemlist):
-  txdict = {}
+def parse_timeframe_list(startdate, enddate):
   montharr = []
-  try:
-    stdarr = startdate.split("-")
-    endarr = enddate.split("-")
-    styear = int(stdarr[0])
-    stmonth = int(stdarr[1])
-    endyear = int(endarr[0])
-    endmonth = int(endarr[1])
-    months = 0
-    if styear < endyear:
-      if stmonth >= endmonth:
-        months = (12-endmonth) + stmonth
-      elif stmonth < endmonth:
-        months = endmonth - stmonth + 12
-    elif styear == endyear:
-      if stmonth < endmonth:
-        months = endmonth - stmonth
-      else:
-        print("End month after start month: " + startdate + " " + enddate)
-        return 0
+  stdarr = startdate.split("-")
+  endarr = enddate.split("-")
+  styear = int(stdarr[0])
+  stmonth = int(stdarr[1])
+  endyear = int(endarr[0])
+  endmonth = int(endarr[1])
+  months = 0
+  if styear < endyear:
+    if stmonth >= endmonth:
+      months = (12-endmonth) + stmonth
+    elif stmonth < endmonth:
+      months = endmonth - stmonth + 12
+  elif styear == endyear:
+    if stmonth < endmonth:
+      months = endmonth - stmonth
     else:
-      print("End date after start date: " + startdate + " " + enddate)
+      print("End month after start month: " + startdate + " " + enddate)
       return 0
-    xLabels = []
-    for bitem in budgetitemlist:
-      if xLabels.count(bitem.category) >= 1:
-        pass
-      elif xLabels.count(bitem.category) < 1:
-        xLabels.append(bitem.category)
-    for i in range(months+1):
-      if (int(stdarr[1])+i) > 12:
-        if stmonth+i < 10:
-          tmpstr = str(styear+1) + "-0" + str((stmonth+i)-12) + "-01"
-          montharr.append(tmpstr)
-        else:
-          tmpstr = str(styear+1) + "-0" + str((stmonth+i)-12) + "-01"
-          montharr.append(tmpstr)
+  else:
+    print("End date after start date: " + startdate + " " + enddate)
+    return 0
+  for i in range(months+1):
+    if (int(stdarr[1])+i) > 12:
+      if stmonth+i < 10:
+        tmpstr = str(styear+1) + "-0" + str((stmonth+i)-12) + "-01"
+        montharr.append(tmpstr)
       else:
-        if stmonth+i < 10:
-          tmpstr = str(styear) + "-0" + str(stmonth+i) + "-01"
-          montharr.append(tmpstr)
-        else:
-          tmpstr = str(styear) + "-" + str(stmonth+i) + "-01"
-          montharr.append(tmpstr)
-    for xlabel in xLabels:
-      tmpvalstr = ""
+        tmpstr = str(styear+1) + "-0" + str((stmonth+i)-12) + "-01"
+        montharr.append(tmpstr)
+    else:
+      if stmonth+i < 10:
+        tmpstr = str(styear) + "-0" + str(stmonth+i) + "-01"
+        montharr.append(tmpstr)
+      else:
+        tmpstr = str(styear) + "-" + str(stmonth+i) + "-01"
+        montharr.append(tmpstr)
+  return montharr
+
+def parse_data_overview(db: Session, startdate, enddate, bitemlist):
+  resultdict = {}
+  try:
+    lineChartDict = {}
+    budgetChartDict = {}
+    txChartDict = {}
+    resultdict["lineChartData"] = ""
+    resultdict["budgetChartDict"] = ""
+    resultdict["txChartDict"] = ""
+    budgetdict = {}
+    txvaluesdict = {}
+    montharr = parse_timeframe_list(startdate, enddate)
+    categoryarr = []
+    bitemlabels = ""
+    for bitem in bitemlist:
+      if categoryarr.count(bitem.category) >= 1:
+        budgetdict[bitem.category] += bitem.amount
+      else:
+        categoryarr.append(bitem.category)
+        bitemlabels += bitem.category + ","
+        budgetdict[bitem.category] = bitem.amount
+    for category in categoryarr:
+      linechartvalues = ""
       for x in range(len(montharr)-1):
-        tmpamt = 0.0
-        txactions = list_transactions_by_dates(db,montharr[x],montharr[x+1],filtervalue=xlabel)
-        for txaction in txactions:
-          if xlabel == "Income":
-            tmpamt = tmpamt + (txaction.convertedvalue*1.0)
+        tmpvalue = 0.0
+        txlist = list_transactions_by_dates(db, montharr[x], montharr[x+1], filtervalue=category)
+        for txaction in txlist:
+          if category == "Income":
+            tmpvalue = tmpvalue + (txaction.convertedvalue*1.0)
           else:
-            tmpamt = tmpamt + (txaction.convertedvalue*-1.0)
-        tmpvalstr = tmpvalstr + str(tmpamt) + ","
-      txdict[xlabel] = tmpvalstr
-      txdict["Labels"] = xLabels
-      txdict["Months"] = montharr
+            tmpvalue = tmpvalue + (txaction.convertedvalue*-1.0)
+        linechartvalues = linechartvalues + str(round(tmpvalue, 2)) + ","
+      lineChartDict[category] = linechartvalues
+      txvaluesdict[category] = tmpvalue
+    lineChartLabels = ""
+    for month in montharr:
+      lineChartLabels += month + ","
+    lineChartDict["labels"] = lineChartLabels
+    budgetChartDict["labels"] = bitemlabels
+    txChartDict["labels"] = bitemlabels
+    budgetvalues = ""
+    txvalues = ""
+    for budgetcategory in budgetdict:
+      budgetvalues += str(round(budgetdict[budgetcategory], 2)) + ","
+    for txcategory in txvaluesdict:
+      txvalues += str(round(txvaluesdict[txcategory], 2)) + ","
+    budgetChartDict["data"] = budgetvalues
+    txChartDict["data"] = txvalues
+    resultdict["lineChartData"] = lineChartDict
+    resultdict["budgetChartDict"] = budgetChartDict
+    resultdict["txChartDict"] = txChartDict
+    resultdict["error"] = ""
   except Exception as ex:
-    txdict["error"] = str(ex)
-  return txdict
+    resultdict["error"] = str(ex)
+  return resultdict
+
+#
