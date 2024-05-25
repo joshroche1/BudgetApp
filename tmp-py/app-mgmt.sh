@@ -1,12 +1,12 @@
 #!/bin/bash
 
 
-SUBCMD=$2
-ENVFILE=$1
+SUBCMD=$1
+ENVFILE=env
 
 function show_usage() {
   echo
-  echo "Usage: ./app-mgmt.sh [ENV_FILE] [ACTION]"
+  echo "Usage: ./app-mgmt.sh [ACTION]"
   echo
   echo "  ACTION:"
   echo "    start"
@@ -41,7 +41,7 @@ function stop_app() {
 }
 
 
-if [ $# -lt 2 ]
+if [ $# -lt 1 ]
 then
   show_usage
 fi
