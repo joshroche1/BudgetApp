@@ -142,6 +142,19 @@ async def view_transactions(request: Request, skip: int = 0, limit: int = 1000, 
   accountlist = accounts.list_accounts(db, skip=0, limit=1000, filterby="", filtervalue="", sortby="")
   return templates.TemplateResponse("transactions.html", {"request": request, "messages": messages, "g": g, "categorylist": categorylist, "currencylist": currencylist, "accounttypelist": accounttypelist, "countrylist": countrylist, "accountlist": accountlist, "transactionlist": transactionlist})
 
+@app.post("/transactions/apply_category", response_class=HTMLResponse)
+async def view_transactions_apply_category(request: Request, skip: int = 0, limit: int = 1000, searchfilter: str = Form(...), applycategory: str = Form(...), filterby: str = "", filtervalue: str = "", sortby: str = "", db: Session = Depends(get_db)):
+  messages.clear()
+  result = transactions.apply_category_to_searchterm(db, applycategory, searchfilter)
+  message(result)
+  transactionlist = transactions.list_transactions(db, skip=skip, limit=limit, filterby=filterby, filtervalue=filtervalue, sortby=sortby)
+  categorylist = weblists.get_weblist(db, "Category")
+  currencylist = weblists.get_weblist(db, "Currency")
+  accounttypelist = weblists.get_weblist(db, "AccountType")
+  countrylist = weblists.get_weblist(db, "Country")
+  accountlist = accounts.list_accounts(db, skip=0, limit=1000, filterby="", filtervalue="", sortby="")
+  return templates.TemplateResponse("transactions.html", {"request": request, "messages": messages, "g": g, "categorylist": categorylist, "currencylist": currencylist, "accounttypelist": accounttypelist, "countrylist": countrylist, "accountlist": accountlist, "transactionlist": transactionlist})
+
 @app.get("/accounts", response_class=HTMLResponse)
 async def view_accounts(request: Request, skip: int = 0, limit: int = 1000, filterby: str = "", filtervalue: str = "", sortby: str = "", db: Session = Depends(get_db)):
   messages.clear()

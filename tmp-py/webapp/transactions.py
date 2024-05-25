@@ -93,6 +93,21 @@ def delete_transaction(db: Session, bid):
   db.commit()
   return True
 
+def apply_category_to_searchterm(db: Session, applyfilter: str, searchfilter: str):
+  searchterm = "%"+searchfilter+"%"
+  try:
+    txlist_name = db.query(models.Transaction).filter(models.Transaction.name.like(searchterm)).order_by(models.Transaction.id.desc()).all()
+    txlist_desc = db.query(models.Transaction).filter(models.Transaction.description.like(searchterm)).order_by(models.Transaction.id.desc()).all()
+    for txaction in txlist_name:
+      txaction.category = applyfilter
+    for txactn in txlist_desc:
+      txactn.category = applyfilter
+    db.commit()
+    result = "Applied category ["+applyfilter+"] to selected transactions"
+  except Exception as ex:
+    result = str(ex)
+  return result
+
 def parse_timeframe_list(startdate, enddate):
   montharr = []
   stdarr = startdate.split("-")

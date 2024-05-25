@@ -129,7 +129,7 @@ $(document).ready(function(){
     </div>
     <div class="col-12 col-sm-3">
       <select id="limit" name="limit" class="form-select">
-        <option value="" disabled>Per Page</option>
+        <option value="" selected disabled>Per Page</option>
         <option value="10">10</option>
         <option value="25">25</option>
         <option value="50">50</option>
@@ -145,11 +145,10 @@ $(document).ready(function(){
   <div id="filterpanel" class="collapse">
     <div class="row">
       <div class="col-12 col-sm-3">
-        <input id="searchfilter" name="searchfilter" Placeholder="Enter a search term" class="form-control">
       </div>
       <div class="col-12 col-sm-3">
         <select id="filtercategory" name="filtercategory" class="form-select">
-          <option value="" disabled>Category</option>
+          <option value="" selected disabled>Category</option>
           {% for category in categorylist %}
           <option value="{{ category.value }}">{{ category.value }}</option>
           {% endfor %}
@@ -157,7 +156,7 @@ $(document).ready(function(){
       </div>
       <div class="col-12 col-sm-3">
         <select id="filtercurrency" name="filtercurrency" class="form-select">
-          <option value="" disabled>Currency</option>
+          <option value="" selected disabled>Currency</option>
           {% for currency in currencylist %}
           <option value="{{ currency.value }}">{{ currency.value }}</option>
           {% endfor %}
@@ -165,11 +164,35 @@ $(document).ready(function(){
       </div>
       <div class="col-12 col-sm-3">
         <select id="filteraccountid" name="filteraccountid" class="form-select">
-          <option value="" disabled>Account ID</option>
+          <option value="" selected disabled>Account ID</option>
           {% for account in accountlist %}
           <option value="{{ account.id }}">{{ account.name }}</option>
           {% endfor %}
         </select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <form action="/transactions/apply_category" method="post">
+          <div class="row">
+            <div class="col">
+              <input type="search" id="searchfilter" name="searchfilter" placeholder="Enter a Search Term" class="form-control">
+            </div>
+            <div class="col">
+              <div class="input-group">
+              <select id="applycategory" name="applycategory" class="form-select">
+                <option value="" selected disabled>Apply Category to Search</option>
+                {% for category in categorylist %}
+                <option value="{{ category.value }}">{{ category.value }}</option>
+                {% endfor %}
+              </select>
+              <input type="submit" value="Apply" class="btn btn-sm btn-success">
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="col">
       </div>
     </div>
   </div>
