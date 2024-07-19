@@ -1,0 +1,269 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{% if g.user %}
+Accounts
+{% else %}
+{% endif %}
+{% endblock %}
+
+{% block header %}
+{% if g.user %}
+Accounts
+{% else %}
+{% endif %}
+{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+
+{% block sidenav %}
+{% endblock %}
+
+{% block content %}
+{% if g.user %}
+<script>
+$(document).ready(function(){
+
+  $("#searchfilter").on("keyup", function(){
+    var value = $(this).val().toLowerCase();
+    $("#item_table tr").filter(function(){
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+  $("#filtercurrency").change(function() {
+    var value = $(this).val();
+    $("#item_table tr").filter(function() {
+      $(this).toggle($(this).text().indexOf(value) > -1)
+    });
+  });
+  $("#filteraccounttype").change(function() {
+    var value = $(this).val();
+    $("#item_table tr").filter(function() {
+      $(this).toggle($(this).text().indexOf(value) > -1)
+    });
+  });
+  
+  $(".item_detail").click(function(event){
+    let account_id = $(event.currentTarget).text();
+    let get_url = "/rest/account/" + account_id;
+    $.get(get_url, function(data, status){
+      $("#modalLabel").text(data.id);
+      $("#account_name").text(data.name);
+      $("#account_description").text(data.description);
+      $("#account_currency").text(data.currency);
+      $("#account_accounttype").text(data.accounttype);
+    });
+  });
+  
+  $(".delete_item").click(function(event){
+    if (confirm("Delete account?")) {
+      let account_id = $(event.currentTarget).text();
+      let post_url = "/rest/account/delete/" + account_id;
+      $.post(post_url, function(data, status){
+        let textout = "Response [" + status + "]: " + data;
+        $("#response_output").text(textout);
+        location.reload();
+      });
+    }
+  });
+  
+  $("#create_account_submit").click(function(event){
+    if (confirm("Add account?")) {
+      let newname = $("#new_name").val();
+      let newdescription = $("#new_description").val();
+      let newcurrency = $("#new_currency").val();
+      let newaccounttype = $("#new_accounttype").val();
+      let stritem = '{"name": "'+newname+'", "description": "'+newdescription+'", "currency": "'+newcurrency+'", "accounttype": "'+newaccounttype+'"}';
+      const newitem = JSON.parse(stritem);
+      $.post("/rest/account/add", newitem, function(data, status){
+        let textout = "Response [" + status + "]: " + data;
+        $("#response_output").text(textout);
+        location.reload();
+      });
+    }
+  });
+  
+});
+</script>
+
+<!-- Top of Page Button in lower right corner -->
+<div class="z-3 opacity-50 position-fixed bottom-0 end-0">
+  <a href="#pageheader" class="btn btn-sm btn-danger">&#8613;</a>
+</div>
+
+<div class="row">
+  <div class="col">
+    <code><pre><p id="response_output"></p></pre></code>
+  </div>
+</div>
+
+<div class="container-fluid">
+
+  <div class="row">
+    <div class="col-12 col-sm-3">
+      <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#create_account">CREATE</button>
+      <a href="/accounts" class="btn btn-sm btn-secondary">REFRESH</a>
+    </div>
+    <div class="col-12 col-sm-3"></div>
+    <div class="col-12 col-sm-3"></div>
+    <div class="col-12 col-sm-3">
+      <select id="limit" name="limit" class="form-select">
+        <option value="" disabled>Per Page</option>
+        <option value="10">10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+        <option value="200">200</option>
+        <option value="500">500</option>
+      </select>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col">
+      <input id="searchfilter" name="searchfilter" Placeholder="Enter a search term" class="form-control">
+    </div>
+    <div class="col">
+      <select id="filtercurrency" name="filtercurrency" class="form-select">
+        <option value="" disabled>Currency</option>
+        {% for currency in currencylist %}
+        <option value="{{ currency.value }}">{{ currency.value }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col">
+      <select id="filteraccounttype" name="filteraccounttype" class="form-select">
+        <option value="" disabled>Account Type</option>
+        {% for accounttype in accounttypelist %}
+        <option value="{{ accounttype.value }}">{{ accounttype.value }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+
+  <table id="item_table" name="item_table" class="table table-hover">
+  
+    <tr>
+      <th><a href="/accounts?sortby=id" class="btn btn-sm">ID</a></th>
+      <th><a href="/accounts?sortby=name" class="btn btn-sm">Name</a></th>
+      <th><a href="/accounts?sortby=accounttype" class="btn btn-sm">Type</a></th>
+      <th><a href="" class="btn btn-sm">Description</a></th>
+      <th><a href="/accounts?sortby=currency" class="btn btn-sm">Currency</a></th>
+      <th></th>
+    </tr>
+    
+    {% for account in accountlist %}
+    <tr>
+      <td>
+        <button id="budget_{{ account.id }}" class="btn item_detail" data-bs-toggle="modal" data-bs-target="#edit_account">{{ account.id }}</button>
+      </td>
+      <td>{{ account.name }}</td>
+      <td>{{ account.accounttype }}</td>
+      <td>{{ account.description }}</td>
+      <td>{{ account.currency }}</td>
+      <td><button class="btn btn-sm btn-danger delete_item">{{ account.id }}</button></td>
+    </tr>
+    {% endfor %}
+  
+  </table>
+
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal fade" id="edit_account" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalLabel"></h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col">
+            <div class="input-group">
+              <span id="account_name" class="input-group-text"></span>
+              <input type="text" id="update_account_name" name="update_account_name" placeholder="Name" class="form-control">
+              <button type="button" id="account_name_update" class="btn btn-sm btn-success">X</button>
+            </div>
+            <div class="input-group">
+              <span id="account_description" class="input-group-text"></span>
+              <input type="text" id="update_account_description" name="update_budget_description" placeholder="Description" class="form-control">
+              <button type="button" id="account_description_update" class="btn btn-sm btn-success">X</button>
+            </div>
+          </div>
+          <div class="col">
+            <div class="input-group">
+              <span id="account_accounttype" class="input-group-text"></span>
+              <select id="update_account_accounttype" name="update_account_accounttype" class="form-select">
+                <option value="" disabled>Account Type</option>
+                {% for accounttype in accounttypelist %}
+                <option value="{{ accounttype.value }}">{{ accounttype.value }}</option>
+                {% endfor %}
+              </select>
+              <button type="button" id="account_accounttype_update" class="btn btn-sm btn-success">X</button>
+            </div>
+            <div class="input-group">
+              <span id="account_currency" class="input-group-text"></span>
+              <select id="update_account_currency" name="update_account_currency" class="form-select">
+                <option value="" disabled>Currency</option>
+                {% for currency in currencylist %}
+                <option value="{{ currency.value }}">{{ currency.value }}</option>
+                {% endfor %}
+              </select>
+              <button type="button" id="account_currency_update" class="btn btn-sm btn-success">X</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-success">Update</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CREATE MODAL -->
+<div class="modal fade" id="create_account" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalLabel">New Account</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col">
+            <label class="form-label">Name</label>
+            <input type="text" id="new_name" name="new_name" placeholder="Name" class="form-control">
+            <label class="form-label">Description</label>
+            <input type="text" id="new_description" name="new_description" placeholder="Description" class="form-control">
+          </div>
+          <div class="col">
+            <label class="form-label">Account Type</label>
+            <select id="new_accounttype" name="new_accounttype" class="form-select">
+              <option value="" selected disabled>Account Type</option>
+              {% for accounttype in accounttypelist %}
+              <option value="{{ accounttype.value }}">{{ accounttype.value }}</option>
+              {% endfor %}
+            </select>
+            <label class="form-label">Currency</label>
+            <select id="new_currency" name="new_currency" class="form-select">
+              <option value="" selected disabled>Currency</option>
+              {% for currency in currencylist %}
+              <option value="{{ currency.value }}">{{ currency.value }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="create_account_submit" class="btn btn-success">Create</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% else %}
+{% endif %}
+{% endblock %}

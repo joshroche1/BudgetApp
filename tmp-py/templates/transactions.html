@@ -1,0 +1,367 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{% if g.user %}
+Transactions
+{% else %}
+{% endif %}
+{% endblock %}
+
+{% block header %}
+{% if g.user %}
+Transactions
+{% else %}
+{% endif %}
+{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+
+{% block sidenav %}
+{% endblock %}
+
+{% block content %}
+{% if g.user %}
+<script>
+$(document).ready(function(){
+
+  $("#searchfilter").on("keyup", function(){
+    var value = $(this).val().toLowerCase();
+    $("#item_table tr").filter(function(){
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+  $("#filtercategory").change(function() {
+    var value = $(this).val();
+    $("#item_table tr").filter(function() {
+      $(this).toggle($(this).text().indexOf(value) > -1)
+    });
+  });
+  $("#filtercurrency").change(function() {
+    var value = $(this).val();
+    $("#item_table tr").filter(function() {
+      $(this).toggle($(this).text().indexOf(value) > -1)
+    });
+  });
+  $("#filteraccountid").change(function() {
+    var value = $(this).val();
+    $("#item_table tr").filter(function() {
+      $(this).toggle($(this).text().indexOf(value) > -1)
+    });
+  });
+  
+  $(".item_detail").click(function(event){
+    let tx_id = $(event.currentTarget).text();
+    let get_url = "/rest/transaction/" + tx_id;
+    $.get(get_url, function(data, status){
+      $("#modalLabel").text(data.id);
+      $("#txaction_name").text(data.name);
+      $("#txaction_description").text(data.description);
+      $("#txaction_datetimestamp").text(data.datetimestamp);
+      $("#txaction_category").text(data.category);
+      $("#txaction_amount").text(data.amount);
+      $("#txaction_convertedamount").text(data.convertedamount);
+      $("#txaction_currency").text(data.currency);
+      $("#txaction_accountid").text(data.accountid);
+    });
+  });
+  
+  $(".delete_item").click(function(event){
+    if (confirm("Delete transaction?")) {
+      let tx_id = $(event.currentTarget).text();
+      let post_url = "/rest/transaction/delete/" + tx_id;
+      $.post(post_url, function(data, status){
+        let textout = "Response [" + status + "]: " + data;
+        $("#response_output").text(textout);
+        location.reload();
+      });
+    }
+  });
+  
+  $("#create_txaction_submit").click(function(event){
+    if (confirm("Add transaction?")) {
+      let newname = $("#new_name").val();
+      let newdescription = $("#new_description").val();
+      let newdatetimestamp = $("#new_datetimestamp").val();
+      let newcategory = $("#new_category").val();
+      let newamount = $("#new_amount").val();
+      let newcurrency = $("#new_currency").val();
+      let newaccountid = $("#new_accountid").val();
+      let stritem = '{"name": "'+newname+'", "description": "'+newdescription+'", "datetimestamp": "'+newdatetimestamp+'", "category": "'+newcategory+'", "amount": "'+newamount+'", "currency": "'+newcurrency+'", "accountid": "'+newaccountid+'"}';
+      const newitem = JSON.parse(stritem);
+      $.post("/rest/transaction/add", newitem, function(data, status){
+        let textout = "Response [" + status + "]: " + data;
+        $("#response_output").text(textout);
+        location.reload();
+      });
+    }
+  });
+  
+});
+</script>
+
+<!-- Top of Page Button in lower right corner -->
+<div class="z-3 opacity-50 position-fixed bottom-0 end-0">
+  <a href="#pageheader" class="btn btn-sm btn-danger">&#8613;</a>
+</div>
+
+<div class="row">
+  <div class="col">
+    <code><pre><p id="response_output"></p></pre></code>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12 col-sm-4">
+    <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#create_transaction">CREATE</button>
+    <a href="/transactions" class="btn btn-sm btn-secondary">REFRESH</a>
+  </div>
+  <div class="col-12 col-sm-4">
+    <form action="/transactions/importfile" method="post" enctype="multipart/form-data">
+      <div class="input-group">
+        <input type="file" id="uploadfile" name="uploadfile" class="form-control">
+        <input type="submit" value="Import" onclick="confirm('Import file?');" class="btn btn-success">
+      </div>
+    </form>
+  </div>
+  <div class="col-12 col-sm-4">
+    <form action="/transactions/apply_category" method="post">
+      <div class="input-group">
+        <input type="search" id="searchfilter" name="searchfilter" placeholder="Enter a Search Term" class="form-control">
+        <select id="applycategory" name="applycategory" class="form-select">
+          <option value="" selected disabled>Apply Category to Search</option>
+          {% for category in categorylist %}
+          <option value="{{ category.value }}">{{ category.value }}</option>
+          {% endfor %}
+        </select>
+        <input type="submit" value="Apply" class="btn btn-sm btn-success">
+      </div>
+    </form>
+  </div>
+</div>
+<div class="row">
+  <div class="col-6 col-sm-4 col-md-2">
+    <input type="search" id="searchfilter" name="searchfilter" placeholder="Enter a Search Term" class="form-control">
+  </div>
+  <div class="col-6 col-sm-4 col-md-2">
+    <select id="filtercategory" name="filtercategory" class="form-select">
+      <option value="" selected disabled>Category</option>
+      {% for category in categorylist %}
+      <option value="{{ category.value }}">{{ category.value }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-6 col-sm-4 col-md-2">
+    <select id="filtercurrency" name="filtercurrency" class="form-select">
+      <option value="" selected disabled>Currency</option>
+      {% for currency in currencylist %}
+      <option value="{{ currency.value }}">{{ currency.value }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-6 col-sm-4 col-md-2">
+    <select id="filteraccountid" name="filteraccountid" class="form-select">
+      <option value="" selected disabled>Account ID</option>
+      {% for account in accountlist %}
+      <option value="{{ account.id }}">{{ account.name }}</option>
+      {% endfor %}
+    </select>
+  </div>  
+  <div class="col-6 col-sm-4 col-md-2">
+    <ul class="pagination">
+      <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+      {% for x in range(pagenums) %}
+      <li class="page-item"><a class="page-link" href="#">{{ x }}</a></li>
+      {% endfor %}
+      <li class="page-item"><a class="page-link" href="#">Next</a></li>
+    </ul>
+  </div>
+  <div class="col-6 col-sm-4 col-md-2">
+    <select id="limit" name="limit" class="form-select">
+      <option value="" selected disabled>Per Page</option>
+      <option value="10">10</option>
+      <option value="25">25</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+      <option value="200">200</option>
+      <option value="500">500</option>
+    </select>
+  </div>
+</div>
+
+<div class="container-fluid">
+  <div class="table-responsive">
+    <table id="item_table" name="item_table" class="table table-sm table-hover">
+
+      <tr>
+        <th><a href="/transactions?sortby=id" class="btn btn-sm">ID</a></th>
+        <th><a href="/transactions?sortby=datetimestamp" class="btn btn-sm">Date/Time</a></th>
+        <th><a href="/transactions?sortby=amount" class="btn btn-sm">Amount</a></th>
+        <th><a href="" class="btn btn-sm"><i>Converted Value</i></a></th>
+        <th><a href="/transactions?sortby=name" class="btn btn-sm">Name</a></th>
+        <th><a href="" class="btn btn-sm">Description</a></th>
+        <th><a href="/transactions?sortby=category" class="btn btn-sm">Category</a></th>
+        <th><a href="/transactions?sortby=accountid" class="btn btn-sm">Account ID</a></th>
+        <th><a href="/transactions?sortby=currency" class="btn btn-sm">Currency</a></th>
+      </tr>
+    
+      {% for txaction in transactionlist %}
+      <tr>
+        <td>
+          <div class="dropdown">
+            <a class="btn dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ txaction.id }}</a>
+            <ul class="dropdown-menu">
+              <li>
+                <button id="txaction_{{ txaction.id }}" class="btn item_detail" data-bs-toggle="modal" data-bs-target="#edit_transaction">{{ txaction.id }}</button>EDIT
+              </li>
+              <li>
+                <button class="btn btn-sm btn-danger delete_item">{{ txaction.id }}</button>
+                DELETE
+              </li>
+            </ul>
+          </div>
+        </td>
+        <td>{{ txaction.datetimestamp }}</td>
+        <td><b>{{ txaction.amount }}</b></td>
+        <td><i>{{ txaction.convertedvalue }}</i></td>
+        <td>{{ txaction.name }}</td>
+        <td>{{ txaction.description }}</td>
+        <td>{{ txaction.category }}</td>
+        <td>{{ txaction.accountid }}</td>
+        <td>{{ txaction.currency }}</td>
+      </tr>
+      {% endfor %}
+
+    </table>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal fade" id="edit_transaction" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalLabel"></h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col">
+            <div class="input-group">
+              <span id="txaction_datetimestamp" class="input-group-text"></span>
+              <input type="datetime-local" id="update_txaction_datetimestamp" name="update_txaction_datetimestamp" class="form-control">
+              <button type="button" id="txaction_datetimestamp_update" class="btn btn-sm btn-success">X</button>
+            </div>
+            <div class="input-group">
+              <span id="txaction_name" class="input-group-text"></span>
+              <input type="text" id="update_txaction_name" name="update_txaction_name" placeholder="Name" class="form-control">
+              <button type="button" id="txaction_name_update" class="btn btn-sm btn-success">X</button>
+            </div>
+            <div class="input-group">
+              <span id="txaction_description" class="input-group-text"></span>
+              <input type="text" id="update_txaction_description" name="update_txaction_description" placeholder="Description" class="form-control">
+              <button type="button" id="txaction_description_update" class="btn btn-sm btn-success">X</button>
+            </div>
+            <div class="input-group">
+              <span id="txaction_accountid" class="input-group-text"></span>
+              <select id="update_txaction_accountid" name="update_txaction_accountid" class="form-select">
+                <option value="" disabled>Account ID</option>
+                {% for account in accountlist %}
+                <option value="{{ account.id }}">{{ account.name }}</option>
+                {% endfor %}
+              </select>
+              <button type="button" id="txaction_accountid_update" class="btn btn-sm btn-success">X</button>
+            </div>
+          </div>
+          <div class="col">
+            <div class="input-group">
+              <span id="txaction_category" class="input-group-text"></span>
+              <input type="text" id="update_txaction_category" name="update_txaction_category" class="form-control">
+              <select id="update_txaction_category" name="update_txaction_category" class="form-select">
+                <option value="" disabled>Category</option>
+                {% for category in categorylist %}
+                <option value="{{ category.value }}">{{ category.value }}</option>
+                {% endfor %}
+              </select>
+              <button type="button" id="txaction_category_update" class="btn btn-sm btn-success">X</button>
+            </div>
+            <div class="input-group">
+              <span id="txaction_amount" class="input-group-text"></span>
+              <input type="text" id="update_txaction_amount" name="update_txaction_amount" placeholder="Amount" class="form-control">
+              <button type="button" id="txaction_amount_update" class="btn btn-sm btn-success">X</button>
+            </div>
+            <div class="input-group">
+              <span id="txaction_currency" class="input-group-text"></span>
+              <select id="update_txaction_currency" name="update_txaction_currency" class="form-select">
+                <option value="" disabled>Currency</option>
+                {% for currency in currencylist %}
+                <option value="{{ currency.value }}">{{ currency.value }}</option>
+                {% endfor %}
+              </select>
+              <button type="button" id="txaction_currency_update" class="btn btn-sm btn-success">X</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-success">Update</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CREATE MODAL -->
+<div class="modal fade" id="create_transaction" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalLabel">New Transaction</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col">
+            <label class="form-label">Date/Time</label>
+            <input type="datetime-local" id="new_datetimestamp" name="new_datetimestamp" class="form-control">
+            <label class="form-label">Name</label>
+            <input type="text" id="new_name" name="new_name" placeholder="Name" class="form-control">
+            <label class="form-label">Description</label>
+            <input type="text" id="new_description" name="new_description" placeholder="Description" class="form-control">
+            <label class="form-label">Account ID</label>
+            <select id="new_accountid" name="new_accountid" class="form-select">
+              <option value="" selected disabled>Account ID</option>
+              {% for account in accountlist %}
+              <option value="{{ account.id }}">{{ account.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col">
+            <label class="form-label">Category</label>
+            <select id="new_category" name="new_category" class="form-select">
+              <option value="" selected disabled>Category</option>
+              {% for category in categorylist %}
+              <option value="{{ category.value }}">{{ category.value }}</option>
+              {% endfor %}
+            </select>
+            <label class="form-label">Amount</label>
+            <input type="text" id="new_amount" name="new_amount" placeholder="Amount" class="form-control">
+            <label class="form-label">Currency</label>
+            <select id="new_currency" name="new_currency" class="form-select">
+              <option value="" selected disabled>Currency</option>
+              {% for currency in currencylist %}
+              <option value="{{ currency.value }}">{{ currency.value }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="create_txaction_submit" class="btn btn-success">Create</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% else %}
+{% endif %}
+{% endblock %}
