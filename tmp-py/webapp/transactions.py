@@ -171,6 +171,7 @@ def parse_data_overview(db: Session, startdate, enddate, bitemlist):
         budgetdict[bitem.category] = bitem.amount
     for category in categoryarr:
       linechartvalues = ""
+      txcattotal = 0.0
       for x in range(len(montharr)-1):
         tmpvalue = 0.0
         txlist = list_transactions_by_dates(db, montharr[x], montharr[x+1], filtervalue=category)
@@ -179,9 +180,10 @@ def parse_data_overview(db: Session, startdate, enddate, bitemlist):
             tmpvalue = tmpvalue + (txaction.convertedvalue*1.0)
           else:
             tmpvalue = tmpvalue + (txaction.convertedvalue*-1.0)
+        txcattotal += tmpvalue
         linechartvalues = linechartvalues + str(round(tmpvalue, 2)) + ","
       lineChartDict[category] = linechartvalues
-      txvaluesdict[category] = tmpvalue
+      txvaluesdict[category] = txcattotal
     lineChartLabels = ""
     for month in montharr:
       lineChartLabels += month + ","
@@ -192,8 +194,8 @@ def parse_data_overview(db: Session, startdate, enddate, bitemlist):
     txvalues = ""
     for budgetcategory in budgetdict:
       budgetvalues += str(round(budgetdict[budgetcategory], 2)) + ","
-    for txcategory in txvaluesdict:
-      txvalues += str(round(txvaluesdict[txcategory], 2)) + ","
+    for txlabel in txvaluesdict:
+      txvalues += str(round(txvaluesdict[txlabel], 2)) + ","
     budgetChartDict["data"] = budgetvalues
     txChartDict["data"] = txvalues
     resultdict["lineChartData"] = lineChartDict

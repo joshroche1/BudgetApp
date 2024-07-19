@@ -118,12 +118,15 @@ $(document).ready(function(){
   <form action="/overview" method="get">
   <div class="row">
     <div class="col">
-      <select id="budgetid" name="budgetid" class="form-select">
-        <option value="" selected disabled>Budget ID</option>
-        {% for budget in budgetlist %}
-        <option value="{{ budget.id }}">{{ budget.name }}</option>
-        {% endfor %}
-      </select>
+      <div class="input-group">
+        <select id="budgetid" name="budgetid" class="form-select">
+          <option value="" selected disabled>Budget ID</option>
+          {% for budget in budgetlist %}
+          <option value="{{ budget.id }}">{{ budget.name }}</option>
+          {% endfor %}
+        </select>
+        <input type="submit" value="UPDATE" class="btn btn-sm btn-primary">
+      </div>
     </div>
     <div class="col">
       <div class="input-group">
@@ -132,11 +135,6 @@ $(document).ready(function(){
         <span class="input-group-text">End</span>
         <input type="date" id="enddate" name="enddate" class="form-control">
       </div>
-    </div>
-    <div class="col">
-    </div>
-    <div class="col">
-      <input type="submit" value="UPDATE" class="btn btn-sm btn-primary">
     </div>
   </div>
   </form>
@@ -161,7 +159,7 @@ $(document).ready(function(){
   
   <div class="m-1 p-1">
     <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePieCharts" aria-expanded="false" aria-controls="collapsePieCharts">
-      <h3>Line Chart</h3>
+      <h3>Pie Charts</h3>
     </button>
   </div>
   <div id="collapsePieCharts" class="collapse show">
