@@ -2,26 +2,25 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
-  <!-- <link rel="stylesheet" href="{{ url_for('static', path='/bootstrap-icons.css') }}"/> -->
+  <link rel="stylesheet" href="{{ url_for('static', path='/bootstrap.min.css') }}"/>
+  <link rel="stylesheet" href="{{ url_for('static', path='/bootstrap-icons.css') }}"/>
   <link rel="shortcut icon" href="{{ url_for('static', path='/favicon.ico') }}">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>  
+  <script src="{{ url_for('static', path='/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', path='/jquery-3.6.3.min.js') }}"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
   <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
-  
 {% if g.user %}
 <header id="pageheader">
   <nav class="navbar navbar-expand-sm bg-light">
-    <div class="container-fluid">
+  <div class="container-fluid">
       <a class="navbar-brand dropdown" href="/">BudgetApp</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNavbar">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="collapsibleNavbar">
-        <ul class="navbar-nav">          
+        <ul class="navbar-nav">
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">{% block header %} {% endblock %}</a>
             <ul class="dropdown-menu">
@@ -31,43 +30,42 @@
                 </div>
               </li>
               <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="/overview">Overview</a></li>
+              <li><hr class="dropdown-divider"></li>
               <li>
-                <div class="btn-group" role="group" aria-label="Budget Button group">
-                  <a class="btn btn-sm dropdown-item" href="/budget/overview">Overview</a>
-                  <a class="btn btn-sm dropdown-item" href="/budget/outlook/yearly">Outlook</a>
-                  <a class="btn btn-sm dropdown-item" href="/budget/List">Budgets</a>
+                <div class="btn-group" role="group" aria-label="Budgets Button group">
+                  <a class="btn btn-sm dropdown-item" href="/budgets">Budgets</a>
                 </div>
               </li>
               <li><hr class="dropdown-divider"></li>
               <li>
-                <div class="btn-group" role="group" aria-label="Account Button group">
-                  <a class="btn btn-sm dropdown-item" href="/account/list">Accounts</a>
-                </div>
-              </li>
-              <li>
-                <div class="btn-group" role="group" aria-label="Transaction Button group">
-                  <a class="btn btn-sm dropdown-item" href="/transaction/list">Transactions</a>
+                <div class="btn-group" role="group" aria-label="Accounts Button group">
+                  <a class="btn btn-sm dropdown-item" href="/accounts">Accounts</a>
                 </div>
               </li>
               <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="/docs">Docs</a></li>
+              <li>
+                <div class="btn-group" role="group" aria-label="Transactions Button group">
+                  <a class="btn btn-sm dropdown-item" href="/transactions">Transactions</a>
+                </div>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="/docs">OpenAPI Docs</a></li>
             </ul>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">User</a>
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">{{ g.user }}</a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="/user">Profile</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item btn btn-sm btn-danger" href="/logout">Logout</a></li>
+              <li><a class="dropdown-item btn btn-sm" href="/logout">Logout</a></li>
             </ul>
           </li>
-          <li class="nav-item"><a href="/budget/list" class="nav-link text-start btn btn-sm m-1 p-1">Budgets</a></li>
-          <li class="nav-item"><a href="/account/list" class="nav-link text-start btn btn-sm m-1 p-1">Accounts</a></li>
-          <li class="nav-item"><a href="/transaction/list" class="nav-link text-start btn btn-sm m-1 p-1">Transactions</a></li>
+          <li class="nav-item"><a href="/overview" class="nav-link text-start btn btn-sm m-1 p-1">Overview</a></li>
+          <li class="nav-item"><a href="/budgets" class="nav-link text-start btn btn-sm m-1 p-1">Budgets</a></li>
+          <li class="nav-item"><a href="/accounts" class="nav-link text-start btn btn-sm m-1 p-1">Accounts</a></li>
+          <li class="nav-item"><a href="/transactions" class="nav-link text-start btn btn-sm m-1 p-1">Transactions</a></li>
           {% block navbar %}{% endblock %}
         </ul>
       </div>
-
     </div>
   </nav>
 </header>
@@ -75,44 +73,63 @@
 <div class="row container-fluid">
   <div class="d-none d-lg-block col-lg-1">
     <ul class="list-group list-group-flush">
-      <li class="list-group-item"><a href="/budget/overview" class="list-group-item-action text-start btn">Overview</a></li>
-      <li class="list-group-item"><a href="/budget/outlook/yearly" class="list-group-item-action text-start btn">Outlook</a></li>
-      <li class="list-group-item"><a href="/budget/list" class="list-group-item-action text-start btn ">Budgets</a></li>
-      <li class="list-group-item"><a href="/account/list" class="list-group-item-action text-start btn ">Accounts</a></li>
-      <li class="list-group-item"><a href="/transaction/list" class="list-group-item-action text-start btn">Transactions</a></li>
+      <li class="list-group-item">
+        <a href="/settings" class="list-group-item-action text-start btn">Settings</a>
+      </li>
+      <li class="list-group-item">
+        <a href="/overview" class="list-group-item-action text-start btn">Overview</a>
+      </li>
+      <li class="list-group-item">
+        <a href="/budgets" class="list-group-item-action text-start btn">Budgets</a>
+      </li>
+      <li class="list-group-item">
+        <a href="/accounts" class="list-group-item-action text-start btn">Accounts</a>
+      </li>
+      <li class="list-group-item">
+        <a href="/transactions" class="list-group-item-action text-start btn">Transactions</a>
+      </li>
+      {% block sidenav %}{% endblock %}
     </ul>
-  {% block sidenav %}{% endblock %}
   </div>
   <div class="col-lg-11 col-12">
-  {% block content %}{% endblock %}
+    <div class="row">
+      {% for message in messages %}
+      <div class="alert alert-warning" role="alert">
+        <code>{{ message }}</code>
+      </div>
+      {% endfor %}
+    </div>
+    {% block content %}{% endblock %}
   </div>
 </div>
+
 {% else %}
 
-<header>
+<header id="pageheader">
   <nav class="navbar navbar-expand-sm bg-light">
     <div class="container-fluid">
       <a class="navbar-brand dropdown" href="/">BudgetApp</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNavbar">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="collapsibleNavbar">
         <ul class="navbar-nav">
-          <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+          <li class="nav-item">
+            <a href="/login" class="nav-link text-start btn btn-sm m-1 p-1">
+              Login
+            </a>
+          </li>
         </ul>
       </div>
     </div>
   </nav>
 </header>
 
-<div class="container-fluid">
-  {% block basecontent %}{% endblock %}
+<div class="container">
+  {% block publiccontent %}{% endblock %}
 </div>
+
 {% endif %}
 
-<footer>
-  {% block footer %}{% endblock %}
-</footer>
-  
 </body>
 </html>

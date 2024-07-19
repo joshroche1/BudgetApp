@@ -1,62 +1,48 @@
 {% extends 'base.html' %}
 
-
 {% block title %}
-
-{% if g.user %}
 BudgetApp
-{% else %}
-{% endif %}
-
 {% endblock %}
-
 
 {% block header %}
-
-{% if g.user %}
 BudgetApp
-{% else %}
-{% endif %}
-
 {% endblock %}
 
+{% block navbar %}
+{% endblock %}
+
+{% block sidenav %}
+{% endblock %}
 
 {% block content %}
-
-{% if g.user %}
 <div class="container">
-  <div class="m-3 p-3">
-    <h1>Budget App</h1>
-  </div>
-  
-  <div class="m-3 p-3">
-    
-    <div class="row">
-      
-      <div class="col-12 col-sm-6 p-3">
-        <a href="/budget/outlook/yearly" class="btn btn-light"><h3>Yearly Outlook</h3></a>
-      </div>
-      <div class="col-12 col-sm-6 p-3">
-        <a href="/budget/overview" class="btn btn-light"><h3>Budget Overview</h3></a>
-      </div>
-      <div class="col-12 col-sm-6 p-3">
-        <a href="/budget/list" class="btn btn-light"><h3>Budgets</h3></a>
-      </div>
-      <div class="col-12 col-sm-6 p-3">
-        <a href="/account/list" class="btn btn-light"><h3>Accounts</h3></a>
-      </div>
-      <div class="col-12 col-sm-6 p-3">
-        <a href="/transaction/list" class="btn btn-light"><h3>Transactions</h3></a>
-      </div>
-      
+  <div class="row">
+    <div class="col-12 col-sm-6 col-md-4 col-sm-3">
+      <a href="/overview" class="card btn m-1 p-1">
+        <h1 class="card-title">Overview</h1>
+      </a>
     </div>
-    
+    <div class="col-12 col-sm-6 col-md-4 col-sm-3">
+      <a href="/budgets" class="card btn m-1 p-1">
+        <h1 class="card-title">Budgets</h1>
+      </a>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4 col-sm-3">
+      <a href="/accounts" class="card btn m-1 p-1">
+        <h1 class="card-title">Accounts</h1>
+      </a>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4 col-sm-3">
+      <a href="/transactions" class="card btn m-1 p-1">
+        <h1 class="card-title">Transactions</h1>
+      </a>
+    </div>
   </div>
 </div>
+{% endblock %}
 
-{% else %}
+{% block publiccontent %}
 <div class="container">
+  <h3>Budget App</h3>
 </div>
-{% endif %}
-
 {% endblock %}

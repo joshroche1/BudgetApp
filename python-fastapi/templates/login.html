@@ -1,29 +1,38 @@
 {% extends 'base.html' %}
 
-{% block header %} Login {% endblock %}
+{% block title %}
+Login
+{% endblock %}
 
-{% block basecontent %}
+{% block header %}
+Login
+{% endblock %}
 
+{% block navbar %}
+{% endblock %}
+
+{% block sidenav %}
+{% endblock %}
+
+{% block publiccontent %}
 <div class="row">
   <div class="col-12 col-sm-4"></div>
-  <div class="col-12 col-sm-4 card">
-    <form action="" method="POST">
-      <div class="m-1 p-1">
-        <h2>Login</h2>
-      </div>
-      <div class="m-1 p-1">
-        <input type="text" id="username" name="username" placeholder="Username" class="form-control" autocomplete="off" required>
-      </div>
-      <div class="m-1 p-1">
-        <input type="password" id="password" name="password" placeholder="Password" class="form-control" required>
-      </div>
-      <div class="m-1 p-1">
-        <input id="submit" type="submit" value="Login" class="btn btn-sm btn-success m-1 p-1">
-        <input id="reset" type="reset" class="btn btn-sm btn-secondary m-1 p-1">
-      </div>
-    </form>
+  <div class="col-12 col-sm-4">
+
+  <h1>Login</h1>
+  <form action="/login" method="post">
+    <div class="m-1 p-1">
+      <input type="text" id="username" name="username" placeholder="Username" class="form-control" required>
+    </div>
+    <div class="m-1 p-1">
+      <input type="password" id="password" name="password" placeholder="Password" class="form-control" required>
+    </div>
+    <div class="m-1 p-1">
+      <input type="submit" value="Login" class="btn btn-sm btn-success">
+    </div>
+  </form>
+
   </div>
   <div class="col-12 col-sm-4"></div>
 </div>
-
 {% endblock %}

@@ -2,14 +2,14 @@
 
 {% block title %}
 {% if g.user %}
-Overview
+Budgets
 {% else %}
 {% endif %}
 {% endblock %}
 
 {% block header %}
 {% if g.user %}
-Overview
+Budgets
 {% else %}
 {% endif %}
 {% endblock %}
@@ -17,209 +17,214 @@ Overview
 {% block navbar %}
 {% endblock %}
 
+{% block sidenav %}
+{% endblock %}
+
 {% block content %}
 {% if g.user %}
-<div class="m-1 p-1">
+<script>
+$(document).ready(function(){
+
+  $("#searchfilter").on("keyup", function(){
+    var value = $(this).val().toLowerCase();
+    $("#item_table tr").filter(function(){
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+  $("#filtercurrency").change(function() {
+    var value = $(this).val();
+    $("#item_table tr").filter(function() {
+      $(this).toggle($(this).text().indexOf(value) > -1)
+    });
+  });
   
+  $(".item_detail").click(function(event){
+    let budget_id = $(event.currentTarget).text();
+    let get_url = "/rest/budget/" + budget_id;
+    $.get(get_url, function(data, status){
+      $("#modalLabel").text(data.id);
+      $("#budget_name").text(data.name);
+      $("#budget_description").text(data.description);
+      $("#budget_currency").text(data.currency);
+    });
+  });
+  $(".delete_item").click(function(event){
+    if (confirm("Delete budget?")) {
+      let budget_id = $(event.currentTarget).text();
+      let post_url = "/rest/budget/delete/" + budget_id;
+      $.post(post_url, function(data, status){
+        let textout = "Response [" + status + "]: " + data;
+        $("#response_output").text(textout);
+      });
+    }
+  });
+  
+  $("#create_budget_submit").click(function(event){
+    if (confirm("Add budget?")) {
+      let newname = $("#new_name").val();
+      let newdescription = $("#new_description").val();
+      let newcurrency = $("#new_currency").val();
+      let stritem = '{"name": "'+newname+'", "description": "'+newdescription+'", "currency": "'+newcurrency+'"}';
+      const newitem = JSON.parse(stritem);
+      $.post("/rest/budget/add", newitem, function(data, status){
+        let textout = "Response [" + status + "]: " + data;
+        $("#response_output").text(textout);
+      });
+    }
+  });
+  
+  $("#create_budgetitem_submit").click(function(event){
+    if (confirm("Add budget item?")) {
+      let newname = $("#new_bi_name").val();
+      let newdescription = $("#new_bi_description").val();
+      let newamount = $("#new_bi_amount").val();
+      let newcategory = $("#new_bi_category").val();
+      let newbudgetid = $("#new_bi_budgetid").val();
+      let stritem = '{"name": "'+newname+'", "description": "'+newdescription+'", "amount": "'+newamount+'", "category": "'+newcategory+'", "budgetid": "'+newbudgetid+'"}';
+      const newitem = JSON.parse(stritem);
+      $.post("/rest/budgetitem/add", newitem, function(data, status){
+        let textout = "Response [" + status + "]: " + data;
+        $("#response_output").text(textout);
+      });
+    }
+  });
+  $(".delete_budgetitem").click(function(event){
+    if (confirm("Delete budget item?")) {
+      let budgetitem_id = $(event.currentTarget).text();
+      let post_url = "/rest/budgetitem/delete/" + budgetitem_id;
+      $.post(post_url, function(data, status){
+        let textout = "Response [" + status + "]: " + data;
+        $("#response_output").text(textout);
+      });
+    }
+  });
+  
+});
+</script>
+
+<!-- Top of Page Button in lower right corner -->
+<div class="z-3 opacity-50 position-fixed bottom-0 end-0">
+  <a href="#pageheader" class="btn btn-sm btn-danger">&#8613;</a>
+</div>
+
+<div class="row">
+  <div class="col">
+    <code><pre><p id="response_output"></p></pre></code>
+  </div>
+</div>
+
+<div class="container-fluid">
+
+  <form action="/overview" method="get">
   <div class="row">
     <div class="col">
-      <a href="/budget/overview" class="btn"><h3>Monthly Overview</h3></a>
-      <form action="/budget/overview" method="get">
-        <div class="input-group">
-          <select id="budgetid" name="budgetid" class="form-select">
-            <option value="1" selected>Select a Budget</option>
-            {% for budgetid in budgetidlist %}
-            <option value="{{ budgetid }}">{{ budgetid }}</option>
-            {% endfor %}
-          </select>
-          <input type="submit" value="View" class="btn btn-success">
-        </div>
-      </form>
+      <div class="input-group">
+        <select id="budgetid" name="budgetid" class="form-select">
+          <option value="" selected disabled>Budget ID</option>
+          {% for budget in budgetlist %}
+          <option value="{{ budget.id }}">{{ budget.name }}</option>
+          {% endfor %}
+        </select>
+        <input type="submit" value="UPDATE" class="btn btn-sm btn-primary">
+      </div>
     </div>
     <div class="col">
-      <a href="/budget/overview_dates" class="btn"><h3>Ranged Overview</h3></a>
-      <form action="/budget/overview_dates/specified" method="post">
-        <div class="input-group">
-          <span class="input-group-text">Start</span>
-          <input type="date" id="startdate" name="startdate" class="form-control">
-          <span class="input-group-text">End</span>
-          <input type="date" id="enddate" name="enddate" class="form-control">
-        </div>
-        <div class="input-group">
-          <select id="budgetid" name="budgetid" class="form-select">
-            <option value="1" selected>Select a Budget</option>
-            {% for budgetid in budgetidlist %}
-            <option value="{{ budgetid }}">{{ budgetid }}</option>
-            {% endfor %}
-          </select>
-          <input type="submit" value="View" class="btn btn-success">
-        </div>
-      </form>
+      <div class="input-group">
+        <span class="input-group-text">Start</span>
+        <input type="date" id="startdate" name="startdate" class="form-control">
+        <span class="input-group-text">End</span>
+        <input type="date" id="enddate" name="enddate" class="form-control">
+      </div>
     </div>
   </div>
-  <p>Chart data is based on the Transaction category and amount. Adjust transaction categories to fit the budget model.</p>
+  </form>
+  
+  <div class="m-1 p-1">
+    <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseChartData" aria-expanded="false" aria-controls="collapseChartData">
+      <h3>Chart Data</h3>
+    </button>
+  </div>
+  <div id="collapseChartData" class="collapse">
+    <code>{{ chartData }}</code>
+  </div> 
+  
+  <div class="m-1 p-1">
+    <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLineChart" aria-expanded="false" aria-controls="collapseLineChart">
+      <h3>Line Chart</h3>
+    </button>
+  </div>
+  <div id="collapseLineChart" class="collapse show">
+    <canvas id="lineChartBudget" style="width:100%;max-width:1600px;height:400px;max-height:1600px;"></canvas>
+  </div>
   
   <div class="m-1 p-1">
     <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePieCharts" aria-expanded="false" aria-controls="collapsePieCharts">
-      Pie Charts
+      <h3>Pie Charts</h3>
     </button>
   </div>
-  
-  <div class="collapse show" id="collapsePieCharts">
-    <div class="row">
-
-      <div class="col-12 col-sm-6">
-        <canvas id="pieChartBudget" style="width:100%;max-width:1600px;height:400px;max-height:1600px;"></canvas>
-      </div>
-      <div class="col-12 col-sm-6">
-        <canvas id="pieChart" style="width:100%;max-width:1600px;height:400px;max-height:1600px;"></canvas>
-      </div>
-
-    </div>
-  </div>
-  
-  <div class="m-1 p-1">
-    <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBarCharts" aria-expanded="false" aria-controls="collapseBarCharts">
-      Bar Charts
-    </button>
-  </div>
-  
-  <div class="collapse show" id="collapseBarCharts">
-    <div class="row">
-
-      <div class="col-12 col-sm-6">
-        <canvas id="barChartBudget" style="width:100%;max-width:1600px;height:400px;max-height:1600px;"></canvas>
-      </div>
-      <div class="col-12 col-sm-6">
-        <canvas id="barChart" style="width:100%;max-width:1600px;height:400px;max-height:1600px;"></canvas>
-      </div>
-
-    </div>    
-  </div>
-  
-  <div class="m-1 p-1">
-    <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBudgetItems" aria-expanded="false" aria-controls="collapseBudgetItems">
-      Budget Items
-    </button>
-  </div>
-  
-  <div class="collapse show" id="collapseBudgetItems">
-    <table class="table table-hover table-bordered">
-      <tr>
-        <th><a href="" class="btn btn-sm">ID</a></th>
-        <th><a href="" class="btn btn-sm">Name</a></th>
-        <th><a href="" class="btn btn-sm">Description</a></th>
-        <th><a href="" class="btn btn-sm">Amount</a></th>
-        <th><a href="" class="btn btn-sm">Category</a></th>
-        <th><a href="" class="btn btn-sm">Recurrence</a></th>
-        <th><a href="" class="btn btn-sm">Recur Day</a></th>
-        <th></th>
-      </tr>
-
-      <tr>
-        <th></th>
-        <th></th>
-        <th>Remainder</th>
-        <th>{{ budgetremain }}</th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-      </tr>
-
-      {% for budgetitem in budgetitemlist %}
-      <tr>
-        <td>{{ budgetitem.id }}</td>
-        <td>{{ budgetitem.name }}</td>
-        <td>{{ budgetitem.description }}</td>
-        <td>{{ budgetitem.amount }}</td>
-        <td>{{ budgetitem.category }}</td>
-        <td>{{ budgetitem.recurrence }}</td>
-        <td>{{ budgetitem.recurrenceday }}</td>
-        <td>
-          {% if loop.first %}{% else %}
-          {{ ((budgetitem.amount / budgetsum)*100)|round(2,'common') }} %
-          {% endif %}
-        </td>
-      </tr>
-      {% endfor %}
-
-      <tr>
-        <th></th>
-        <th></th>
-        <th>Bill Sum</th>
-        <th>{{ budgetsum }}</th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-      </tr>
-    </table>
-  </div>
-  
-  <div class="m-1 p-1">
-    <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTransactions" aria-expanded="false" aria-controls="collapseTransactions">
-      Transactions
-    </button>
-  </div>
-  
-  <div class="collapse show" id="collapseTransactions">
+  <div id="collapsePieCharts" class="collapse show">
     <div class="row">
       <div class="col">
-        <form action="/budget/overview/filtered/month" method="post">
-          <div class="input-group">
-            <select id="month" name="month" class="form-select">
-              <option value="" selected disabled>Month</option>
-              <option value="01">JAN</option>
-              <option value="02">FEB</option>
-              <option value="03">MAR</option>
-              <option value="04">APR</option>
-              <option value="05">MAY</option>
-              <option value="06">JUN</option>
-              <option value="07">JUL</option>
-              <option value="08">AUG</option>
-              <option value="09">SEP</option>
-              <option value="10">OCT</option>
-              <option value="11">NOV</option>
-              <option value="12">DEC</option>
-            </select>
-            <input type="submit" value="Filter" class="btn btn-sm btn-success">
-          </div>
-        </form>
+        <h3>Budget Items</h3>
+        <canvas id="pieChartBudgetItems" style="width:100%;max-width:1600px;height:400px;max-height:1600px;"></canvas>
+      </div>
+      <div class="col">
+        <h3>Transactions</h3>
+        <canvas id="pieChartTxactions" style="width:100%;max-width:1600px;height:400px;max-height:1600px;"></canvas>
       </div>
     </div>
-
-    <table class="table table-hover table-bordered">
-
+  </div>  
+  
+  <div class="row">
+    <table class="table table-sm table-hover">
       <tr>
-        <th><a href="/transaction/list/sorted/id" class="btn btn-sm">ID</a></th>
-        <th><a href="/transaction/list/sorted/datetimestamp" class="btn btn-sm">Date</a></th>
-        <th><a href="/transaction/list/sorted/amount" class="btn btn-sm">Amount</a></th>
-        <th><a href="/transaction/list/sorted/category" class="btn btn-sm">Category</a></th>
-        <th><a href="/transaction/list/sorted/name" class="btn btn-sm">Name</a></th>
-        <th><a href="" class="btn btn-sm">Description</a></th>
-        <th><a href="/transaction/list/sorted/accountid" class="btn btn-sm">Account ID</a></th>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Amount</th>
+        <th>Description</th>
       </tr>
-
-      {% for transaction in transactionlist %}
+      
+      {% for bitem in budgetitemlist %}
       <tr>
-        <td>{{ transaction.id }}</td>
-        <td>{{ transaction.datetimestamp }}</td>
-        <td>{{ transaction.amount }}</td>
-        <td>{{ transaction.category }}</td>
-        <td><a href="/transaction/detail/{{ transaction.id }}" class="btn btn-sm btn-light"><b>{{ transaction.name }}</b></a></td>
-        <td>{{ transaction.description }}</td>
-        <td>{{ transaction.accountid }}</td>
+        <td>{{ bitem.id }}</td>
+        <td>{{ bitem.name }}</td>
+        <td>{{ bitem.category }}</td>
+        <td>{{ bitem.amount }}</td>
+        <td>{{ bitem.description }}</td>
       </tr>
       {% endfor %}
-
     </table>
   </div>
   
+  <div class="row">
+    <table class="table table-sm table-hover">
+      <tr>
+        <th>ID</th>
+        <th>Date/Time</th>
+        <th>Amount</th>
+        <th></th>
+        <th>Category</th>
+        <th>Name</th>
+        <th>Currency</th>
+      </tr>
+      
+      {% for txaction in transactionlist %}
+      <tr>
+        <td>{{ txaction.id }}</td>
+        <td>{{ txaction.datetimestamp }}</td>
+        <td>{{ txaction.amount }}</td>
+        <td>{{ txaction.convertedamount }}</td>
+        <td>{{ txaction.category }}</td>
+        <td>{{ txaction.name }}</td>
+        <td>{{ txaction.currency }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
 </div>
 <script>
-var xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
-var yValues = [55, 49, 44, 24, 15];
 var barColors = [
   "#b91d47",
   "#00aba9",
@@ -263,52 +268,29 @@ var chartColors = [
   "Violet",
   "Pink"
 ];
-
-new Chart("myChart", {
-  type: "pie",
+new Chart("pieChartBudgetItems", {
+  type: "doughnut",
   data: {
-    labels: xValues,
+    labels: '{{ chartData.budgetChartDict.labels }}'.split(","),
     datasets: [{
-      backgroundColor: barColors,
-      data: yValues
+      backgroundColor: chartColors,
+      data: '{{ chartData.budgetChartDict.data }}'.split(",")
     }]
   },
   options: {
     title: {
       display: true,
-      text: "World Wide Wine Production 2018"
+      text: "Budget Items"
     }
   }
 });
-var tdata = "{{ tabledata }}";
-const tmparr1 = tdata.split("|");
-const tmparrlabels = tmparr1[0].split(",");
-const tmparramounts = tmparr1[1].split(",");
-
-new Chart("pieChart", {
-  type: "pie",
+new Chart("pieChartTxactions", {
+  type: "doughnut",
   data: {
-    labels: tmparrlabels,
+    labels: '{{ chartData.txChartDict.labels }}'.split(","),
     datasets: [{
       backgroundColor: chartColors,
-      data: tmparramounts
-    }]
-  },
-  options: {
-    title: {
-      display: true,
-      text: "Transactions"
-    }
-  }
-});
-
-new Chart("barChart", {
-  type: "bar",
-  data: {
-    labels: tmparrlabels,
-    datasets: [{
-      backgroundColor: chartColors,
-      data: tmparramounts
+      data: '{{ chartData.txChartDict.data }}'.split(",")
     }]
   },
   options: {
@@ -321,37 +303,48 @@ new Chart("barChart", {
     }
   }
 });
-
-var btdata = "{{ budgettabledata }}";
-const tmparr2 = btdata.split("|");
-const tmparrlabels2 = tmparr2[0].split(",");
-const tmparramounts2 = tmparr2[1].split(",");
-new Chart("pieChartBudget", {
-  type: "pie",
+new Chart("lineChartBudget", {
+  type: "line",
   data: {
-    labels: tmparrlabels2,
+    labels: '{{ chartData.lineChartData.labels }}'.split(","),
     datasets: [{
-      backgroundColor: chartColors,
-      data: tmparramounts2
+      data: '{{ chartData.lineChartData.Income }}'.split(","),
+      label: "Income",
+      borderColor: "LimeGreen",
+      backgroundColor: "HoneyDew"
+    },{
+      data: '{{ chartData.lineChartData.Housing }}'.split(","),
+      label: "Housing",
+      borderColor: "Maroon",
+    },{
+      data: '{{ chartData.lineChartData.Electric }}'.split(","),
+      label: "Electric",
+      borderColor: "Gold",
+    },{
+      data: '{{ chartData.lineChartData.Phone }}'.split(","),
+      label: "Phone",
+      borderColor: "Crimson",
+    },{
+      data: '{{ chartData.lineChartData.Internet }}'.split(","),
+      label: "Internet",
+      borderColor: "DarkOrange",
+    },{
+      data: '{{ chartData.lineChartData.Debt }}'.split(","),
+      label: "Debt",
+      borderColor: "Blue",
+    },{
+      data: '{{ chartData.lineChartData.Credit }}'.split(","),
+      label: "Credit",
+      borderColor: "Cyan",
     }]
   },
   options: {
-    title: {
-      display: true,
-      text: "Budget"
-    }
-  }
-});
-new Chart("barChartBudget", {
-  type: "bar",
-  data: {
-    labels: tmparrlabels2,
-    datasets: [{
-      backgroundColor: chartColors,
-      data: tmparramounts2
-    }]
-  },
-  options: {
+    elements: {
+      line: {
+        borderWidth: 2,
+        tension: 0.2
+      }
+    },
     legend: {
       display: true
     },
@@ -363,7 +356,5 @@ new Chart("barChartBudget", {
 });
 </script>
 {% else %}
-<div class="container">
-</div>
 {% endif %}
 {% endblock %}
