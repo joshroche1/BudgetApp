@@ -11,6 +11,7 @@ function show_usage() {
   echo "  ACTION:"
   echo "    start"
   echo "    stop"
+  echo "    daemon"
   echo "    status"
   echo
   exit 0
@@ -29,6 +30,14 @@ function status() {
 }
 
 function start_app() {
+  uvicorn webapp.main:app \
+   --env-file $ENVFILE \
+   --host 0.0.0.0 \
+   --port 8000 \
+   --reload
+}
+
+function daemon_app() {
   uvicorn webapp.main:app \
    --env-file $ENVFILE \
    --host 0.0.0.0 \
@@ -54,6 +63,11 @@ fi
 if [ $SUBCMD == "stop" ]
 then
   stop_app
+fi
+
+if [ $SUBCMD == "daemon" ]
+then
+  daemon_app
 fi
 
 if [ $SUBCMD == "status" ]

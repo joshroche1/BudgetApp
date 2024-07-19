@@ -102,10 +102,11 @@ $(document).ready(function(){
 
   <div class="row">
     <div class="col-12 col-sm-3">
-      <button type="button" data-bs-toggle="collapse" data-bs-target="#filterpanel" aria-expanded="false" aria-controls="filterpanel" class="btn btn-sm btn-success">FILTER</button>
       <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#create_account">CREATE</button>
       <a href="/accounts" class="btn btn-sm btn-secondary">REFRESH</a>
     </div>
+    <div class="col-12 col-sm-3"></div>
+    <div class="col-12 col-sm-3"></div>
     <div class="col-12 col-sm-3">
       <select id="limit" name="limit" class="form-select">
         <option value="" disabled>Per Page</option>
@@ -117,34 +118,27 @@ $(document).ready(function(){
         <option value="500">500</option>
       </select>
     </div>
-    <div class="col-12 col-sm-3"></div>
-    <div class="col-12 col-sm-3"></div>
   </div>
-
-  <!-- Filter Panel -->
-  <div id="filterpanel" class="collapse">
-    <div class="row">
-      <div class="col-12 col-sm-3">
-        <input id="searchfilter" name="searchfilter" Placeholder="Enter a search term" class="form-control">
-      </div>
-      <div class="col-12 col-sm-3">
-        <select id="filtercurrency" name="filtercurrency" class="form-select">
-          <option value="" disabled>Currency</option>
-          {% for currency in currencylist %}
-          <option value="{{ currency.value }}">{{ currency.value }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="col-12 col-sm-3">
-        <select id="filteraccounttype" name="filteraccounttype" class="form-select">
-          <option value="" disabled>Account Type</option>
-          {% for accounttype in accounttypelist %}
-          <option value="{{ accounttype.value }}">{{ accounttype.value }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="col-12 col-sm-3">
-      </div>
+  
+  <div class="row">
+    <div class="col">
+      <input id="searchfilter" name="searchfilter" Placeholder="Enter a search term" class="form-control">
+    </div>
+    <div class="col">
+      <select id="filtercurrency" name="filtercurrency" class="form-select">
+        <option value="" disabled>Currency</option>
+        {% for currency in currencylist %}
+        <option value="{{ currency.value }}">{{ currency.value }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col">
+      <select id="filteraccounttype" name="filteraccounttype" class="form-select">
+        <option value="" disabled>Account Type</option>
+        {% for accounttype in accounttypelist %}
+        <option value="{{ accounttype.value }}">{{ accounttype.value }}</option>
+        {% endfor %}
+      </select>
     </div>
   </div>
 
