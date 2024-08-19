@@ -4,17 +4,20 @@ import sys
 from PyQt5.QtWidgets import QApplication
 
 from qtview import MainWindow
-
-from testdata import TestData, TestHeaders
+from database import get_accounts, get_budgets, get_budgetitems, get_transactions
+from testdata import TestData, TestHeaders, BudgetData, AccountData, TxactionData
 
 
 def main():
-  testdata = TestData()
-  testheaders = TestHeaders()
+  budgetlist = get_budgets()
+  budgetitemlist = get_budgetitems()
+  accountlist = get_accounts()
+  txlist = get_transactions()
+  txdata = TxactionData()
   app = QApplication(sys.argv)
   app.setApplicationName("BudgetApp")
 
-  window = MainWindow(testdata, testheaders)
+  window = MainWindow(budgetlist, accountlist, txlist)
   app.exec_()
 
 if __name__ == "__main__":
