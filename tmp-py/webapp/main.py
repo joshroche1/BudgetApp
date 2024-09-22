@@ -155,9 +155,7 @@ async def view_transactions_apply_category(request: Request, skip: int = 0, limi
   accounttypelist = weblists.get_weblist(db, "AccountType")
   countrylist = weblists.get_weblist(db, "Country")
   accountlist = accounts.list_accounts(db, skip=0, limit=1000, filterby="", filtervalue="", sortby="")
-  txcount = len(transactionlist)
-  pagenums = int(txcount/1000) + 1
-  return templates.TemplateResponse("transactions.html", {"request": request, "messages": messages, "g": g, "categorylist": categorylist, "currencylist": currencylist, "accounttypelist": accounttypelist, "countrylist": countrylist, "accountlist": accountlist, "transactionlist": transactionlist, "txcount": txcount, "pagenums": pagenums})
+  return templates.TemplateResponse("transactions.html", {"request": request, "messages": messages, "g": g, "categorylist": categorylist, "currencylist": currencylist, "accounttypelist": accounttypelist, "countrylist": countrylist, "accountlist": accountlist, "transactionlist": transactionlist})
 
 @app.get("/accounts", response_class=HTMLResponse)
 async def view_accounts(request: Request, skip: int = 0, limit: int = 1000, filterby: str = "", filtervalue: str = "", sortby: str = "", db: Session = Depends(get_db)):
@@ -199,7 +197,7 @@ async def view_transactions_importfile(request: Request, uploadfile: UploadFile 
   return templates.TemplateResponse("importfile.html", {"request": request, "messages": messages, "g": g, "result": result, "importarr": importarr, "filecontents": filecontents, "currencylist": currencylist, "accountlist": accountlist})
 
 @app.post("/transactions/importdata", response_class=HTMLResponse)
-async def view_transactions_importdata(request: Request, import_datetimeformat: str = Form(...), import_accountid: str = Form(...), import_currency: str = Form(...), datetimefield: str = Form(...), namefield: str = Form(...), descriptionfield: str = Form(...), amountfield: str = Form(...), categoryfield: str = Form(...), importeddata: str = Form(...), hasheaders: str = Form(...), db: Session = Depends(get_db)):
+async def view_transactions_importdata(request: Request, import_datetimeformat: str = Form(...), import_accountid: str = Form(...), import_currency: str = Form(...), datetimefield: str = Form(...), namefield: str = Form(...), descriptionfield: str = Form(...), amountfield: str = Form(...), categoryfield: str = Form(...), importeddata: str = Form(...), db: Session = Depends(get_db)):
   messages.clear()
   result = ""
   datetime_col = int(datetimefield)-1
@@ -216,8 +214,6 @@ async def view_transactions_importdata(request: Request, import_datetimeformat: 
   try:
     tmparray = importeddata.split("\n")
     for tmpline in tmparray:
-      if hasheaders == "yes":
-        continue
       tmparr = tmpline.split(",")
       newdatetime = parse_date(tmparr[datetime_col], import_datetimeformat)
       amount = float(tmparr[amount_col])
@@ -232,9 +228,7 @@ async def view_transactions_importdata(request: Request, import_datetimeformat: 
   accounttypelist = weblists.get_weblist(db, "AccountType")
   countrylist = weblists.get_weblist(db, "Country")
   accountlist = accounts.list_accounts(db, skip=0, limit=1000, filterby="", filtervalue="", sortby="")
-  txcount = len(transactionlist)
-  pagenums = int(txcount/1000) + 1
-  return templates.TemplateResponse("transactions.html", {"request": request, "messages": messages, "g": g, "categorylist": categorylist, "currencylist": currencylist, "accounttypelist": accounttypelist, "countrylist": countrylist, "accountlist": accountlist, "transactionlist": transactionlist, "txcount": txcount, "pagenums": pagenums})
+  return templates.TemplateResponse("transactions.html", {"request": request, "messages": messages, "g": g, "categorylist": categorylist, "currencylist": currencylist, "accounttypelist": accounttypelist, "countrylist": countrylist, "accountlist": accountlist, "transactionlist": transactionlist})
 
 @app.get("/overview", response_class=HTMLResponse)
 async def view_overview(request: Request, skip: int = 0, limit: int = 1000, filterby: str = "", filtervalue: str = "", sortby: str = "", budgetid: int = 1, startdate: str = "", enddate: str = "", db: Session = Depends(get_db)):
