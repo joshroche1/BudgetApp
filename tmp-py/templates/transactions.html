@@ -112,80 +112,95 @@ $(document).ready(function(){
 </div>
 
 <div class="row">
-  <div class="col-12 col-sm-4">
-    <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#create_transaction">CREATE</button>
-    <a href="/transactions" class="btn btn-sm btn-secondary">REFRESH</a>
-  </div>
-  <div class="col-12 col-sm-4">
-    <form action="/transactions/importfile" method="post" enctype="multipart/form-data">
-      <div class="input-group">
-        <input type="file" id="uploadfile" name="uploadfile" class="form-control">
-        <input type="submit" value="Import" onclick="confirm('Import file?');" class="btn btn-success">
+  <div class="col">
+    <div class="row">
+      <div class="col">
+        <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#create_transaction">CREATE</button>
+        <a href="/transactions" class="btn btn-sm btn-secondary">REFRESH</a>
       </div>
-    </form>
-  </div>
-  <div class="col-12 col-sm-4">
-    <form action="/transactions/apply_category" method="post">
-      <div class="input-group">
+      <div class="col">
         <input type="search" id="searchfilter" name="searchfilter" placeholder="Enter a Search Term" class="form-control">
-        <select id="applycategory" name="applycategory" class="form-select">
-          <option value="" selected disabled>Apply Category to Search</option>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="row">
+      <div class="col">
+        <form action="/transactions/importfile" method="post" enctype="multipart/form-data">
+          <div class="input-group">
+            <input type="file" id="uploadfile" name="uploadfile" class="form-control">
+            <input type="submit" value="Import" onclick="confirm('Import file?');" class="btn btn-success">
+          </div>
+        </form>
+      </div>
+      <div class="col">
+        <form action="/transactions/apply_category" method="post">
+          <div class="input-group">
+            <input type="search" id="searchfilter" name="searchfilter" placeholder="Enter a Search Term" class="form-control">
+            <select id="applycategory" name="applycategory" class="form-select">
+              <option value="" selected disabled>Apply Category to Search</option>
+              {% for category in categorylist %}
+              <option value="{{ category.value }}">{{ category.value }}</option>
+              {% endfor %}
+            </select>
+            <input type="submit" value="Apply" class="btn btn-sm btn-success">
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <div class="row">
+      <div class="col">
+        <select id="filtercategory" name="filtercategory" class="form-select">
+          <option value="" selected disabled>Category</option>
           {% for category in categorylist %}
           <option value="{{ category.value }}">{{ category.value }}</option>
           {% endfor %}
         </select>
-        <input type="submit" value="Apply" class="btn btn-sm btn-success">
       </div>
-    </form>
+      <div class="col">
+        <select id="filtercurrency" name="filtercurrency" class="form-select">
+          <option value="" selected disabled>Currency</option>
+          {% for currency in currencylist %}
+          <option value="{{ currency.value }}">{{ currency.value }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
   </div>
-</div>
-<div class="row">
-  <div class="col-6 col-sm-4 col-md-2">
-    <input type="search" id="searchfilter" name="searchfilter" placeholder="Enter a Search Term" class="form-control">
-  </div>
-  <div class="col-6 col-sm-4 col-md-2">
-    <select id="filtercategory" name="filtercategory" class="form-select">
-      <option value="" selected disabled>Category</option>
-      {% for category in categorylist %}
-      <option value="{{ category.value }}">{{ category.value }}</option>
-      {% endfor %}
-    </select>
-  </div>
-  <div class="col-6 col-sm-4 col-md-2">
-    <select id="filtercurrency" name="filtercurrency" class="form-select">
-      <option value="" selected disabled>Currency</option>
-      {% for currency in currencylist %}
-      <option value="{{ currency.value }}">{{ currency.value }}</option>
-      {% endfor %}
-    </select>
-  </div>
-  <div class="col-6 col-sm-4 col-md-2">
-    <select id="filteraccountid" name="filteraccountid" class="form-select">
-      <option value="" selected disabled>Account ID</option>
-      {% for account in accountlist %}
-      <option value="{{ account.id }}">{{ account.name }}</option>
-      {% endfor %}
-    </select>
-  </div>  
-  <div class="col-6 col-sm-4 col-md-2">
-    <ul class="pagination">
-      <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-      {% for x in range(pagenums) %}
-      <li class="page-item"><a class="page-link" href="#">{{ x }}</a></li>
-      {% endfor %}
-      <li class="page-item"><a class="page-link" href="#">Next</a></li>
-    </ul>
-  </div>
-  <div class="col-6 col-sm-4 col-md-2">
-    <select id="limit" name="limit" class="form-select">
-      <option value="" selected disabled>Per Page</option>
-      <option value="10">10</option>
-      <option value="25">25</option>
-      <option value="50">50</option>
-      <option value="100">100</option>
-      <option value="200">200</option>
-      <option value="500">500</option>
-    </select>
+  <div class="col">
+    <div class="row">
+      <div class="col">
+        <select id="filteraccountid" name="filteraccountid" class="form-select">
+          <option value="" selected disabled>Account ID</option>
+          {% for account in accountlist %}
+          <option value="{{ account.id }}">{{ account.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col">
+        <ul class="pagination">
+          <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+          {% for x in range(pagenums) %}
+          <li class="page-item"><a class="page-link" href="#">{{ x }}</a></li>
+          {% endfor %}
+          <li class="page-item"><a class="page-link" href="#">Next</a></li>
+        </ul>
+        <select id="limit" name="limit" class="form-select">
+          <option value="" selected disabled>Per Page</option>
+          <option value="10">10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+          <option value="200">200</option>
+          <option value="500">500</option>
+        </select>
+      </div>
+    </div>
   </div>
 </div>
 

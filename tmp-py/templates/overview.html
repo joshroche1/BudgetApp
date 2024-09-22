@@ -117,7 +117,7 @@ $(document).ready(function(){
 
   <form action="/overview" method="get">
   <div class="row">
-    <div class="col">
+    <div class="col-12 col-sm-6">
       <div class="input-group">
         <select id="budgetid" name="budgetid" class="form-select">
           <option value="" selected disabled>Budget ID</option>
@@ -128,7 +128,7 @@ $(document).ready(function(){
         <input type="submit" value="UPDATE" class="btn btn-sm btn-primary">
       </div>
     </div>
-    <div class="col">
+    <div class="col-12 col-sm-6">
       <div class="input-group">
         <span class="input-group-text">Start</span>
         <input type="date" id="startdate" name="startdate" class="form-control">
@@ -173,54 +173,68 @@ $(document).ready(function(){
         <canvas id="pieChartTxactions" style="width:100%;max-width:1600px;height:400px;max-height:1600px;"></canvas>
       </div>
     </div>
-  </div>  
-  
-  <div class="row">
-    <table class="table table-sm table-hover">
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Category</th>
-        <th>Amount</th>
-        <th>Description</th>
-      </tr>
-      
-      {% for bitem in budgetitemlist %}
-      <tr>
-        <td>{{ bitem.id }}</td>
-        <td>{{ bitem.name }}</td>
-        <td>{{ bitem.category }}</td>
-        <td>{{ bitem.amount }}</td>
-        <td>{{ bitem.description }}</td>
-      </tr>
-      {% endfor %}
-    </table>
   </div>
   
-  <div class="row">
-    <table class="table table-sm table-hover">
-      <tr>
-        <th>ID</th>
-        <th>Date/Time</th>
-        <th>Amount</th>
-        <th></th>
-        <th>Category</th>
-        <th>Name</th>
-        <th>Currency</th>
-      </tr>
-      
-      {% for txaction in transactionlist %}
-      <tr>
-        <td>{{ txaction.id }}</td>
-        <td>{{ txaction.datetimestamp }}</td>
-        <td>{{ txaction.amount }}</td>
-        <td>{{ txaction.convertedamount }}</td>
-        <td>{{ txaction.category }}</td>
-        <td>{{ txaction.name }}</td>
-        <td>{{ txaction.currency }}</td>
-      </tr>
-      {% endfor %}
-    </table>
+  <div class="m-1 p-1">
+    <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBudgetItemTable" aria-expanded="false" aria-controls="collapseBudgetItemTable">
+      <h3>Budget Items</h3>
+    </button>
+  </div>
+  <div id="collapseBudgetItemTable" class="collapse show">
+    <div class="card row">
+      <table class="table table-sm table-hover">
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Amount</th>
+          <th>Description</th>
+        </tr>
+
+        {% for bitem in budgetitemlist %}
+        <tr>
+          <td>{{ bitem.id }}</td>
+          <td>{{ bitem.name }}</td>
+          <td>{{ bitem.category }}</td>
+          <td>{{ bitem.amount }}</td>
+          <td>{{ bitem.description }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+  
+  <div class="m-1 p-1">
+    <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTxactionTable" aria-expanded="false" aria-controls="collapseTxactionTable">
+      <h3>Transactions</h3>
+    </button>
+  </div>
+  <div id="collapseTxactionTable" class="collapse show">
+    <div class="row">
+      <table class="table table-sm table-hover">
+        <tr>
+          <th>ID</th>
+          <th>Date/Time</th>
+          <th>Amount</th>
+          <th></th>
+          <th>Category</th>
+          <th>Name</th>
+          <th>Currency</th>
+        </tr>
+
+        {% for txaction in transactionlist %}
+        <tr>
+          <td>{{ txaction.id }}</td>
+          <td>{{ txaction.datetimestamp }}</td>
+          <td>{{ txaction.amount }}</td>
+          <td>{{ txaction.convertedamount }}</td>
+          <td>{{ txaction.category }}</td>
+          <td>{{ txaction.name }}</td>
+          <td>{{ txaction.currency }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
   </div>
 
 </div>

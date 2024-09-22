@@ -71,7 +71,7 @@ CREATE TABLE transactions(
 );
 
 INSERT INTO users (id, email, username, password) VALUES (
-  1, 'admin', 'admin', '$2b$12$.G6mRohd2n058/2Om6XG4uFKvLRMp5JzQG8/XVUVwEKclKdAbpZDC'
+  1, 'admin', 'admin', '$2b$12$PzNX7cScDmw1jh.sjWKIMe2JyFOJmYCreOFB7TTlrueAIzT0jch/q'
 );
 
 INSERT INTO weblists (id, name, value) VALUES 
@@ -123,6 +123,10 @@ INSERT INTO budgetitems (id, name, description, amount, category, recurrence, du
 (11, 'Child Support', 'Child support', 2034.00, 'Child Support', 'Monthly', 1, 1),
 (12, 'Storage Unit', 'Non-temp storage in GA', 47.00, 'Utilities', 'Monthly', 1, 1)
 ;
+
+INSERT INTO exchangerates (id, currency_from, currency_to, rate) VALUES
+(1, 'USA', 'DE', 0.93),
+(2, 'DE', 'USA', 1.09);
 
 INSERT INTO accounts (id, name, description, accounttype, currency, ownerid) VALUES 
 (1, 'Default Account', 'Default Bank', 'Checking', 'EUR', 1);
