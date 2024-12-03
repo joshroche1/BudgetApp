@@ -11,6 +11,6 @@ public class AccountEntity extends PanacheEntity {
   public String description;
   public String accounttype;
   public String currency;
-  public String notes;
+  public Long userid;
 
 }

@@ -8,8 +8,8 @@ import io.quarkus.hibernate.reactive.panache.PanacheEntity;
 public class BudgetEntity extends PanacheEntity {
 
   public String name;
-  public String description;
   public String currency;
-  public String notes;
+  public String description;
+  public Long userid;
 
 }

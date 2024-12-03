@@ -29,37 +29,37 @@ import io.smallrye.mutiny.CompositeException;
 import org.jboss.logging.Logger;
 import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
 
-@Path("budget")
+@Path("user")
 @ApplicationScoped
-public class BudgetResource {
+public class UserResource {
 
-  private static final Logger LOGGER = Logger.getLogger(BudgetResource.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(UserResource.class.getName());
 
   @Path("example")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public BudgetEntity getExample() {
-    BudgetEntity bEntity = new BudgetEntity();
-    return bEntity;
+  public UserEntity getExample() {
+    UserEntity uEntity = new UserEntity();
+    return uEntity;
   }
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public Uni<List<BudgetEntity>> get() {
-	return BudgetEntity.listAll(Sort.by("id"));
+  public Uni<List<UserEntity>> get() {
+	return UserEntity.listAll(Sort.by("id"));
   }
 
   @Path("{id}")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public Uni<BudgetEntity> getSingle(Long id) {
-	return BudgetEntity.findById(id);
+  public Uni<UserEntity> getSingle(Long id) {
+	return UserEntity.findById(id);
   }
 
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public Uni<Response> create(BudgetEntity entity) {
+  public Uni<Response> create(UserEntity entity) {
 	if (entity == null || entity.id != null) {
 	  throw new WebApplicationException("Id not set on request", 422);
 	}

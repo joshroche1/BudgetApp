@@ -13,6 +13,15 @@ public class TransactionEntity extends PanacheEntity {
   public String category;
   public double amount;
   public String currency;
-  public String notes;
+  public Long accountid;
 
+  public static void add(String datetimestamp, String name, String description, String category, double amount, String currency) {
+    TransactionEntity entity = new TransactionEntity();
+	entity.datetimestamp = datetimestamp;
+    entity.name = name;
+    entity.category = category;
+	entity.amount = amount;
+    entity.currency = currency;
+    entity.persist();
+  }
 }
