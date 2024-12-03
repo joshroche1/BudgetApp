@@ -1,0 +1,28 @@
+2024-12-03 18:02:08,351 son-nb-jro-20 /Library/Java/JavaVirtualMachines/jdk-23.0.1.jdk/Contents/Home/bin/java[80676] ERROR [io.qua.run.Application] (Quarkus Main Thread) Failed to start application: java.lang.RuntimeException: Failed to start quarkus
+	at io.quarkus.runner.ApplicationImpl.doStart(Unknown Source)
+	at io.quarkus.runtime.Application.start(Application.java:101)
+	at io.quarkus.runtime.ApplicationLifecycleManager.run(ApplicationLifecycleManager.java:121)
+	at io.quarkus.runtime.Quarkus.run(Quarkus.java:71)
+	at io.quarkus.runtime.Quarkus.run(Quarkus.java:44)
+	at io.quarkus.runtime.Quarkus.run(Quarkus.java:124)
+	at io.quarkus.runner.GeneratedMain.main(Unknown Source)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at io.quarkus.runner.bootstrap.StartupActionImpl$1.run(StartupActionImpl.java:116)
+	at java.base/java.lang.Thread.run(Thread.java:1575)
+Caused by: io.quarkus.runtime.configuration.ConfigurationException: Unable to find datasource '<default>' for persistence unit 'default-reactive': No pool has been defined for persistence unit default-reactive
+	at io.quarkus.hibernate.orm.runtime.PersistenceUnitUtil.unableToFindDataSource(PersistenceUnitUtil.java:115)
+	at io.quarkus.hibernate.reactive.runtime.FastBootHibernateReactivePersistenceProvider.registerVertxAndPool(FastBootHibernateReactivePersistenceProvider.java:294)
+	at io.quarkus.hibernate.reactive.runtime.FastBootHibernateReactivePersistenceProvider.rewireMetadataAndExtractServiceRegistry(FastBootHibernateReactivePersistenceProvider.java:218)
+	at io.quarkus.hibernate.reactive.runtime.FastBootHibernateReactivePersistenceProvider.getEntityManagerFactoryBuilderOrNull(FastBootHibernateReactivePersistenceProvider.java:195)
+	at io.quarkus.hibernate.reactive.runtime.FastBootHibernateReactivePersistenceProvider.createEntityManagerFactory(FastBootHibernateReactivePersistenceProvider.java:91)
+	at jakarta.persistence.Persistence.createEntityManagerFactory(Persistence.java:80)
+	at jakarta.persistence.Persistence.createEntityManagerFactory(Persistence.java:55)
+	at io.quarkus.hibernate.orm.runtime.JPAConfig$LazyPersistenceUnit.get(JPAConfig.java:154)
+	at io.quarkus.hibernate.orm.runtime.JPAConfig$1.run(JPAConfig.java:61)
+	... 1 more
+Caused by: java.lang.IllegalStateException: No pool has been defined for persistence unit default-reactive
+	at io.quarkus.hibernate.reactive.runtime.FastBootHibernateReactivePersistenceProvider.registerVertxAndPool(FastBootHibernateReactivePersistenceProvider.java:289)
+	... 8 more
+
+2024-12-03 18:02:08,363 son-nb-jro-20 /Library/Java/JavaVirtualMachines/jdk-23.0.1.jdk/Contents/Home/bin/java[80676] INFO  [io.qua.dep.dev.IsolatedDevModeMain] (main) Attempting to start live reload endpoint to recover from previous Quarkus startup failure
