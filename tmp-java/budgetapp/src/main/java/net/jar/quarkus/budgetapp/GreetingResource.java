@@ -1,4 +1,4 @@
-package net.jar.quarkus;
+package net.jar.quarkus.budgetapp;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;

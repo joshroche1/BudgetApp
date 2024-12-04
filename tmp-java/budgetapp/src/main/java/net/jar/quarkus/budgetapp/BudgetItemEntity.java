@@ -1,4 +1,4 @@
-package net.jar.quarkus;
+package net.jar.quarkus.budgetapp;
 
 import jakarta.persistence.Entity;
 
@@ -8,11 +8,12 @@ import io.quarkus.hibernate.reactive.panache.PanacheEntity;
 public class BudgetItemEntity extends PanacheEntity {
 
   public String name;
-  public Double amount;
-  public String category;
-  public String recurrence;
-  public Integer recurrenceday;
-  public Long budgetid;
   public String description;
+  public String category;
+  public double amount;
+  public String currency;
+  public String recurrence;
+  public int recurenceday;
+  public Long budgetid;
 
 }
